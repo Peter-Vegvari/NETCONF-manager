@@ -1,0 +1,39 @@
+
+[project]
+name = "NETCONF-manager"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+license = "MIT"
+license-files = [ "LICENSE" ]
+authors = [
+    { name = "Péter Végvári" }
+]
+dependencies = [
+
+]
+
+[tool.uv]
+package = true
+
+[tool.uv.sources]
+manager = { workspace = true }
+
+[dependency-groups]
+dev = ["manager"]
+
+[tool.basedpyright]
+include = ["manager"]
+defineConstant = { DEBUG = true }
+reportImportCycles = false
+failOnWarnings = false
+reportAny = false
+reportExplicitAny = false
+reportUnusedCallResult = false
+reportUnusedParameter = false
+
+[tool.pytest.ini_options]
+minversion = "8.4.1"
+addopts = "-ra -q"
+testpaths = ["tests"]
