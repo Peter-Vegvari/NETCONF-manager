@@ -1,6 +1,9 @@
+[build-system]
+requires = ["uv_build >= 0.10.0, <0.11.0"]
+build-backend = "uv_build"
 
 [project]
-name = "NETCONF-manager"
+name = "netconf_manager"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -8,11 +11,20 @@ requires-python = ">=3.14"
 license = "MIT"
 license-files = [ "LICENSE" ]
 authors = [
-    { name = "Péter Végvári" }
+    { name = "Peter Vegvari" }
 ]
 dependencies = [
-
+    "netconf-console2",
+    "netconf-client",
+    "basedpyright",
+    "ruff",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Peter-Vegvari/NETCONF-manager"
 
 [tool.uv]
 package = true
@@ -20,11 +32,8 @@ package = true
 [tool.uv.sources]
 manager = { workspace = true }
 
-[dependency-groups]
-dev = ["manager"]
-
 [tool.basedpyright]
-include = ["manager"]
+include = ["src"]
 defineConstant = { DEBUG = true }
 reportImportCycles = false
 failOnWarnings = false
