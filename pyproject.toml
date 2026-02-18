@@ -21,7 +21,9 @@ dependencies = [
     "pytest",
     "pytest-asyncio",
     "pytest-cov",
-    "six"
+    "six",
+    "fastapi",
+    "uvicron",
 ]
 
 [project.urls]
