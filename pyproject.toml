@@ -22,8 +22,8 @@ dependencies = [
     "pytest-asyncio",
     "pytest-cov",
     "six",
-    "fastapi",
-    "uvicron",
+    "fastapi[standard]",
+    "uvicorn",
 ]
 
 [project.urls]
@@ -44,6 +44,7 @@ reportAny = false
 reportExplicitAny = false
 reportUnusedCallResult = false
 reportUnusedParameter = false
+allowedUntypedLibraries = ["netconf_client"]
 
 [tool.pytest.ini_options]
 minversion = "8.4.1"

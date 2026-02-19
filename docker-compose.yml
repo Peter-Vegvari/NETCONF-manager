@@ -1,0 +1,8 @@
+services:
+  notconf:
+    image: ghcr.io/notconf/notconf:latest
+    container_name: notconf-test
+    ports:
+      - "830:830"
+    volumes:
+      - ./test/yang-modules:/yang-modules
