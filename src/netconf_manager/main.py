@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from netconf_client.connect import connect_ssh
-from netconf_client.ncclient import Manager
+from ncclient import manager
 
 # uv run fastapi dev src/netconf_manager/main.py
 app = FastAPI()
@@ -16,9 +15,12 @@ async def root():
 
 
 def main():
-    with connect_ssh(host, port, username, password) as session:
-        mgr = Manager(session, timeout=5)
-        print(mgr.get().data_xml)
+
+    with manager.connect(host=host, port=830,
+                         username=username, hostkey_verify=False, device_params={'name':'iosxr'}) as m:
+        c = m.get_config(source='running').data_xml
+        with open("%s.xml" % host, 'w') as f:
+            f.write(c)
 
 
 if __name__ == "__main__":

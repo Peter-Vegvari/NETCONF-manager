@@ -24,6 +24,8 @@ dependencies = [
     "six",
     "fastapi[standard]",
     "uvicorn",
+    "pyang",
+    "pyangbind"
 ]
 
 [project.urls]
@@ -44,7 +46,8 @@ reportAny = false
 reportExplicitAny = false
 reportUnusedCallResult = false
 reportUnusedParameter = false
-allowedUntypedLibraries = ["netconf_client"]
+allowedUntypedLibraries = ["ncclient"]
+reportOptionalContextManager = false
 
 [tool.pytest.ini_options]
 minversion = "8.4.1"
