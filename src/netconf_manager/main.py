@@ -1,33 +1,45 @@
-from fastapi import FastAPI
-from netconf_client.connect import connect_ssh
-from netconf_client.ncclient import Manager
-from ncclient import manager
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+import requests
+import json
 
 # uv run fastapi dev src/netconf_manager/main.py
 app = FastAPI()
-host = "172.18.0.1"
-port = 830
+host = "localhost"
+port = "80"
 username = "admin"
 password = "admin"
 
+app = FastAPI()
+origins = [
+    "http://localhost:3000",  # React dev server
+    "http://127.0.0.1:3000"
+]
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-
-def main():
-    with manager.connect(
-        host="172.18.0.1",
-        port=830,
-        username="admin",
-        password="admin",
-        hostkey_verify=False,
-        device_params={'name': 'iosxr'}
-    ) as m:
-        schema = m.get_schema('ietf-netconf-monitoring')
-        print(schema.data)
+DEVICE = f"http://{host}:{port}/restconf"
 
 
-if __name__ == "__main__":
-    main()
+@app.get("/restconf/{path:path}")
+def proxy_get(path: str):
+    url = f"{DEVICE}/{path}"
+
+    r = requests.get(
+        url,
+        headers={"Accept": "application/yang-data+json"},
+        auth=(username, password),
+        verify=False,
+        timeout=10,
+    )
+
+    if not r.ok:
+        raise HTTPException(status_code=r.status_code, detail=r.text)
+
+    return r.json()

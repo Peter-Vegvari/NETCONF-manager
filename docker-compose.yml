@@ -4,5 +4,6 @@ services:
     container_name: notconf-test
     ports:
       - "830:830"
+      - "80:80"
     volumes:
       - ./test/yang-modules:/yang-modules
