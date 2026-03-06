@@ -1,0 +1,421 @@
+{
+    "ietf-yang-library:modules-state": {
+        "module-set-id": "0x3e75f676",
+        "module": [
+            {
+                "name": "ietf-yang-metadata",
+                "revision": "2016-08-05",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-metadata",
+                "conformance-type": "import"
+            },
+            {
+                "name": "yang",
+                "revision": "2025-01-29",
+                "namespace": "urn:ietf:params:xml:ns:yang:1",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-inet-types",
+                "revision": "2013-07-15",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-inet-types",
+                "conformance-type": "import"
+            },
+            {
+                "name": "ietf-yang-types",
+                "revision": "2013-07-15",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types",
+                "conformance-type": "import"
+            },
+            {
+                "name": "ietf-yang-schema-mount",
+                "revision": "2019-01-14",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-yang-structure-ext",
+                "revision": "2020-06-17",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-structure-ext",
+                "conformance-type": "import"
+            },
+            {
+                "name": "ietf-datastores",
+                "revision": "2018-02-14",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-datastores",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "sysrepo",
+                "revision": "2024-10-25",
+                "namespace": "http://www.sysrepo.org/yang/sysrepo",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-netconf-acm",
+                "revision": "2018-02-14",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-netconf-acm",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-factory-default",
+                "revision": "2020-08-31",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-factory-default",
+                "feature": [
+                    "factory-default-datastore"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "sysrepo-factory-default",
+                "revision": "2025-03-18",
+                "namespace": "urn:sysrepo:yang:sysrepo-factory-default",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-yang-library",
+                "revision": "2019-01-04",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-library",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "sysrepo-monitoring",
+                "revision": "2023-08-11",
+                "namespace": "http://www.sysrepo.org/yang/sysrepo-monitoring",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "sysrepo-plugind",
+                "revision": "2022-08-26",
+                "namespace": "urn:sysrepo:plugind",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "sysrepo-notifications",
+                "revision": "2025-01-10",
+                "namespace": "http://www.sysrepo.org/yang/sysrepo-notifications",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-netconf",
+                "revision": "2013-09-29",
+                "namespace": "urn:ietf:params:xml:ns:netconf:base:1.0",
+                "feature": [
+                    "writable-running",
+                    "candidate",
+                    "confirmed-commit",
+                    "rollback-on-error",
+                    "validate",
+                    "startup",
+                    "url",
+                    "xpath"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-netconf-with-defaults",
+                "revision": "2011-06-01",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-netconf-with-defaults",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-netconf-notifications",
+                "revision": "2012-02-06",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-netconf-notifications",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-origin",
+                "revision": "2018-02-14",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-origin",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-interfaces",
+                "revision": "2018-02-20",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-ip",
+                "revision": "2018-02-22",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-ip",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-netconf-nmda",
+                "revision": "2019-01-07",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-netconf-nmda",
+                "feature": [
+                    "origin",
+                    "with-defaults"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "notifications",
+                "revision": "2008-07-14",
+                "namespace": "urn:ietf:params:xml:ns:netconf:notification:1.0",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "nc-notifications",
+                "revision": "2008-07-14",
+                "namespace": "urn:ietf:params:xml:ns:netmod:notification",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-netconf-monitoring",
+                "revision": "2010-10-04",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-network-instance",
+                "revision": "2019-01-21",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-network-instance",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-subscribed-notifications",
+                "revision": "2019-09-09",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-subscribed-notifications",
+                "feature": [
+                    "encode-xml",
+                    "replay",
+                    "subtree",
+                    "xpath"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-restconf",
+                "revision": "2017-01-26",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-restconf",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-yang-push",
+                "revision": "2019-09-09",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-push",
+                "feature": [
+                    "on-change"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-yang-patch",
+                "revision": "2017-02-22",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-patch",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "netopeer-notifications",
+                "revision": "2025-01-15",
+                "namespace": "urn:cesnet:netopeer-notifcations",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-system-capabilities",
+                "revision": "2022-02-17",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-system-capabilities",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-notification-capabilities",
+                "revision": "2022-02-17",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-notification-capabilities",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "iana-ssh-encryption-algs",
+                "revision": "2022-06-16",
+                "namespace": "urn:ietf:params:xml:ns:yang:iana-ssh-encryption-algs",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "iana-ssh-key-exchange-algs",
+                "revision": "2022-06-16",
+                "namespace": "urn:ietf:params:xml:ns:yang:iana-ssh-key-exchange-algs",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "iana-ssh-mac-algs",
+                "revision": "2022-06-16",
+                "namespace": "urn:ietf:params:xml:ns:yang:iana-ssh-mac-algs",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "iana-ssh-public-key-algs",
+                "revision": "2022-06-16",
+                "namespace": "urn:ietf:params:xml:ns:yang:iana-ssh-public-key-algs",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "iana-tls-cipher-suite-algs",
+                "revision": "2022-06-16",
+                "namespace": "urn:ietf:params:xml:ns:yang:iana-tls-cipher-suite-algs",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-x509-cert-to-name",
+                "revision": "2014-12-10",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-x509-cert-to-name",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "iana-crypt-hash",
+                "revision": "2014-04-04",
+                "namespace": "urn:ietf:params:xml:ns:yang:iana-crypt-hash",
+                "feature": [
+                    "crypt-hash-md5",
+                    "crypt-hash-sha-256",
+                    "crypt-hash-sha-512"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-crypto-types",
+                "revision": "2023-12-28",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-crypto-types",
+                "feature": [
+                    "cleartext-passwords",
+                    "cleartext-private-keys"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-keystore",
+                "revision": "2023-12-28",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-keystore",
+                "feature": [
+                    "central-keystore-supported",
+                    "inline-definitions-supported",
+                    "asymmetric-keys"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-truststore",
+                "revision": "2023-12-28",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-truststore",
+                "feature": [
+                    "central-truststore-supported",
+                    "inline-definitions-supported",
+                    "certificates",
+                    "public-keys"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-tcp-common",
+                "revision": "2023-12-28",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-tcp-common",
+                "feature": [
+                    "keepalives-supported"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-tcp-server",
+                "revision": "2023-12-28",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-tcp-server",
+                "feature": [
+                    "tcp-server-keepalives"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-tcp-client",
+                "revision": "2023-12-28",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-tcp-client",
+                "feature": [
+                    "local-binding-supported",
+                    "tcp-client-keepalives"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-ssh-common",
+                "revision": "2023-12-28",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-ssh-common",
+                "feature": [
+                    "transport-params"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-ssh-server",
+                "revision": "2023-12-28",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-ssh-server",
+                "feature": [
+                    "local-users-supported",
+                    "local-user-auth-publickey",
+                    "local-user-auth-password",
+                    "local-user-auth-none"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-tls-common",
+                "revision": "2023-12-28",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-tls-common",
+                "feature": [
+                    "tls10",
+                    "tls11",
+                    "tls12",
+                    "tls13",
+                    "hello-params"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-tls-server",
+                "revision": "2023-12-28",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-tls-server",
+                "feature": [
+                    "server-ident-x509-cert",
+                    "client-auth-supported",
+                    "client-auth-x509-cert"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-netconf-server",
+                "revision": "2023-12-28",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-netconf-server",
+                "feature": [
+                    "ssh-listen",
+                    "tls-listen",
+                    "ssh-call-home",
+                    "tls-call-home",
+                    "central-netconf-server-supported"
+                ],
+                "conformance-type": "implement"
+            },
+            {
+                "name": "libnetconf2-netconf-server",
+                "revision": "2025-01-23",
+                "namespace": "urn:cesnet:libnetconf2-netconf-server",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "iana-if-type",
+                "revision": "2014-05-08",
+                "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-restconf-monitoring",
+                "revision": "2017-01-26",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring",
+                "conformance-type": "implement"
+            },
+            {
+                "name": "ietf-restconf-subscribed-notifications",
+                "revision": "2019-11-17",
+                "namespace": "urn:ietf:params:xml:ns:yang:ietf-restconf-subscribed-notifications",
+                "conformance-type": "implement"
+            }
+        ]
+    }
+}

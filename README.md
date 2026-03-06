@@ -8,6 +8,6 @@ sudo docker run -d --rm --name notconf-test -v $(pwd)/test/yang-modules:/yang-mo
 uv run netconf-console2 --host 172.18.0.1 --port 830 --get /modules-state
 
 curl -s -u admin:admin -H "Accept: application/yang-data+json" \
-http://localhost:3000/restconf/operations/
+http://localhost:8000/restconf/operations/
 
 curl -s -u admin:admin -H "Accept: application/yang-data+json" http://localhost:80/restconf/operations

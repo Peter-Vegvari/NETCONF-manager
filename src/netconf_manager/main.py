@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import requests
+from yangson import DataModel
 
 from netconf_manager import download_schemas
 
@@ -11,6 +12,7 @@ PORT = "80"
 USERNAME = "admin"
 PASSWORD = "admin"
 DEVICE = f"http://{HOST}:{PORT}/restconf"
+FASTAPI_PORT = 8000
 
 app = FastAPI()
 origins = [
@@ -46,7 +48,7 @@ def proxy_get(path: str):
 
 
 def main():
-    download_schemas.download_schemas(HOST, USERNAME, PASSWORD)
+    download_schemas.download_schemas_yang(HOST, USERNAME, PASSWORD)
 
 
 if __name__ == "__main__":

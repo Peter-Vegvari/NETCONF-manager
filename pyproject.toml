@@ -28,7 +28,8 @@ dependencies = [
     "pyangbind",
     "lxml",
     "types-lxml",
-    "pydantify"
+    "pydantify",
+    "yangson"
 ]
 
 [project.urls]
