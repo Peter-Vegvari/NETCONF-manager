@@ -366,6 +366,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/2b/d9/fd646ea4ae48e374817b2750f5e678a5bf6e10d8924f09cf4cce86a81607/datamodel_code_generator-0.54.0-py3-none-any.whl", hash = "sha256:3156df7a7e8fa5a7c9a6d50836e5ba5abe0532f6b71eee6d73a0c8e1fb5b7e47", size = 261838, upload-time = "2026-02-14T16:19:03.298Z" },
 ]
 
+[package.optional-dependencies]
+ruff = [
+    { name = "ruff" },
+]
+
 [[package]]
 name = "dnspython"
 version = "2.8.0"
@@ -802,6 +807,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "basedpyright" },
+    { name = "datamodel-code-generator" },
     { name = "fastapi", extra = ["standard"] },
     { name = "lxml" },
     { name = "netconf-client" },
@@ -822,13 +828,14 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "basedpyright" },
+    { name = "datamodel-code-generator" },
     { name = "fastapi", extras = ["standard"] },
     { name = "lxml" },
     { name = "netconf-client" },
     { name = "netconf-console2" },
     { name = "pyang" },
     { name = "pyangbind" },
-    { name = "pydantify" },
+    { name = "pydantify", git = "https://github.com/pydantify/pydantify.git" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
@@ -1025,19 +1032,15 @@ wheels = [
 
 [[package]]
 name = "pydantify"
-version = "0.5.1"
-source = { registry = "https://pypi.org/simple" }
+version = "0.10.0b1"
+source = { git = "https://github.com/pydantify/pydantify.git#cff3a60aa396e83c6a93d2a17ba68fe726974fc4" }
 dependencies = [
-    { name = "datamodel-code-generator" },
+    { name = "datamodel-code-generator", extra = ["ruff"] },
     { name = "psutil" },
     { name = "pyang" },
     { name = "pydantic" },
     { name = "requests" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a3/a4/ef52f7b0f8ddd7ba1f9eb0d584b327cb01494ec658d1ea8437f3af1f4bc8/pydantify-0.5.1.tar.gz", hash = "sha256:fe123d792215c8d94956133c698051e09614b0bc406cd6d774f2c1dcf2dafd98", size = 51744, upload-time = "2023-01-06T23:35:39.406Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a0/11/fe35e1ce87a9100bc1033c56c4f6cbf842bd52c05802bb8a0695da55d594/pydantify-0.5.1-py3-none-any.whl", hash = "sha256:27a145d5b6f65af4fcb4ddf76deecac0c1642b5328ed4f66c6345323f2c77d1b", size = 25057, upload-time = "2023-01-06T23:35:37.11Z" },
+    { name = "setuptools" },
 ]
 
 [[package]]
@@ -1354,6 +1357,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/d3/06/66c8b705179bc54087845f28fd1b72f83751b6e9a195628e2e9af9926505/sentry_sdk-2.53.0.tar.gz", hash = "sha256:6520ef2c4acd823f28efc55e43eb6ce2e6d9f954a95a3aa96b6fd14871e92b77", size = 412369, upload-time = "2026-02-16T11:11:14.743Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/47/d4/2fdf854bc3b9c7f55219678f812600a20a138af2dd847d99004994eada8f/sentry_sdk-2.53.0-py2.py3-none-any.whl", hash = "sha256:46e1ed8d84355ae54406c924f6b290c3d61f4048625989a723fd622aab838899", size = 437908, upload-time = "2026-02-16T11:11:13.227Z" },
+]
+
+[[package]]
+name = "setuptools"
+version = "82.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/82/f3/748f4d6f65d1756b9ae577f329c951cda23fb900e4de9f70900ced962085/setuptools-82.0.0.tar.gz", hash = "sha256:22e0a2d69474c6ae4feb01951cb69d515ed23728cf96d05513d36e42b62b37cb", size = 1144893, upload-time = "2026-02-08T15:08:40.206Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e1/c6/76dc613121b793286a3f91621d7b75a2b493e0390ddca50f11993eadf192/setuptools-82.0.0-py3-none-any.whl", hash = "sha256:70b18734b607bd1da571d097d236cfcfacaf01de45717d59e6e04b96877532e0", size = 1003468, upload-time = "2026-02-08T15:08:38.723Z" },
 ]
 
 [[package]]

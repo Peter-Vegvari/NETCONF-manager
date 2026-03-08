@@ -1,8 +1,6 @@
 from ncclient import manager
-import json
 from lxml import etree
 import requests
-from yangson import DataModel
 
 
 def download_schemas_yang(host: str, username: str, password: str):
@@ -41,16 +39,9 @@ def download_schemas_yang(host: str, username: str, password: str):
                 f.write(schema_reply.data)
 
 
-def download_schemas_json():
-    # url = "http://localhost:8000/restconf/data/ietf-yang-library:modules-state"
-
-    # r = requests.get(url).json()
-    dm = DataModel.from_file("yang-library.json", ["resources/modules"])
-    schema = dm.get_schema_node("/ietf-interfaces:interfaces/interface")
-    print(schema)
-    
 def main():
     download_schemas_json()
+
 
 if __name__ == "__main__":
     main()

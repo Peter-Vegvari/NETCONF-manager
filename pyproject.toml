@@ -28,8 +28,9 @@ dependencies = [
     "pyangbind",
     "lxml",
     "types-lxml",
-    "pydantify",
-    "yangson"
+    "yangson",
+    "datamodel-code-generator",
+    "pydantify @ git+https://github.com/pydantify/pydantify.git"
 ]
 
 [project.urls]

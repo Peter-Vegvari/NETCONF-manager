@@ -1,0 +1,206 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "ietf_interfaces_interfaces": {
+      "type": "object",
+      "properties": {
+        "interface": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "enabled": {
+                "type": "boolean"
+              },
+              "link-up-down-trap-enable": {
+                "type": "string"
+              },
+              "admin-status": {
+                "type": "string"
+              },
+              "oper-status": {
+                "type": "string"
+              },
+              "last-change": {
+                "type": "string"
+              },
+              "if-index": {
+                "type": "integer"
+              },
+              "phys-address": {
+                "type": "string"
+              },
+              "higher-layer-if": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "lower-layer-if": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "speed": {
+                "type": "integer"
+              },
+              "statistics": {
+                "type": "object",
+                "properties": {
+                  "discontinuity-time": {
+                    "type": "string"
+                  },
+                  "in-octets": {
+                    "type": "integer"
+                  },
+                  "in-unicast-pkts": {
+                    "type": "integer"
+                  },
+                  "in-broadcast-pkts": {
+                    "type": "integer"
+                  },
+                  "in-multicast-pkts": {
+                    "type": "integer"
+                  },
+                  "in-discards": {
+                    "type": "integer"
+                  },
+                  "in-errors": {
+                    "type": "integer"
+                  },
+                  "in-unknown-protos": {
+                    "type": "integer"
+                  },
+                  "out-octets": {
+                    "type": "integer"
+                  },
+                  "out-unicast-pkts": {
+                    "type": "integer"
+                  },
+                  "out-broadcast-pkts": {
+                    "type": "integer"
+                  },
+                  "out-multicast-pkts": {
+                    "type": "integer"
+                  },
+                  "out-discards": {
+                    "type": "integer"
+                  },
+                  "out-errors": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "ietf_interfaces_interfaces_state": {
+      "type": "object",
+      "properties": {
+        "interface": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "admin-status": {
+                "type": "string"
+              },
+              "oper-status": {
+                "type": "string"
+              },
+              "last-change": {
+                "type": "string"
+              },
+              "if-index": {
+                "type": "integer"
+              },
+              "phys-address": {
+                "type": "string"
+              },
+              "higher-layer-if": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "lower-layer-if": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "speed": {
+                "type": "integer"
+              },
+              "statistics": {
+                "type": "object",
+                "properties": {
+                  "discontinuity-time": {
+                    "type": "string"
+                  },
+                  "in-octets": {
+                    "type": "integer"
+                  },
+                  "in-unicast-pkts": {
+                    "type": "integer"
+                  },
+                  "in-broadcast-pkts": {
+                    "type": "integer"
+                  },
+                  "in-multicast-pkts": {
+                    "type": "integer"
+                  },
+                  "in-discards": {
+                    "type": "integer"
+                  },
+                  "in-errors": {
+                    "type": "integer"
+                  },
+                  "in-unknown-protos": {
+                    "type": "integer"
+                  },
+                  "out-octets": {
+                    "type": "integer"
+                  },
+                  "out-unicast-pkts": {
+                    "type": "integer"
+                  },
+                  "out-broadcast-pkts": {
+                    "type": "integer"
+                  },
+                  "out-multicast-pkts": {
+                    "type": "integer"
+                  },
+                  "out-discards": {
+                    "type": "integer"
+                  },
+                  "out-errors": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

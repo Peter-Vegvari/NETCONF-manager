@@ -1,0 +1,10 @@
+{
+    "modules": {
+        "ietf-yang-types": [
+            "yang",
+            "urn:ietf:params:xml:ns:yang:ietf-yang-types"
+        ]
+    },
+    "tree": {},
+    "annotations": {}
+}
