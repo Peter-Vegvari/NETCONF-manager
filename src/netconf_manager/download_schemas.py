@@ -1,12 +1,24 @@
+from subprocess import CompletedProcess
+
+
+from typing import Any, Iterator
+
+
+from types import ModuleType
+from _frozen_importlib import ModuleSpec
 from ncclient import manager
 from lxml import etree
-import requests
+import subprocess
+import importlib.util
+import importlib.abc
+from pathlib import Path
+import os
 
 
-def download_schemas_yang(host: str, username: str, password: str):
+def download_schemas_yang(host: str, port: int, username: str, password: str):
     with manager.connect(
         host=host,
-        port=830,
+        port=port,
         username=username,
         password=password,
         hostkey_verify=False,
@@ -39,8 +51,60 @@ def download_schemas_yang(host: str, username: str, password: str):
                 f.write(schema_reply.data)
 
 
+def generate_models():
+    yang_dir: Path = Path("resources/modules")
+    modules_dir: Path = Path("src/netconf_manager/models")
+    failed_modules: list[Path] = []
+    modules: Iterator[Path] = yang_dir.glob("*.yang")
+    for yang_module in modules:
+        result: CompletedProcess[bytes] = subprocess.run(
+            [
+                "uv",
+                "run",
+                "pydantify",
+                str(yang_module),
+                "-i",
+                str(yang_dir),
+                "-o",
+                str(modules_dir),
+                "-f",
+                f"{yang_module.stem}.py",
+            ],
+        )
+        if result.returncode != 0:
+            failed_modules.append(yang_module)
+    os.rmdir(modules_dir)
+
+    successful_modules: set[Path] = set[Path](modules) - set[Path](failed_modules)
+
+    subprocess.run(
+        [
+            "uv",
+            "run",
+            "pydantify",
+            *[str(m) for m in successful_modules],
+            "-i",
+            str(yang_dir),
+            "-o",
+            str(modules_dir),
+            "-f",
+            "models.py",
+        ]
+    )
+
+
+def load_generated_model(path: str):
+    spec = importlib.util.spec_from_file_location("yang_model", path)
+    if spec is None or not isinstance(spec.loader, importlib.abc.Loader):
+        raise RuntimeError(f"Could not load module spec from {path}")
+
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def main():
-    download_schemas_json()
+    generate_models()
 
 
 if __name__ == "__main__":

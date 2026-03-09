@@ -48,7 +48,8 @@ def proxy_get(path: str):
 
 
 def main():
-    download_schemas.download_schemas_yang(HOST, USERNAME, PASSWORD)
+    # download_schemas.download_schemas_yang(HOST, USERNAME, PASSWORD)
+    print(1)
 
 
 if __name__ == "__main__":
