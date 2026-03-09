@@ -2,9 +2,7 @@ from subprocess import CompletedProcess
 
 
 from typing import Any, Iterator
-
-
-from types import ModuleType
+from types import CoroutineType, ModuleType
 from _frozen_importlib import ModuleSpec
 from ncclient import manager
 from lxml import etree
@@ -12,7 +10,8 @@ import subprocess
 import importlib.util
 import importlib.abc
 from pathlib import Path
-import os
+import tempfile
+import asyncio
 
 
 def download_schemas_yang(host: str, port: int, username: str, password: str):
@@ -51,32 +50,41 @@ def download_schemas_yang(host: str, port: int, username: str, password: str):
                 f.write(schema_reply.data)
 
 
-def generate_models():
+async def run_pydantify(
+    yang_module: Path, yang_dir: Path, modules_dir: Path
+) -> tuple[Path, int]:
+    with tempfile.TemporaryDirectory() as tmp:
+        proc = await asyncio.create_subprocess_exec(
+            "uv",
+            "run",
+            "pydantify",
+            str(yang_module),
+            "-i",
+            str(yang_dir),
+            "-o",
+            tmp,
+            "-f",
+            "_.py",
+            # stderr=asyncio.subprocess.DEVNULL,
+        )
+        returncode = await proc.wait()
+    return yang_module, returncode
+
+
+async def generate_models():
     yang_dir: Path = Path("resources/modules")
     modules_dir: Path = Path("src/netconf_manager/models")
-    failed_modules: list[Path] = []
     modules: Iterator[Path] = yang_dir.glob("*.yang")
-    for yang_module in modules:
-        result: CompletedProcess[bytes] = subprocess.run(
-            [
-                "uv",
-                "run",
-                "pydantify",
-                str(yang_module),
-                "-i",
-                str(yang_dir),
-                "-o",
-                str(modules_dir),
-                "-f",
-                f"{yang_module.stem}.py",
-            ],
-        )
-        if result.returncode != 0:
-            failed_modules.append(yang_module)
-    os.rmdir(modules_dir)
 
+    tasks: list[CoroutineType[Any, Any, tuple[Path, int]]] = [
+        run_pydantify(m, yang_dir, modules_dir) for m in modules
+    ]
+
+    results: list[tuple[Path, int]] = await asyncio.gather(*tasks)
+    failed_modules: list[Path] = [path for path, code in results if code != 0]
     successful_modules: set[Path] = set[Path](modules) - set[Path](failed_modules)
 
+    print(successful_modules)
     subprocess.run(
         [
             "uv",
@@ -104,7 +112,7 @@ def load_generated_model(path: str):
 
 
 def main():
-    generate_models()
+    asyncio.run(generate_models())
 
 
 if __name__ == "__main__":
