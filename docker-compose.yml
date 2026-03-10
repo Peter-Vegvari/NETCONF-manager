@@ -1,6 +1,6 @@
 services:
   notconf:
-    image: ghcr.io/notconf/notconf:latest
+    image: ghcr.io/notconf/notconf-ietf:latest
     container_name: notconf-test
     ports:
       - "830:830"

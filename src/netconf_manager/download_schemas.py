@@ -65,7 +65,7 @@ async def run_pydantify(
             tmp,
             "-f",
             "_.py",
-            # stderr=asyncio.subprocess.DEVNULL,
+            stderr=asyncio.subprocess.DEVNULL,
         )
         returncode = await proc.wait()
     return yang_module, returncode
@@ -81,10 +81,9 @@ async def generate_models():
     ]
 
     results: list[tuple[Path, int]] = await asyncio.gather(*tasks)
-    failed_modules: list[Path] = [path for path, code in results if code != 0]
-    successful_modules: set[Path] = set[Path](modules) - set[Path](failed_modules)
+    successful_modules: list[Path] = [path for path, code in results if code == 0]
 
-    print(successful_modules)
+    print(results)
     subprocess.run(
         [
             "uv",
