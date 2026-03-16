@@ -1,0 +1,9 @@
+.venv
+.git
+node_modules
+manager-frontend/node_modules
+__pycache__
+*.pyc
+.vscode
+.ruff_cache
+.pytest_cache

@@ -1,18 +1,12 @@
-[build-system]
-requires = ["uv_build >= 0.10.0, <0.11.0"]
-build-backend = "uv_build"
-
 [project]
-name = "netconf_manager"
+name = "manager-backend"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.14"
-license = "MIT"
-license-files = [ "LICENSE" ]
 authors = [
-    { name = "Peter Vegvari" }
+    { name = "Peter-Vegvari", email = "vegvaripeter21@gmail.com" }
 ]
+requires-python = ">=3.14"
 dependencies = [
     "netconf-console2",
     "netconf-client",
@@ -30,20 +24,20 @@ dependencies = [
     "types-lxml",
     "yangson",
     "datamodel-code-generator",
-    "pydantify @ git+https://github.com/pydantify/pydantify.git"
 ]
+
+[project.scripts]
+manager-backend = "manager_backend:main"
 
 [project.urls]
 Homepage = "https://github.com/Peter-Vegvari/NETCONF-manager"
 
-[tool.uv]
-package = true
-
-[tool.uv.sources]
-manager = { workspace = true }
+[build-system]
+requires = ["uv_build>=0.10.10,<0.11.0"]
+build-backend = "uv_build"
 
 [tool.basedpyright]
-include = ["src"]
+include = ["manager-backend"]
 defineConstant = { DEBUG = true }
 reportImportCycles = false
 failOnWarnings = false
