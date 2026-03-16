@@ -27,7 +27,7 @@ dependencies = [
 ]
 
 [project.scripts]
-manager-backend = "manager_backend:main"
+manager-backend = "src:main"
 
 [project.urls]
 Homepage = "https://github.com/Peter-Vegvari/NETCONF-manager"
@@ -36,8 +36,14 @@ Homepage = "https://github.com/Peter-Vegvari/NETCONF-manager"
 requires = ["uv_build>=0.10.10,<0.11.0"]
 build-backend = "uv_build"
 
+[tool.uv.build-backend]
+module-name = "src"
+module-root = ""
+
 [tool.basedpyright]
-include = ["manager-backend"]
+venvPath = "."
+venv = ".venv"
+include = ["src"]
 defineConstant = { DEBUG = true }
 reportImportCycles = false
 failOnWarnings = false
