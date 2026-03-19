@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from ncclient import manager
+import os
 from lxml import etree
+from pathlib import Path
 
 
 class Connection(BaseModel):
@@ -24,6 +26,8 @@ class Connection(BaseModel):
         if connection is None:
             return
 
+        yang_modules: Path = Path("../resources/yang-modules")
+        os.makedirs(yang_modules, exist_ok=True)
         with connection as m:
             filter_xml = """
                 <netconf-state xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring">
@@ -41,11 +45,9 @@ class Connection(BaseModel):
 
             for schema in schemas:
                 identifier = schema.find("ncm:identifier", ns).text
+                yang_module = Path(yang_modules, f"{identifier}.yang")
 
-                print(f"Downloading {identifier}")
-
-                schema_reply = m.get_schema(identifier=identifier)
-
-                filename = f"{identifier}.yang"
-                with open("resources/modules/" + filename, "w", encoding="utf-8") as f:
-                    f.write(schema_reply.data)
+                if not os.path.exists(yang_module):
+                    print(f"Downloading {identifier}")
+                    with open(yang_module, "w", encoding="utf-8") as f:
+                        f.write(m.get_schema(identifier=identifier).data)

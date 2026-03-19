@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .models import Connection
+from src.models import Connection
 
 # uv run fastapi dev src/netconf_manager/main.py
 app = FastAPI()
@@ -25,7 +25,6 @@ app.add_middleware(
 )
 
 connection: Connection | None = None
-app = FastAPI()
 
 
 @app.post("/connect")
