@@ -51,7 +51,7 @@ reportAny = false
 reportExplicitAny = false
 reportUnusedCallResult = false
 reportUnusedParameter = false
-allowedUntypedLibraries = ["ncclient"]
+allowedUntypedLibraries = ["ncclient", "src"]
 reportOptionalContextManager = false
 
 [tool.pytest.ini_options]

@@ -2,14 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.models import Connection
 
-# uv run fastapi dev src/netconf_manager/main.py
+# uv run fastapi dev manager_backend/main.py
 app = FastAPI()
-HOST: str
-PORT: int
-USERNAME: str
-PASSWORD: str
-FASTAPI_PORT = 8000
-
 
 origins = [
     "http://localhost:3000",  # React dev server
