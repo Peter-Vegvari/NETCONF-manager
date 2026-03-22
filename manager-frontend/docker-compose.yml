@@ -1,0 +1,8 @@
+services:
+  manager-frontend:
+    build: .
+    container_name: manager-frontend
+    ports:
+      - "3000:5173"
+    volumes:
+      - ./src:/app/src

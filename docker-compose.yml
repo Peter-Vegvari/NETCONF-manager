@@ -1,7 +1,3 @@
-services:
-  notconf:
-    image: ghcr.io/notconf/notconf-ietf:latest
-    container_name: notconf-test
-    ports:
-      - "830:830"
-      - "80:80"
+include:
+  - manager-backend/docker-compose.yml
+  - manager-frontend/docker-compose.yml

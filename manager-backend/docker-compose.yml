@@ -6,3 +6,12 @@ services:
       - "8000:8000"
     volumes:
       - ./src:/app/src
+    depends_on:
+      - notconf
+    
+  notconf:
+    image: ghcr.io/notconf/notconf-ietf:latest
+    container_name: notconf
+    ports:
+      - "830:830"
+      - "80:80"

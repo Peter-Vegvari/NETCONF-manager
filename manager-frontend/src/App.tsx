@@ -22,7 +22,7 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <h1>fasz</h1>
+      <h1>geci</h1>
     </QueryClientProvider>
   )
 }
