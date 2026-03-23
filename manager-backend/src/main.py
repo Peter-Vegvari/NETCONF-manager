@@ -1,6 +1,13 @@
-from fastapi import FastAPI
+from starlette.responses import FileResponse
+
+
+import os
+from pathlib import Path
+import shutil
+from fastapi import FastAPI, File
 from fastapi.middleware.cors import CORSMiddleware
-from src.models import Connection
+from fastapi.responses import FileResponse
+from src.models import Connection, Schema
 
 # uv run fastapi dev manager_backend/main.py
 app = FastAPI()
@@ -19,13 +26,24 @@ app.add_middleware(
 )
 
 connection: Connection | None = None
+yang_modules: Path = Path("../resources/yang-modules")
 
 
 @app.post("/connect")
-async def connect(new_connection: Connection):
+async def connect(new_connection: Connection) -> list[str]:
     global connection
     connection = new_connection
-    connection.download_schemas()
+    return connection.download_schemas()
+
+
+@app.delete("/connect")
+async def disconnect() -> list[str]:
+    deleted_schemas: list[str] = os.listdir(yang_modules)
+
+    shutil.rmtree(yang_modules)
+    os.makedirs(yang_modules)
+
+    return deleted_schemas
 
 
 @app.post("/netconf/get")
@@ -38,9 +56,14 @@ async def get_config():
     pass
 
 
-@app.post("/netconf/get-schema")
-async def get_schema():
-    pass
+@app.get("/netconf/get-schemas")
+async def get_schemas() -> list[str]:
+    return os.listdir(yang_modules)
+
+
+@app.get("/netconf/get-schema/{schema_name}", response_model=None)
+async def get_schema(schema_name: str ) -> FileResponse:
+    return FileResponse(f"{yang_modules}/{schema_name}.yang")
 
 
 @app.post("/netconf/dispatch")
