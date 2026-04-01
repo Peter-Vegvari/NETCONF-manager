@@ -1,7 +1,3 @@
-import shutil
-from typing import Any
-
-
 from pydantic import BaseModel
 from ncclient import manager
 import os
