@@ -4,5 +4,4 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 EXPOSE 5173
-CMD ["npm", "run", "dev", "--", "--host"]
-CMD ["npm", "run", "orval"]
+CMD ["npm", "run", "dev-api", "--", "--host"]

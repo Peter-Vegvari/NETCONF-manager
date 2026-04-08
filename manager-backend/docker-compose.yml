@@ -7,6 +7,8 @@ services:
     volumes:
       - ./src:/app/src
       - ./resources/yang-modules:/resources/yang-modules
+    networks:
+      - shared
     
   notconf:
     image: ghcr.io/notconf/notconf-ietf:latest
@@ -14,3 +16,9 @@ services:
     ports:
       - "830:830"
       - "80:80"
+    networks:
+      - shared
+
+networks:
+  shared:
+    name: shared

@@ -6,3 +6,9 @@ services:
       - "3000:5173"
     volumes:
       - ./src:/app/src
+    networks:
+      - shared
+
+networks:
+  shared:
+    name: shared

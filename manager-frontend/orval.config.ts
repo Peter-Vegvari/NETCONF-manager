@@ -10,7 +10,7 @@ export default defineConfig({
       mock: true,
     },
     input: {
-      target: 'http://localhost:8000/openapi.json',
+      target: 'http://manager-backend:8000/openapi.json',
     },
   },
 });

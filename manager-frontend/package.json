@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev-api": "orval && vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "api:generate": "orval"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.95.0",
