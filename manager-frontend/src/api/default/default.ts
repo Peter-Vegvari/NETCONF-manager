@@ -33,28 +33,687 @@ import type {
 
 
 /**
- * @summary Connect
+ * @summary Get Interfaces
  */
-export type connectConnectPostResponse200 = {
-  data: string[]
+export type getInterfacesResponse200 = {
+  data: unknown
   status: 200
 }
 
-export type connectConnectPostResponse422 = {
+export type getInterfacesResponseSuccess = (getInterfacesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getInterfacesResponse = (getInterfacesResponseSuccess)
+
+export const getGetInterfacesUrl = () => {
+
+
+
+
+  return `/restconf/data/ietf-interfaces:interfaces`
+}
+
+export const getInterfaces = async ( options?: RequestInit): Promise<getInterfacesResponse> => {
+
+  const res = await fetch(getGetInterfacesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getInterfacesResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getInterfacesResponse
+}
+
+
+
+
+
+export const getGetInterfacesQueryKey = () => {
+    return [
+    `/restconf/data/ietf-interfaces:interfaces`
+    ] as const;
+    }
+
+
+export const getGetInterfacesQueryOptions = <TData = Awaited<ReturnType<typeof getInterfaces>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInterfacesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInterfaces>>> = ({ signal }) => getInterfaces({ signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetInterfacesQueryResult = NonNullable<Awaited<ReturnType<typeof getInterfaces>>>
+export type GetInterfacesQueryError = unknown
+
+
+export function useGetInterfaces<TData = Awaited<ReturnType<typeof getInterfaces>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInterfaces>>,
+          TError,
+          Awaited<ReturnType<typeof getInterfaces>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInterfaces<TData = Awaited<ReturnType<typeof getInterfaces>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInterfaces>>,
+          TError,
+          Awaited<ReturnType<typeof getInterfaces>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInterfaces<TData = Awaited<ReturnType<typeof getInterfaces>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Interfaces
+ */
+
+export function useGetInterfaces<TData = Awaited<ReturnType<typeof getInterfaces>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetInterfacesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
+ * @summary Get Interface
+ */
+export type getInterfaceResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type getInterfaceResponse422 = {
   data: HTTPValidationError
   status: 422
 }
 
-export type connectConnectPostResponseSuccess = (connectConnectPostResponse200) & {
+export type getInterfaceResponseSuccess = (getInterfaceResponse200) & {
   headers: Headers;
 };
-export type connectConnectPostResponseError = (connectConnectPostResponse422) & {
+export type getInterfaceResponseError = (getInterfaceResponse422) & {
   headers: Headers;
 };
 
-export type connectConnectPostResponse = (connectConnectPostResponseSuccess | connectConnectPostResponseError)
+export type getInterfaceResponse = (getInterfaceResponseSuccess | getInterfaceResponseError)
 
-export const getConnectConnectPostUrl = () => {
+export const getGetInterfaceUrl = (name: string,) => {
+
+
+
+
+  return `/restconf/data/ietf-interfaces:interfaces/interface=${name}`
+}
+
+export const getInterface = async (name: string, options?: RequestInit): Promise<getInterfaceResponse> => {
+
+  const res = await fetch(getGetInterfaceUrl(name),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getInterfaceResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getInterfaceResponse
+}
+
+
+
+
+
+export const getGetInterfaceQueryKey = (name: string,) => {
+    return [
+    `/restconf/data/ietf-interfaces:interfaces/interface=${name}`
+    ] as const;
+    }
+
+
+export const getGetInterfaceQueryOptions = <TData = Awaited<ReturnType<typeof getInterface>>, TError = HTTPValidationError>(name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInterfaceQueryKey(name);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInterface>>> = ({ signal }) => getInterface(name, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(name), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetInterfaceQueryResult = NonNullable<Awaited<ReturnType<typeof getInterface>>>
+export type GetInterfaceQueryError = HTTPValidationError
+
+
+export function useGetInterface<TData = Awaited<ReturnType<typeof getInterface>>, TError = HTTPValidationError>(
+ name: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInterface>>,
+          TError,
+          Awaited<ReturnType<typeof getInterface>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInterface<TData = Awaited<ReturnType<typeof getInterface>>, TError = HTTPValidationError>(
+ name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInterface>>,
+          TError,
+          Awaited<ReturnType<typeof getInterface>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInterface<TData = Awaited<ReturnType<typeof getInterface>>, TError = HTTPValidationError>(
+ name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Interface
+ */
+
+export function useGetInterface<TData = Awaited<ReturnType<typeof getInterface>>, TError = HTTPValidationError>(
+ name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetInterfaceQueryOptions(name,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
+ * @summary Put Interface
+ */
+export type putInterfaceResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type putInterfaceResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type putInterfaceResponseSuccess = (putInterfaceResponse200) & {
+  headers: Headers;
+};
+export type putInterfaceResponseError = (putInterfaceResponse422) & {
+  headers: Headers;
+};
+
+export type putInterfaceResponse = (putInterfaceResponseSuccess | putInterfaceResponseError)
+
+export const getPutInterfaceUrl = (name: string,) => {
+
+
+
+
+  return `/restconf/data/ietf-interfaces:interfaces/interface=${name}`
+}
+
+export const putInterface = async (name: string, options?: RequestInit): Promise<putInterfaceResponse> => {
+
+  const res = await fetch(getPutInterfaceUrl(name),
+  {
+    ...options,
+    method: 'PUT'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: putInterfaceResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as putInterfaceResponse
+}
+
+
+
+
+export const getPutInterfaceMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putInterface>>, TError,{name: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof putInterface>>, TError,{name: string}, TContext> => {
+
+const mutationKey = ['putInterface'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putInterface>>, {name: string}> = (props) => {
+          const {name} = props ?? {};
+
+          return  putInterface(name,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutInterfaceMutationResult = NonNullable<Awaited<ReturnType<typeof putInterface>>>
+
+    export type PutInterfaceMutationError = HTTPValidationError
+
+    /**
+ * @summary Put Interface
+ */
+export const usePutInterface = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putInterface>>, TError,{name: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putInterface>>,
+        TError,
+        {name: string},
+        TContext
+      > => {
+      return useMutation(getPutInterfaceMutationOptions(options), queryClient);
+    }
+    /**
+ * @summary Delete Interface
+ */
+export type deleteInterfaceResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type deleteInterfaceResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type deleteInterfaceResponseSuccess = (deleteInterfaceResponse200) & {
+  headers: Headers;
+};
+export type deleteInterfaceResponseError = (deleteInterfaceResponse422) & {
+  headers: Headers;
+};
+
+export type deleteInterfaceResponse = (deleteInterfaceResponseSuccess | deleteInterfaceResponseError)
+
+export const getDeleteInterfaceUrl = (name: string,) => {
+
+
+
+
+  return `/restconf/data/ietf-interfaces:interfaces/interface=${name}`
+}
+
+export const deleteInterface = async (name: string, options?: RequestInit): Promise<deleteInterfaceResponse> => {
+
+  const res = await fetch(getDeleteInterfaceUrl(name),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: deleteInterfaceResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteInterfaceResponse
+}
+
+
+
+
+export const getDeleteInterfaceMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteInterface>>, TError,{name: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteInterface>>, TError,{name: string}, TContext> => {
+
+const mutationKey = ['deleteInterface'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteInterface>>, {name: string}> = (props) => {
+          const {name} = props ?? {};
+
+          return  deleteInterface(name,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteInterfaceMutationResult = NonNullable<Awaited<ReturnType<typeof deleteInterface>>>
+
+    export type DeleteInterfaceMutationError = HTTPValidationError
+
+    /**
+ * @summary Delete Interface
+ */
+export const useDeleteInterface = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteInterface>>, TError,{name: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteInterface>>,
+        TError,
+        {name: string},
+        TContext
+      > => {
+      return useMutation(getDeleteInterfaceMutationOptions(options), queryClient);
+    }
+    /**
+ * @summary Get System
+ */
+export type getSystemResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type getSystemResponseSuccess = (getSystemResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getSystemResponse = (getSystemResponseSuccess)
+
+export const getGetSystemUrl = () => {
+
+
+
+
+  return `/restconf/data/ietf-system:system`
+}
+
+export const getSystem = async ( options?: RequestInit): Promise<getSystemResponse> => {
+
+  const res = await fetch(getGetSystemUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getSystemResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getSystemResponse
+}
+
+
+
+
+
+export const getGetSystemQueryKey = () => {
+    return [
+    `/restconf/data/ietf-system:system`
+    ] as const;
+    }
+
+
+export const getGetSystemQueryOptions = <TData = Awaited<ReturnType<typeof getSystem>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSystemQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSystem>>> = ({ signal }) => getSystem({ signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetSystemQueryResult = NonNullable<Awaited<ReturnType<typeof getSystem>>>
+export type GetSystemQueryError = unknown
+
+
+export function useGetSystem<TData = Awaited<ReturnType<typeof getSystem>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSystem>>,
+          TError,
+          Awaited<ReturnType<typeof getSystem>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSystem<TData = Awaited<ReturnType<typeof getSystem>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSystem>>,
+          TError,
+          Awaited<ReturnType<typeof getSystem>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSystem<TData = Awaited<ReturnType<typeof getSystem>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get System
+ */
+
+export function useGetSystem<TData = Awaited<ReturnType<typeof getSystem>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetSystemQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
+ * @summary Get Modules State
+ */
+export type getModulesStateResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type getModulesStateResponseSuccess = (getModulesStateResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getModulesStateResponse = (getModulesStateResponseSuccess)
+
+export const getGetModulesStateUrl = () => {
+
+
+
+
+  return `/restconf/data/ietf-yang-library:modules-state`
+}
+
+export const getModulesState = async ( options?: RequestInit): Promise<getModulesStateResponse> => {
+
+  const res = await fetch(getGetModulesStateUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getModulesStateResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getModulesStateResponse
+}
+
+
+
+
+
+export const getGetModulesStateQueryKey = () => {
+    return [
+    `/restconf/data/ietf-yang-library:modules-state`
+    ] as const;
+    }
+
+
+export const getGetModulesStateQueryOptions = <TData = Awaited<ReturnType<typeof getModulesState>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModulesStateQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModulesState>>> = ({ signal }) => getModulesState({ signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetModulesStateQueryResult = NonNullable<Awaited<ReturnType<typeof getModulesState>>>
+export type GetModulesStateQueryError = unknown
+
+
+export function useGetModulesState<TData = Awaited<ReturnType<typeof getModulesState>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModulesState>>,
+          TError,
+          Awaited<ReturnType<typeof getModulesState>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModulesState<TData = Awaited<ReturnType<typeof getModulesState>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModulesState>>,
+          TError,
+          Awaited<ReturnType<typeof getModulesState>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModulesState<TData = Awaited<ReturnType<typeof getModulesState>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Modules State
+ */
+
+export function useGetModulesState<TData = Awaited<ReturnType<typeof getModulesState>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetModulesStateQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
+ * @summary Connect
+ */
+export type connectResponse200 = {
+  data: string[]
+  status: 200
+}
+
+export type connectResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type connectResponseSuccess = (connectResponse200) & {
+  headers: Headers;
+};
+export type connectResponseError = (connectResponse422) & {
+  headers: Headers;
+};
+
+export type connectResponse = (connectResponseSuccess | connectResponseError)
+
+export const getConnectUrl = () => {
 
 
 
@@ -62,9 +721,9 @@ export const getConnectConnectPostUrl = () => {
   return `/connect`
 }
 
-export const connectConnectPost = async (connection: Connection, options?: RequestInit): Promise<connectConnectPostResponse> => {
+export const connect = async (connection: Connection, options?: RequestInit): Promise<connectResponse> => {
 
-  const res = await fetch(getConnectConnectPostUrl(),
+  const res = await fetch(getConnectUrl(),
   {
     ...options,
     method: 'POST',
@@ -76,18 +735,18 @@ export const connectConnectPost = async (connection: Connection, options?: Reque
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: connectConnectPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as connectConnectPostResponse
+  const data: connectResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as connectResponse
 }
 
 
 
 
-export const getConnectConnectPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof connectConnectPost>>, TError,{data: Connection}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof connectConnectPost>>, TError,{data: Connection}, TContext> => {
+export const getConnectMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof connect>>, TError,{data: Connection}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof connect>>, TError,{data: Connection}, TContext> => {
 
-const mutationKey = ['connectConnectPost'];
+const mutationKey = ['connect'];
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -97,10 +756,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof connectConnectPost>>, {data: Connection}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof connect>>, {data: Connection}> = (props) => {
           const {data} = props ?? {};
 
-          return  connectConnectPost(data,fetchOptions)
+          return  connect(data,fetchOptions)
         }
 
 
@@ -110,39 +769,39 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type ConnectConnectPostMutationResult = NonNullable<Awaited<ReturnType<typeof connectConnectPost>>>
-    export type ConnectConnectPostMutationBody = Connection
-    export type ConnectConnectPostMutationError = HTTPValidationError
+    export type ConnectMutationResult = NonNullable<Awaited<ReturnType<typeof connect>>>
+    export type ConnectMutationBody = Connection
+    export type ConnectMutationError = HTTPValidationError
 
     /**
  * @summary Connect
  */
-export const useConnectConnectPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof connectConnectPost>>, TError,{data: Connection}, TContext>, fetch?: RequestInit}
+export const useConnect = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof connect>>, TError,{data: Connection}, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof connectConnectPost>>,
+        Awaited<ReturnType<typeof connect>>,
         TError,
         {data: Connection},
         TContext
       > => {
-      return useMutation(getConnectConnectPostMutationOptions(options), queryClient);
+      return useMutation(getConnectMutationOptions(options), queryClient);
     }
     /**
- * @summary Disconnect
+ * @summary Disconnect Route
  */
-export type disconnectConnectDeleteResponse200 = {
+export type disconnectResponse200 = {
   data: string[]
   status: 200
 }
 
-export type disconnectConnectDeleteResponseSuccess = (disconnectConnectDeleteResponse200) & {
+export type disconnectResponseSuccess = (disconnectResponse200) & {
   headers: Headers;
 };
 ;
 
-export type disconnectConnectDeleteResponse = (disconnectConnectDeleteResponseSuccess)
+export type disconnectResponse = (disconnectResponseSuccess)
 
-export const getDisconnectConnectDeleteUrl = () => {
+export const getDisconnectUrl = () => {
 
 
 
@@ -150,9 +809,9 @@ export const getDisconnectConnectDeleteUrl = () => {
   return `/connect`
 }
 
-export const disconnectConnectDelete = async ( options?: RequestInit): Promise<disconnectConnectDeleteResponse> => {
+export const disconnect = async ( options?: RequestInit): Promise<disconnectResponse> => {
 
-  const res = await fetch(getDisconnectConnectDeleteUrl(),
+  const res = await fetch(getDisconnectUrl(),
   {
     ...options,
     method: 'DELETE'
@@ -163,18 +822,18 @@ export const disconnectConnectDelete = async ( options?: RequestInit): Promise<d
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: disconnectConnectDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as disconnectConnectDeleteResponse
+  const data: disconnectResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as disconnectResponse
 }
 
 
 
 
-export const getDisconnectConnectDeleteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnectConnectDelete>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof disconnectConnectDelete>>, TError,void, TContext> => {
+export const getDisconnectMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnect>>, TError,void, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof disconnect>>, TError,void, TContext> => {
 
-const mutationKey = ['disconnectConnectDelete'];
+const mutationKey = ['disconnect'];
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -184,10 +843,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof disconnectConnectDelete>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof disconnect>>, void> = () => {
 
 
-          return  disconnectConnectDelete(fetchOptions)
+          return  disconnect(fetchOptions)
         }
 
 
@@ -197,223 +856,49 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type DisconnectConnectDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof disconnectConnectDelete>>>
+    export type DisconnectMutationResult = NonNullable<Awaited<ReturnType<typeof disconnect>>>
 
-    export type DisconnectConnectDeleteMutationError = unknown
+    export type DisconnectMutationError = unknown
 
     /**
- * @summary Disconnect
+ * @summary Disconnect Route
  */
-export const useDisconnectConnectDelete = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnectConnectDelete>>, TError,void, TContext>, fetch?: RequestInit}
+export const useDisconnect = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnect>>, TError,void, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof disconnectConnectDelete>>,
+        Awaited<ReturnType<typeof disconnect>>,
         TError,
         void,
         TContext
       > => {
-      return useMutation(getDisconnectConnectDeleteMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Get
- */
-export type getNetconfGetPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type getNetconfGetPostResponseSuccess = (getNetconfGetPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getNetconfGetPostResponse = (getNetconfGetPostResponseSuccess)
-
-export const getGetNetconfGetPostUrl = () => {
-
-
-
-
-  return `/netconf/get`
-}
-
-export const getNetconfGetPost = async ( options?: RequestInit): Promise<getNetconfGetPostResponse> => {
-
-  const res = await fetch(getGetNetconfGetPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getNetconfGetPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getNetconfGetPostResponse
-}
-
-
-
-
-export const getGetNetconfGetPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getNetconfGetPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof getNetconfGetPost>>, TError,void, TContext> => {
-
-const mutationKey = ['getNetconfGetPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof getNetconfGetPost>>, void> = () => {
-
-
-          return  getNetconfGetPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type GetNetconfGetPostMutationResult = NonNullable<Awaited<ReturnType<typeof getNetconfGetPost>>>
-
-    export type GetNetconfGetPostMutationError = unknown
-
-    /**
- * @summary Get
- */
-export const useGetNetconfGetPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getNetconfGetPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof getNetconfGetPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getGetNetconfGetPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Get Config
- */
-export type getConfigNetconfGetConfigPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type getConfigNetconfGetConfigPostResponseSuccess = (getConfigNetconfGetConfigPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getConfigNetconfGetConfigPostResponse = (getConfigNetconfGetConfigPostResponseSuccess)
-
-export const getGetConfigNetconfGetConfigPostUrl = () => {
-
-
-
-
-  return `/netconf/get-config`
-}
-
-export const getConfigNetconfGetConfigPost = async ( options?: RequestInit): Promise<getConfigNetconfGetConfigPostResponse> => {
-
-  const res = await fetch(getGetConfigNetconfGetConfigPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getConfigNetconfGetConfigPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getConfigNetconfGetConfigPostResponse
-}
-
-
-
-
-export const getGetConfigNetconfGetConfigPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getConfigNetconfGetConfigPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof getConfigNetconfGetConfigPost>>, TError,void, TContext> => {
-
-const mutationKey = ['getConfigNetconfGetConfigPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof getConfigNetconfGetConfigPost>>, void> = () => {
-
-
-          return  getConfigNetconfGetConfigPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type GetConfigNetconfGetConfigPostMutationResult = NonNullable<Awaited<ReturnType<typeof getConfigNetconfGetConfigPost>>>
-
-    export type GetConfigNetconfGetConfigPostMutationError = unknown
-
-    /**
- * @summary Get Config
- */
-export const useGetConfigNetconfGetConfigPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getConfigNetconfGetConfigPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof getConfigNetconfGetConfigPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getGetConfigNetconfGetConfigPostMutationOptions(options), queryClient);
+      return useMutation(getDisconnectMutationOptions(options), queryClient);
     }
     /**
  * @summary Get Schemas
  */
-export type getSchemasNetconfGetSchemasGetResponse200 = {
+export type getSchemasResponse200 = {
   data: string[]
   status: 200
 }
 
-export type getSchemasNetconfGetSchemasGetResponseSuccess = (getSchemasNetconfGetSchemasGetResponse200) & {
+export type getSchemasResponseSuccess = (getSchemasResponse200) & {
   headers: Headers;
 };
 ;
 
-export type getSchemasNetconfGetSchemasGetResponse = (getSchemasNetconfGetSchemasGetResponseSuccess)
+export type getSchemasResponse = (getSchemasResponseSuccess)
 
-export const getGetSchemasNetconfGetSchemasGetUrl = () => {
-
-
+export const getGetSchemasUrl = () => {
 
 
-  return `/netconf/get-schemas`
+
+
+  return `/schemas`
 }
 
-export const getSchemasNetconfGetSchemasGet = async ( options?: RequestInit): Promise<getSchemasNetconfGetSchemasGetResponse> => {
+export const getSchemas = async ( options?: RequestInit): Promise<getSchemasResponse> => {
 
-  const res = await fetch(getGetSchemasNetconfGetSchemasGetUrl(),
+  const res = await fetch(getGetSchemasUrl(),
   {
     ...options,
     method: 'GET'
@@ -424,77 +909,77 @@ export const getSchemasNetconfGetSchemasGet = async ( options?: RequestInit): Pr
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: getSchemasNetconfGetSchemasGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getSchemasNetconfGetSchemasGetResponse
+  const data: getSchemasResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getSchemasResponse
 }
 
 
 
 
 
-export const getGetSchemasNetconfGetSchemasGetQueryKey = () => {
+export const getGetSchemasQueryKey = () => {
     return [
-    `/netconf/get-schemas`
+    `/schemas`
     ] as const;
     }
 
 
-export const getGetSchemasNetconfGetSchemasGetQueryOptions = <TData = Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>, TError, TData>>, fetch?: RequestInit}
+export const getGetSchemasQueryOptions = <TData = Awaited<ReturnType<typeof getSchemas>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetSchemasNetconfGetSchemasGetQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetSchemasQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>> = ({ signal }) => getSchemasNetconfGetSchemasGet({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSchemas>>> = ({ signal }) => getSchemas({ signal, ...fetchOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetSchemasNetconfGetSchemasGetQueryResult = NonNullable<Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>>
-export type GetSchemasNetconfGetSchemasGetQueryError = unknown
+export type GetSchemasQueryResult = NonNullable<Awaited<ReturnType<typeof getSchemas>>>
+export type GetSchemasQueryError = unknown
 
 
-export function useGetSchemasNetconfGetSchemasGet<TData = Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>, TError, TData>> & Pick<
+export function useGetSchemas<TData = Awaited<ReturnType<typeof getSchemas>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>,
+          Awaited<ReturnType<typeof getSchemas>>,
           TError,
-          Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>
+          Awaited<ReturnType<typeof getSchemas>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetSchemasNetconfGetSchemasGet<TData = Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>, TError, TData>> & Pick<
+export function useGetSchemas<TData = Awaited<ReturnType<typeof getSchemas>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>,
+          Awaited<ReturnType<typeof getSchemas>>,
           TError,
-          Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>
+          Awaited<ReturnType<typeof getSchemas>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetSchemasNetconfGetSchemasGet<TData = Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>, TError, TData>>, fetch?: RequestInit}
+export function useGetSchemas<TData = Awaited<ReturnType<typeof getSchemas>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get Schemas
  */
 
-export function useGetSchemasNetconfGetSchemasGet<TData = Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemasNetconfGetSchemasGet>>, TError, TData>>, fetch?: RequestInit}
+export function useGetSchemas<TData = Awaited<ReturnType<typeof getSchemas>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetSchemasNetconfGetSchemasGetQueryOptions(options)
+  const queryOptions = getGetSchemasQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -507,36 +992,36 @@ export function useGetSchemasNetconfGetSchemasGet<TData = Awaited<ReturnType<typ
 /**
  * @summary Get Schema
  */
-export type getSchemaNetconfGetSchemaSchemaNameGetResponse200 = {
+export type getSchemaResponse200 = {
   data: unknown
   status: 200
 }
 
-export type getSchemaNetconfGetSchemaSchemaNameGetResponse422 = {
+export type getSchemaResponse422 = {
   data: HTTPValidationError
   status: 422
 }
 
-export type getSchemaNetconfGetSchemaSchemaNameGetResponseSuccess = (getSchemaNetconfGetSchemaSchemaNameGetResponse200) & {
+export type getSchemaResponseSuccess = (getSchemaResponse200) & {
   headers: Headers;
 };
-export type getSchemaNetconfGetSchemaSchemaNameGetResponseError = (getSchemaNetconfGetSchemaSchemaNameGetResponse422) & {
+export type getSchemaResponseError = (getSchemaResponse422) & {
   headers: Headers;
 };
 
-export type getSchemaNetconfGetSchemaSchemaNameGetResponse = (getSchemaNetconfGetSchemaSchemaNameGetResponseSuccess | getSchemaNetconfGetSchemaSchemaNameGetResponseError)
+export type getSchemaResponse = (getSchemaResponseSuccess | getSchemaResponseError)
 
-export const getGetSchemaNetconfGetSchemaSchemaNameGetUrl = (schemaName: string,) => {
-
-
+export const getGetSchemaUrl = (schemaName: string,) => {
 
 
-  return `/netconf/get-schema/${schemaName}`
+
+
+  return `/schemas/${schemaName}`
 }
 
-export const getSchemaNetconfGetSchemaSchemaNameGet = async (schemaName: string, options?: RequestInit): Promise<getSchemaNetconfGetSchemaSchemaNameGetResponse> => {
+export const getSchema = async (schemaName: string, options?: RequestInit): Promise<getSchemaResponse> => {
 
-  const res = await fetch(getGetSchemaNetconfGetSchemaSchemaNameGetUrl(schemaName),
+  const res = await fetch(getGetSchemaUrl(schemaName),
   {
     ...options,
     method: 'GET'
@@ -547,77 +1032,77 @@ export const getSchemaNetconfGetSchemaSchemaNameGet = async (schemaName: string,
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: getSchemaNetconfGetSchemaSchemaNameGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getSchemaNetconfGetSchemaSchemaNameGetResponse
+  const data: getSchemaResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getSchemaResponse
 }
 
 
 
 
 
-export const getGetSchemaNetconfGetSchemaSchemaNameGetQueryKey = (schemaName: string,) => {
+export const getGetSchemaQueryKey = (schemaName: string,) => {
     return [
-    `/netconf/get-schema/${schemaName}`
+    `/schemas/${schemaName}`
     ] as const;
     }
 
 
-export const getGetSchemaNetconfGetSchemaSchemaNameGetQueryOptions = <TData = Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>, TError = HTTPValidationError>(schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>, TError, TData>>, fetch?: RequestInit}
+export const getGetSchemaQueryOptions = <TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetSchemaNetconfGetSchemaSchemaNameGetQueryKey(schemaName);
+  const queryKey =  queryOptions?.queryKey ?? getGetSchemaQueryKey(schemaName);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>> = ({ signal }) => getSchemaNetconfGetSchemaSchemaNameGet(schemaName, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSchema>>> = ({ signal }) => getSchema(schemaName, { signal, ...fetchOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, enabled: !!(schemaName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(schemaName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetSchemaNetconfGetSchemaSchemaNameGetQueryResult = NonNullable<Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>>
-export type GetSchemaNetconfGetSchemaSchemaNameGetQueryError = HTTPValidationError
+export type GetSchemaQueryResult = NonNullable<Awaited<ReturnType<typeof getSchema>>>
+export type GetSchemaQueryError = HTTPValidationError
 
 
-export function useGetSchemaNetconfGetSchemaSchemaNameGet<TData = Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>, TError = HTTPValidationError>(
- schemaName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>, TError, TData>> & Pick<
+export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
+ schemaName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>,
+          Awaited<ReturnType<typeof getSchema>>,
           TError,
-          Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>
+          Awaited<ReturnType<typeof getSchema>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetSchemaNetconfGetSchemaSchemaNameGet<TData = Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>, TError = HTTPValidationError>(
- schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>, TError, TData>> & Pick<
+export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
+ schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>,
+          Awaited<ReturnType<typeof getSchema>>,
           TError,
-          Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>
+          Awaited<ReturnType<typeof getSchema>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetSchemaNetconfGetSchemaSchemaNameGet<TData = Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>, TError = HTTPValidationError>(
- schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>, TError, TData>>, fetch?: RequestInit}
+export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
+ schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get Schema
  */
 
-export function useGetSchemaNetconfGetSchemaSchemaNameGet<TData = Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>, TError = HTTPValidationError>(
- schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemaNetconfGetSchemaSchemaNameGet>>, TError, TData>>, fetch?: RequestInit}
+export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
+ schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetSchemaNetconfGetSchemaSchemaNameGetQueryOptions(schemaName,options)
+  const queryOptions = getGetSchemaQueryOptions(schemaName,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -627,1395 +1112,3 @@ export function useGetSchemaNetconfGetSchemaSchemaNameGet<TData = Awaited<Return
 
 
 
-/**
- * @summary Dispatch
- */
-export type dispatchNetconfDispatchPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type dispatchNetconfDispatchPostResponseSuccess = (dispatchNetconfDispatchPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type dispatchNetconfDispatchPostResponse = (dispatchNetconfDispatchPostResponseSuccess)
-
-export const getDispatchNetconfDispatchPostUrl = () => {
-
-
-
-
-  return `/netconf/dispatch`
-}
-
-export const dispatchNetconfDispatchPost = async ( options?: RequestInit): Promise<dispatchNetconfDispatchPostResponse> => {
-
-  const res = await fetch(getDispatchNetconfDispatchPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: dispatchNetconfDispatchPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as dispatchNetconfDispatchPostResponse
-}
-
-
-
-
-export const getDispatchNetconfDispatchPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof dispatchNetconfDispatchPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof dispatchNetconfDispatchPost>>, TError,void, TContext> => {
-
-const mutationKey = ['dispatchNetconfDispatchPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof dispatchNetconfDispatchPost>>, void> = () => {
-
-
-          return  dispatchNetconfDispatchPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DispatchNetconfDispatchPostMutationResult = NonNullable<Awaited<ReturnType<typeof dispatchNetconfDispatchPost>>>
-
-    export type DispatchNetconfDispatchPostMutationError = unknown
-
-    /**
- * @summary Dispatch
- */
-export const useDispatchNetconfDispatchPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof dispatchNetconfDispatchPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof dispatchNetconfDispatchPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getDispatchNetconfDispatchPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Edit Config
- */
-export type editConfigNetconfEditConfigPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type editConfigNetconfEditConfigPostResponseSuccess = (editConfigNetconfEditConfigPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type editConfigNetconfEditConfigPostResponse = (editConfigNetconfEditConfigPostResponseSuccess)
-
-export const getEditConfigNetconfEditConfigPostUrl = () => {
-
-
-
-
-  return `/netconf/edit-config`
-}
-
-export const editConfigNetconfEditConfigPost = async ( options?: RequestInit): Promise<editConfigNetconfEditConfigPostResponse> => {
-
-  const res = await fetch(getEditConfigNetconfEditConfigPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: editConfigNetconfEditConfigPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as editConfigNetconfEditConfigPostResponse
-}
-
-
-
-
-export const getEditConfigNetconfEditConfigPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editConfigNetconfEditConfigPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof editConfigNetconfEditConfigPost>>, TError,void, TContext> => {
-
-const mutationKey = ['editConfigNetconfEditConfigPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editConfigNetconfEditConfigPost>>, void> = () => {
-
-
-          return  editConfigNetconfEditConfigPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type EditConfigNetconfEditConfigPostMutationResult = NonNullable<Awaited<ReturnType<typeof editConfigNetconfEditConfigPost>>>
-
-    export type EditConfigNetconfEditConfigPostMutationError = unknown
-
-    /**
- * @summary Edit Config
- */
-export const useEditConfigNetconfEditConfigPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editConfigNetconfEditConfigPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof editConfigNetconfEditConfigPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getEditConfigNetconfEditConfigPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Copy Config
- */
-export type copyConfigNetconfCopyConfigPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type copyConfigNetconfCopyConfigPostResponseSuccess = (copyConfigNetconfCopyConfigPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type copyConfigNetconfCopyConfigPostResponse = (copyConfigNetconfCopyConfigPostResponseSuccess)
-
-export const getCopyConfigNetconfCopyConfigPostUrl = () => {
-
-
-
-
-  return `/netconf/copy-config`
-}
-
-export const copyConfigNetconfCopyConfigPost = async ( options?: RequestInit): Promise<copyConfigNetconfCopyConfigPostResponse> => {
-
-  const res = await fetch(getCopyConfigNetconfCopyConfigPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: copyConfigNetconfCopyConfigPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as copyConfigNetconfCopyConfigPostResponse
-}
-
-
-
-
-export const getCopyConfigNetconfCopyConfigPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof copyConfigNetconfCopyConfigPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof copyConfigNetconfCopyConfigPost>>, TError,void, TContext> => {
-
-const mutationKey = ['copyConfigNetconfCopyConfigPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof copyConfigNetconfCopyConfigPost>>, void> = () => {
-
-
-          return  copyConfigNetconfCopyConfigPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CopyConfigNetconfCopyConfigPostMutationResult = NonNullable<Awaited<ReturnType<typeof copyConfigNetconfCopyConfigPost>>>
-
-    export type CopyConfigNetconfCopyConfigPostMutationError = unknown
-
-    /**
- * @summary Copy Config
- */
-export const useCopyConfigNetconfCopyConfigPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof copyConfigNetconfCopyConfigPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof copyConfigNetconfCopyConfigPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getCopyConfigNetconfCopyConfigPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Validate
- */
-export type validateNetconfValidatePostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type validateNetconfValidatePostResponseSuccess = (validateNetconfValidatePostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type validateNetconfValidatePostResponse = (validateNetconfValidatePostResponseSuccess)
-
-export const getValidateNetconfValidatePostUrl = () => {
-
-
-
-
-  return `/netconf/validate`
-}
-
-export const validateNetconfValidatePost = async ( options?: RequestInit): Promise<validateNetconfValidatePostResponse> => {
-
-  const res = await fetch(getValidateNetconfValidatePostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: validateNetconfValidatePostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as validateNetconfValidatePostResponse
-}
-
-
-
-
-export const getValidateNetconfValidatePostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof validateNetconfValidatePost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof validateNetconfValidatePost>>, TError,void, TContext> => {
-
-const mutationKey = ['validateNetconfValidatePost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof validateNetconfValidatePost>>, void> = () => {
-
-
-          return  validateNetconfValidatePost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ValidateNetconfValidatePostMutationResult = NonNullable<Awaited<ReturnType<typeof validateNetconfValidatePost>>>
-
-    export type ValidateNetconfValidatePostMutationError = unknown
-
-    /**
- * @summary Validate
- */
-export const useValidateNetconfValidatePost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof validateNetconfValidatePost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof validateNetconfValidatePost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getValidateNetconfValidatePostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Commit
- */
-export type commitNetconfCommitPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type commitNetconfCommitPostResponseSuccess = (commitNetconfCommitPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type commitNetconfCommitPostResponse = (commitNetconfCommitPostResponseSuccess)
-
-export const getCommitNetconfCommitPostUrl = () => {
-
-
-
-
-  return `/netconf/commit`
-}
-
-export const commitNetconfCommitPost = async ( options?: RequestInit): Promise<commitNetconfCommitPostResponse> => {
-
-  const res = await fetch(getCommitNetconfCommitPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: commitNetconfCommitPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as commitNetconfCommitPostResponse
-}
-
-
-
-
-export const getCommitNetconfCommitPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commitNetconfCommitPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof commitNetconfCommitPost>>, TError,void, TContext> => {
-
-const mutationKey = ['commitNetconfCommitPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof commitNetconfCommitPost>>, void> = () => {
-
-
-          return  commitNetconfCommitPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CommitNetconfCommitPostMutationResult = NonNullable<Awaited<ReturnType<typeof commitNetconfCommitPost>>>
-
-    export type CommitNetconfCommitPostMutationError = unknown
-
-    /**
- * @summary Commit
- */
-export const useCommitNetconfCommitPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commitNetconfCommitPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof commitNetconfCommitPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getCommitNetconfCommitPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Discard Changes
- */
-export type discardChangesNetconfDiscardChangesPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type discardChangesNetconfDiscardChangesPostResponseSuccess = (discardChangesNetconfDiscardChangesPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type discardChangesNetconfDiscardChangesPostResponse = (discardChangesNetconfDiscardChangesPostResponseSuccess)
-
-export const getDiscardChangesNetconfDiscardChangesPostUrl = () => {
-
-
-
-
-  return `/netconf/discard-changes`
-}
-
-export const discardChangesNetconfDiscardChangesPost = async ( options?: RequestInit): Promise<discardChangesNetconfDiscardChangesPostResponse> => {
-
-  const res = await fetch(getDiscardChangesNetconfDiscardChangesPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: discardChangesNetconfDiscardChangesPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as discardChangesNetconfDiscardChangesPostResponse
-}
-
-
-
-
-export const getDiscardChangesNetconfDiscardChangesPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof discardChangesNetconfDiscardChangesPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof discardChangesNetconfDiscardChangesPost>>, TError,void, TContext> => {
-
-const mutationKey = ['discardChangesNetconfDiscardChangesPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof discardChangesNetconfDiscardChangesPost>>, void> = () => {
-
-
-          return  discardChangesNetconfDiscardChangesPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DiscardChangesNetconfDiscardChangesPostMutationResult = NonNullable<Awaited<ReturnType<typeof discardChangesNetconfDiscardChangesPost>>>
-
-    export type DiscardChangesNetconfDiscardChangesPostMutationError = unknown
-
-    /**
- * @summary Discard Changes
- */
-export const useDiscardChangesNetconfDiscardChangesPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof discardChangesNetconfDiscardChangesPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof discardChangesNetconfDiscardChangesPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getDiscardChangesNetconfDiscardChangesPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Cancel Commit
- */
-export type cancelCommitNetconfCancelCommitPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type cancelCommitNetconfCancelCommitPostResponseSuccess = (cancelCommitNetconfCancelCommitPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type cancelCommitNetconfCancelCommitPostResponse = (cancelCommitNetconfCancelCommitPostResponseSuccess)
-
-export const getCancelCommitNetconfCancelCommitPostUrl = () => {
-
-
-
-
-  return `/netconf/cancel-commit`
-}
-
-export const cancelCommitNetconfCancelCommitPost = async ( options?: RequestInit): Promise<cancelCommitNetconfCancelCommitPostResponse> => {
-
-  const res = await fetch(getCancelCommitNetconfCancelCommitPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: cancelCommitNetconfCancelCommitPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as cancelCommitNetconfCancelCommitPostResponse
-}
-
-
-
-
-export const getCancelCommitNetconfCancelCommitPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelCommitNetconfCancelCommitPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof cancelCommitNetconfCancelCommitPost>>, TError,void, TContext> => {
-
-const mutationKey = ['cancelCommitNetconfCancelCommitPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof cancelCommitNetconfCancelCommitPost>>, void> = () => {
-
-
-          return  cancelCommitNetconfCancelCommitPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CancelCommitNetconfCancelCommitPostMutationResult = NonNullable<Awaited<ReturnType<typeof cancelCommitNetconfCancelCommitPost>>>
-
-    export type CancelCommitNetconfCancelCommitPostMutationError = unknown
-
-    /**
- * @summary Cancel Commit
- */
-export const useCancelCommitNetconfCancelCommitPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelCommitNetconfCancelCommitPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof cancelCommitNetconfCancelCommitPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getCancelCommitNetconfCancelCommitPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Delete Config
- */
-export type deleteConfigNetconfDeleteConfigPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type deleteConfigNetconfDeleteConfigPostResponseSuccess = (deleteConfigNetconfDeleteConfigPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type deleteConfigNetconfDeleteConfigPostResponse = (deleteConfigNetconfDeleteConfigPostResponseSuccess)
-
-export const getDeleteConfigNetconfDeleteConfigPostUrl = () => {
-
-
-
-
-  return `/netconf/delete-config`
-}
-
-export const deleteConfigNetconfDeleteConfigPost = async ( options?: RequestInit): Promise<deleteConfigNetconfDeleteConfigPostResponse> => {
-
-  const res = await fetch(getDeleteConfigNetconfDeleteConfigPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: deleteConfigNetconfDeleteConfigPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteConfigNetconfDeleteConfigPostResponse
-}
-
-
-
-
-export const getDeleteConfigNetconfDeleteConfigPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteConfigNetconfDeleteConfigPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteConfigNetconfDeleteConfigPost>>, TError,void, TContext> => {
-
-const mutationKey = ['deleteConfigNetconfDeleteConfigPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteConfigNetconfDeleteConfigPost>>, void> = () => {
-
-
-          return  deleteConfigNetconfDeleteConfigPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteConfigNetconfDeleteConfigPostMutationResult = NonNullable<Awaited<ReturnType<typeof deleteConfigNetconfDeleteConfigPost>>>
-
-    export type DeleteConfigNetconfDeleteConfigPostMutationError = unknown
-
-    /**
- * @summary Delete Config
- */
-export const useDeleteConfigNetconfDeleteConfigPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteConfigNetconfDeleteConfigPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteConfigNetconfDeleteConfigPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getDeleteConfigNetconfDeleteConfigPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Lock
- */
-export type lockNetconfLockPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type lockNetconfLockPostResponseSuccess = (lockNetconfLockPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type lockNetconfLockPostResponse = (lockNetconfLockPostResponseSuccess)
-
-export const getLockNetconfLockPostUrl = () => {
-
-
-
-
-  return `/netconf/lock`
-}
-
-export const lockNetconfLockPost = async ( options?: RequestInit): Promise<lockNetconfLockPostResponse> => {
-
-  const res = await fetch(getLockNetconfLockPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: lockNetconfLockPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as lockNetconfLockPostResponse
-}
-
-
-
-
-export const getLockNetconfLockPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lockNetconfLockPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof lockNetconfLockPost>>, TError,void, TContext> => {
-
-const mutationKey = ['lockNetconfLockPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lockNetconfLockPost>>, void> = () => {
-
-
-          return  lockNetconfLockPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type LockNetconfLockPostMutationResult = NonNullable<Awaited<ReturnType<typeof lockNetconfLockPost>>>
-
-    export type LockNetconfLockPostMutationError = unknown
-
-    /**
- * @summary Lock
- */
-export const useLockNetconfLockPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lockNetconfLockPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof lockNetconfLockPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getLockNetconfLockPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Unlock
- */
-export type unlockNetconfUnlockPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type unlockNetconfUnlockPostResponseSuccess = (unlockNetconfUnlockPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type unlockNetconfUnlockPostResponse = (unlockNetconfUnlockPostResponseSuccess)
-
-export const getUnlockNetconfUnlockPostUrl = () => {
-
-
-
-
-  return `/netconf/unlock`
-}
-
-export const unlockNetconfUnlockPost = async ( options?: RequestInit): Promise<unlockNetconfUnlockPostResponse> => {
-
-  const res = await fetch(getUnlockNetconfUnlockPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: unlockNetconfUnlockPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as unlockNetconfUnlockPostResponse
-}
-
-
-
-
-export const getUnlockNetconfUnlockPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unlockNetconfUnlockPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof unlockNetconfUnlockPost>>, TError,void, TContext> => {
-
-const mutationKey = ['unlockNetconfUnlockPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof unlockNetconfUnlockPost>>, void> = () => {
-
-
-          return  unlockNetconfUnlockPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UnlockNetconfUnlockPostMutationResult = NonNullable<Awaited<ReturnType<typeof unlockNetconfUnlockPost>>>
-
-    export type UnlockNetconfUnlockPostMutationError = unknown
-
-    /**
- * @summary Unlock
- */
-export const useUnlockNetconfUnlockPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unlockNetconfUnlockPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof unlockNetconfUnlockPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getUnlockNetconfUnlockPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Create Subscription
- */
-export type createSubscriptionNetconfCreateSubscriptionPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type createSubscriptionNetconfCreateSubscriptionPostResponseSuccess = (createSubscriptionNetconfCreateSubscriptionPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type createSubscriptionNetconfCreateSubscriptionPostResponse = (createSubscriptionNetconfCreateSubscriptionPostResponseSuccess)
-
-export const getCreateSubscriptionNetconfCreateSubscriptionPostUrl = () => {
-
-
-
-
-  return `/netconf/create-subscription`
-}
-
-export const createSubscriptionNetconfCreateSubscriptionPost = async ( options?: RequestInit): Promise<createSubscriptionNetconfCreateSubscriptionPostResponse> => {
-
-  const res = await fetch(getCreateSubscriptionNetconfCreateSubscriptionPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: createSubscriptionNetconfCreateSubscriptionPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createSubscriptionNetconfCreateSubscriptionPostResponse
-}
-
-
-
-
-export const getCreateSubscriptionNetconfCreateSubscriptionPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createSubscriptionNetconfCreateSubscriptionPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof createSubscriptionNetconfCreateSubscriptionPost>>, TError,void, TContext> => {
-
-const mutationKey = ['createSubscriptionNetconfCreateSubscriptionPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createSubscriptionNetconfCreateSubscriptionPost>>, void> = () => {
-
-
-          return  createSubscriptionNetconfCreateSubscriptionPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateSubscriptionNetconfCreateSubscriptionPostMutationResult = NonNullable<Awaited<ReturnType<typeof createSubscriptionNetconfCreateSubscriptionPost>>>
-
-    export type CreateSubscriptionNetconfCreateSubscriptionPostMutationError = unknown
-
-    /**
- * @summary Create Subscription
- */
-export const useCreateSubscriptionNetconfCreateSubscriptionPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createSubscriptionNetconfCreateSubscriptionPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createSubscriptionNetconfCreateSubscriptionPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getCreateSubscriptionNetconfCreateSubscriptionPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Close Session
- */
-export type closeSessionNetconfCloseSessionPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type closeSessionNetconfCloseSessionPostResponseSuccess = (closeSessionNetconfCloseSessionPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type closeSessionNetconfCloseSessionPostResponse = (closeSessionNetconfCloseSessionPostResponseSuccess)
-
-export const getCloseSessionNetconfCloseSessionPostUrl = () => {
-
-
-
-
-  return `/netconf/close-session`
-}
-
-export const closeSessionNetconfCloseSessionPost = async ( options?: RequestInit): Promise<closeSessionNetconfCloseSessionPostResponse> => {
-
-  const res = await fetch(getCloseSessionNetconfCloseSessionPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: closeSessionNetconfCloseSessionPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as closeSessionNetconfCloseSessionPostResponse
-}
-
-
-
-
-export const getCloseSessionNetconfCloseSessionPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof closeSessionNetconfCloseSessionPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof closeSessionNetconfCloseSessionPost>>, TError,void, TContext> => {
-
-const mutationKey = ['closeSessionNetconfCloseSessionPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof closeSessionNetconfCloseSessionPost>>, void> = () => {
-
-
-          return  closeSessionNetconfCloseSessionPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CloseSessionNetconfCloseSessionPostMutationResult = NonNullable<Awaited<ReturnType<typeof closeSessionNetconfCloseSessionPost>>>
-
-    export type CloseSessionNetconfCloseSessionPostMutationError = unknown
-
-    /**
- * @summary Close Session
- */
-export const useCloseSessionNetconfCloseSessionPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof closeSessionNetconfCloseSessionPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof closeSessionNetconfCloseSessionPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getCloseSessionNetconfCloseSessionPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Kill Session
- */
-export type killSessionNetconfKillSessionPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type killSessionNetconfKillSessionPostResponseSuccess = (killSessionNetconfKillSessionPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type killSessionNetconfKillSessionPostResponse = (killSessionNetconfKillSessionPostResponseSuccess)
-
-export const getKillSessionNetconfKillSessionPostUrl = () => {
-
-
-
-
-  return `/netconf/kill-session`
-}
-
-export const killSessionNetconfKillSessionPost = async ( options?: RequestInit): Promise<killSessionNetconfKillSessionPostResponse> => {
-
-  const res = await fetch(getKillSessionNetconfKillSessionPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: killSessionNetconfKillSessionPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as killSessionNetconfKillSessionPostResponse
-}
-
-
-
-
-export const getKillSessionNetconfKillSessionPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof killSessionNetconfKillSessionPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof killSessionNetconfKillSessionPost>>, TError,void, TContext> => {
-
-const mutationKey = ['killSessionNetconfKillSessionPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof killSessionNetconfKillSessionPost>>, void> = () => {
-
-
-          return  killSessionNetconfKillSessionPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type KillSessionNetconfKillSessionPostMutationResult = NonNullable<Awaited<ReturnType<typeof killSessionNetconfKillSessionPost>>>
-
-    export type KillSessionNetconfKillSessionPostMutationError = unknown
-
-    /**
- * @summary Kill Session
- */
-export const useKillSessionNetconfKillSessionPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof killSessionNetconfKillSessionPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof killSessionNetconfKillSessionPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getKillSessionNetconfKillSessionPostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Poweroff Machine
- */
-export type poweroffMachineNetconfPoweroffMachinePostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type poweroffMachineNetconfPoweroffMachinePostResponseSuccess = (poweroffMachineNetconfPoweroffMachinePostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type poweroffMachineNetconfPoweroffMachinePostResponse = (poweroffMachineNetconfPoweroffMachinePostResponseSuccess)
-
-export const getPoweroffMachineNetconfPoweroffMachinePostUrl = () => {
-
-
-
-
-  return `/netconf/poweroff-machine`
-}
-
-export const poweroffMachineNetconfPoweroffMachinePost = async ( options?: RequestInit): Promise<poweroffMachineNetconfPoweroffMachinePostResponse> => {
-
-  const res = await fetch(getPoweroffMachineNetconfPoweroffMachinePostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: poweroffMachineNetconfPoweroffMachinePostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as poweroffMachineNetconfPoweroffMachinePostResponse
-}
-
-
-
-
-export const getPoweroffMachineNetconfPoweroffMachinePostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof poweroffMachineNetconfPoweroffMachinePost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof poweroffMachineNetconfPoweroffMachinePost>>, TError,void, TContext> => {
-
-const mutationKey = ['poweroffMachineNetconfPoweroffMachinePost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof poweroffMachineNetconfPoweroffMachinePost>>, void> = () => {
-
-
-          return  poweroffMachineNetconfPoweroffMachinePost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PoweroffMachineNetconfPoweroffMachinePostMutationResult = NonNullable<Awaited<ReturnType<typeof poweroffMachineNetconfPoweroffMachinePost>>>
-
-    export type PoweroffMachineNetconfPoweroffMachinePostMutationError = unknown
-
-    /**
- * @summary Poweroff Machine
- */
-export const usePoweroffMachineNetconfPoweroffMachinePost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof poweroffMachineNetconfPoweroffMachinePost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof poweroffMachineNetconfPoweroffMachinePost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getPoweroffMachineNetconfPoweroffMachinePostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Reboot Machine
- */
-export type rebootMachineNetconfRebootMachinePostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type rebootMachineNetconfRebootMachinePostResponseSuccess = (rebootMachineNetconfRebootMachinePostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type rebootMachineNetconfRebootMachinePostResponse = (rebootMachineNetconfRebootMachinePostResponseSuccess)
-
-export const getRebootMachineNetconfRebootMachinePostUrl = () => {
-
-
-
-
-  return `/netconf/reboot-machine`
-}
-
-export const rebootMachineNetconfRebootMachinePost = async ( options?: RequestInit): Promise<rebootMachineNetconfRebootMachinePostResponse> => {
-
-  const res = await fetch(getRebootMachineNetconfRebootMachinePostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: rebootMachineNetconfRebootMachinePostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as rebootMachineNetconfRebootMachinePostResponse
-}
-
-
-
-
-export const getRebootMachineNetconfRebootMachinePostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rebootMachineNetconfRebootMachinePost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof rebootMachineNetconfRebootMachinePost>>, TError,void, TContext> => {
-
-const mutationKey = ['rebootMachineNetconfRebootMachinePost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof rebootMachineNetconfRebootMachinePost>>, void> = () => {
-
-
-          return  rebootMachineNetconfRebootMachinePost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type RebootMachineNetconfRebootMachinePostMutationResult = NonNullable<Awaited<ReturnType<typeof rebootMachineNetconfRebootMachinePost>>>
-
-    export type RebootMachineNetconfRebootMachinePostMutationError = unknown
-
-    /**
- * @summary Reboot Machine
- */
-export const useRebootMachineNetconfRebootMachinePost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rebootMachineNetconfRebootMachinePost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof rebootMachineNetconfRebootMachinePost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getRebootMachineNetconfRebootMachinePostMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Rpc
- */
-export type rpcNetconfRpcPostResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type rpcNetconfRpcPostResponseSuccess = (rpcNetconfRpcPostResponse200) & {
-  headers: Headers;
-};
-;
-
-export type rpcNetconfRpcPostResponse = (rpcNetconfRpcPostResponseSuccess)
-
-export const getRpcNetconfRpcPostUrl = () => {
-
-
-
-
-  return `/netconf/rpc`
-}
-
-export const rpcNetconfRpcPost = async ( options?: RequestInit): Promise<rpcNetconfRpcPostResponse> => {
-
-  const res = await fetch(getRpcNetconfRpcPostUrl(),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: rpcNetconfRpcPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as rpcNetconfRpcPostResponse
-}
-
-
-
-
-export const getRpcNetconfRpcPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rpcNetconfRpcPost>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof rpcNetconfRpcPost>>, TError,void, TContext> => {
-
-const mutationKey = ['rpcNetconfRpcPost'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof rpcNetconfRpcPost>>, void> = () => {
-
-
-          return  rpcNetconfRpcPost(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type RpcNetconfRpcPostMutationResult = NonNullable<Awaited<ReturnType<typeof rpcNetconfRpcPost>>>
-
-    export type RpcNetconfRpcPostMutationError = unknown
-
-    /**
- * @summary Rpc
- */
-export const useRpcNetconfRpcPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rpcNetconfRpcPost>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof rpcNetconfRpcPost>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getRpcNetconfRpcPostMutationOptions(options), queryClient);
-    }

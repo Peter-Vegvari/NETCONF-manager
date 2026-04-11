@@ -1,7 +1,7 @@
 import { defineConfig } from 'orval';
 
 export default defineConfig({
-  petstore: {
+  netconf: {
     output: {
       mode: 'tags-split',
       target: 'src/api/',
