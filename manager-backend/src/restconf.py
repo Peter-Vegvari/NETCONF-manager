@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request
-from src.models import get_connection
+from src.connection import get_connection
 from lxml import etree
 
 router = APIRouter(prefix="/restconf")

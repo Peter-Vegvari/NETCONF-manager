@@ -2,6 +2,7 @@ services:
   manager-backend:
     build: .
     container_name: manager-backend
+    user: "${UID}:${GID}"
     ports:
       - "8000:8000"
     volumes:

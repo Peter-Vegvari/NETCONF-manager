@@ -1,10 +1,9 @@
 import os
 from pathlib import Path
 import shutil
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
-from src.models import Connection, disconnect
+from src.connection import Connection
 from src.restconf import router as restconf_router
 
 app = FastAPI()
@@ -28,27 +27,48 @@ yang_modules: Path = Path("../resources/yang-modules")
 
 
 @app.post("/connect", operation_id="connect")
-async def connect(new_connection: Connection) -> list[str]:
-    return new_connection.download_schemas()
+async def connect(new_connection: Connection) -> None:
+    global connection
+    connection = new_connection
+    if connection.connect() is None:
+        raise HTTPException(503, "Failed to connect")
 
 
 @app.delete("/connect", operation_id="disconnect")
 async def disconnect_route() -> list[str]:
-    deleted_schemas: list[str] = os.listdir(yang_modules) if yang_modules.exists() else []
-    disconnect()
+    deleted_schemas: list[str] = (
+        os.listdir(yang_modules) if yang_modules.exists() else []
+    )
     if yang_modules.exists():
         shutil.rmtree(yang_modules)
         os.makedirs(yang_modules)
     return deleted_schemas
 
 
-@app.get("/schemas", operation_id="getSchemas")
-async def get_schemas() -> list[str]:
+@app.get("/modules/available", operation_id="getAvailableModules")
+async def get_available_modules() -> list[str]:
+    modules = connection.get_modules()
+    if modules is None:
+        raise HTTPException(503, "Failed to connect")
+    return modules
+
+
+@app.get("/modules/", operation_id="getModules")
+async def get_modules() -> list[str]:
     if not yang_modules.exists():
         return []
     return os.listdir(yang_modules)
 
 
-@app.get("/schemas/{schema_name}", operation_id="getSchema", response_model=None)
-async def get_schema(schema_name: str) -> FileResponse:
-    return FileResponse(f"{yang_modules}/{schema_name}.yang")
+@app.post(
+    "/modules/{module_name}/download",
+    operation_id="downloadModule"
+)
+async def download_module(module_name: str):
+    result = connection.download_module(module_name)
+    if result is None:
+        raise HTTPException(503, "Failed to connect")
+
+@app.delete("/modules/{module_name}", operation_id="deleteModule")
+async def delete_module(module_name: str):
+    os.remove(yang_modules / f"{module_name}.yang")
