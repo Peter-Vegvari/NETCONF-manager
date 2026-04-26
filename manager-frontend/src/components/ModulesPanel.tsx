@@ -1,4 +1,5 @@
 import { Button, Card, Flex, Popconfirm, Typography } from "antd";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetAvailableModules,
   useGetModules,
@@ -7,10 +8,15 @@ import {
 } from "../api/default/default";
 
 export function ModulesPanel() {
+  const queryClient = useQueryClient();
   const available = useGetAvailableModules();
   const downloaded = useGetModules();
-  const download = useDownloadModule();
-  const remove = useDeleteModule();
+  const download = useDownloadModule({
+    mutation: { onSuccess: () => queryClient.invalidateQueries() },
+  });
+  const remove = useDeleteModule({
+    mutation: { onSuccess: () => queryClient.invalidateQueries() },
+  });
 
   const downloadedSet = new Set(downloaded.data?.data ?? []);
   const availableModules = Array.isArray(available.data?.data) ? available.data.data : null;
