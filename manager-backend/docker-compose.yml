@@ -2,7 +2,7 @@ services:
   manager-backend:
     build: .
     container_name: manager-backend
-    user: "${UID}:${GID}"
+    user: "${UID:-0}:${GID:-0}"
     ports:
       - "8000:8000"
     volumes:
@@ -11,14 +11,14 @@ services:
     networks:
       - shared
     
-  notconf:
-    image: ghcr.io/notconf/notconf-ietf:latest
-    container_name: notconf
-    ports:
-      - "830:830"
-      - "80:80"
-    networks:
-      - shared
+  # notconf:
+  #   image: ghcr.io/notconf/notconf-ietf:latest
+  #   container_name: notconf
+  #   ports:
+  #     - "830:830"
+  #     - "80:80"
+  #   networks:
+  #     - shared
 
 networks:
   shared:

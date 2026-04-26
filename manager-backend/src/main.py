@@ -4,7 +4,6 @@ import shutil
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from src.connection import Connection
-from src.restconf import router as restconf_router
 
 app = FastAPI()
 
@@ -21,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(restconf_router)
+#app.include_router(restconf_router)
 
 yang_modules: Path = Path("../resources/yang-modules")
 
