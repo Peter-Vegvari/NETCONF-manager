@@ -8,4 +8,10 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  server: {
+    proxy: {
+      '/connect': 'http://manager-backend:8000',
+      '/modules': 'http://manager-backend:8000',
+    },
+  },
 })

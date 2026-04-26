@@ -68,10 +68,10 @@ class Connection(BaseModel):
 
     def connect(self) -> Manager | None:
         return manager.connect(
-            host=self,
-            port=self,
-            username=self,
-            password=self,
+            host=self.host,
+            port=self.port,
+            username=self.user_name,
+            password=self.password,
             hostkey_verify=False,
             device_params={"name": "default"},
             allow_agent=False,

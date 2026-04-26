@@ -6,7 +6,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./src:/app/src
+      - .:/app
+      - /app/.venv
       - ./resources/yang-modules:/resources/yang-modules
     networks:
       - shared

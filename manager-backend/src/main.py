@@ -23,6 +23,7 @@ app.add_middleware(
 #app.include_router(restconf_router)
 
 yang_modules: Path = Path("../resources/yang-modules")
+connection: Connection | None = None
 
 
 @app.post("/connect", operation_id="connect")
@@ -35,6 +36,8 @@ async def connect(new_connection: Connection) -> None:
 
 @app.delete("/connect", operation_id="disconnect")
 async def disconnect_route() -> list[str]:
+    global connection
+    connection = None
     deleted_schemas: list[str] = (
         os.listdir(yang_modules) if yang_modules.exists() else []
     )
@@ -46,6 +49,8 @@ async def disconnect_route() -> list[str]:
 
 @app.get("/modules/available", operation_id="getAvailableModules")
 async def get_available_modules() -> list[str]:
+    if connection is None:
+        raise HTTPException(400, "Not connected")
     modules = connection.get_modules()
     if modules is None:
         raise HTTPException(503, "Failed to connect")
