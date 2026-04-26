@@ -9,6 +9,8 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] })
   ],
   server: {
+    watch: { usePolling: true },
+    hmr: { clientPort: 3000 },
     proxy: {
       '/connect': 'http://manager-backend:8000',
       '/modules': 'http://manager-backend:8000',
