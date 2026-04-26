@@ -33,669 +33,10 @@ import type {
 
 
 /**
- * @summary Get Interfaces
- */
-export type getInterfacesResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type getInterfacesResponseSuccess = (getInterfacesResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getInterfacesResponse = (getInterfacesResponseSuccess)
-
-export const getGetInterfacesUrl = () => {
-
-
-
-
-  return `/restconf/data/ietf-interfaces:interfaces`
-}
-
-export const getInterfaces = async ( options?: RequestInit): Promise<getInterfacesResponse> => {
-
-  const res = await fetch(getGetInterfacesUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getInterfacesResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getInterfacesResponse
-}
-
-
-
-
-
-export const getGetInterfacesQueryKey = () => {
-    return [
-    `/restconf/data/ietf-interfaces:interfaces`
-    ] as const;
-    }
-
-
-export const getGetInterfacesQueryOptions = <TData = Awaited<ReturnType<typeof getInterfaces>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData>>, fetch?: RequestInit}
-) => {
-
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetInterfacesQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInterfaces>>> = ({ signal }) => getInterfaces({ signal, ...fetchOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetInterfacesQueryResult = NonNullable<Awaited<ReturnType<typeof getInterfaces>>>
-export type GetInterfacesQueryError = unknown
-
-
-export function useGetInterfaces<TData = Awaited<ReturnType<typeof getInterfaces>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getInterfaces>>,
-          TError,
-          Awaited<ReturnType<typeof getInterfaces>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetInterfaces<TData = Awaited<ReturnType<typeof getInterfaces>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getInterfaces>>,
-          TError,
-          Awaited<ReturnType<typeof getInterfaces>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetInterfaces<TData = Awaited<ReturnType<typeof getInterfaces>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Interfaces
- */
-
-export function useGetInterfaces<TData = Awaited<ReturnType<typeof getInterfaces>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterfaces>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetInterfacesQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-
-
-
-/**
- * @summary Get Interface
- */
-export type getInterfaceResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type getInterfaceResponse422 = {
-  data: HTTPValidationError
-  status: 422
-}
-
-export type getInterfaceResponseSuccess = (getInterfaceResponse200) & {
-  headers: Headers;
-};
-export type getInterfaceResponseError = (getInterfaceResponse422) & {
-  headers: Headers;
-};
-
-export type getInterfaceResponse = (getInterfaceResponseSuccess | getInterfaceResponseError)
-
-export const getGetInterfaceUrl = (name: string,) => {
-
-
-
-
-  return `/restconf/data/ietf-interfaces:interfaces/interface=${name}`
-}
-
-export const getInterface = async (name: string, options?: RequestInit): Promise<getInterfaceResponse> => {
-
-  const res = await fetch(getGetInterfaceUrl(name),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getInterfaceResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getInterfaceResponse
-}
-
-
-
-
-
-export const getGetInterfaceQueryKey = (name: string,) => {
-    return [
-    `/restconf/data/ietf-interfaces:interfaces/interface=${name}`
-    ] as const;
-    }
-
-
-export const getGetInterfaceQueryOptions = <TData = Awaited<ReturnType<typeof getInterface>>, TError = HTTPValidationError>(name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData>>, fetch?: RequestInit}
-) => {
-
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetInterfaceQueryKey(name);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInterface>>> = ({ signal }) => getInterface(name, { signal, ...fetchOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(name), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetInterfaceQueryResult = NonNullable<Awaited<ReturnType<typeof getInterface>>>
-export type GetInterfaceQueryError = HTTPValidationError
-
-
-export function useGetInterface<TData = Awaited<ReturnType<typeof getInterface>>, TError = HTTPValidationError>(
- name: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getInterface>>,
-          TError,
-          Awaited<ReturnType<typeof getInterface>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetInterface<TData = Awaited<ReturnType<typeof getInterface>>, TError = HTTPValidationError>(
- name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getInterface>>,
-          TError,
-          Awaited<ReturnType<typeof getInterface>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetInterface<TData = Awaited<ReturnType<typeof getInterface>>, TError = HTTPValidationError>(
- name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Interface
- */
-
-export function useGetInterface<TData = Awaited<ReturnType<typeof getInterface>>, TError = HTTPValidationError>(
- name: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getInterface>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetInterfaceQueryOptions(name,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-
-
-
-/**
- * @summary Put Interface
- */
-export type putInterfaceResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type putInterfaceResponse422 = {
-  data: HTTPValidationError
-  status: 422
-}
-
-export type putInterfaceResponseSuccess = (putInterfaceResponse200) & {
-  headers: Headers;
-};
-export type putInterfaceResponseError = (putInterfaceResponse422) & {
-  headers: Headers;
-};
-
-export type putInterfaceResponse = (putInterfaceResponseSuccess | putInterfaceResponseError)
-
-export const getPutInterfaceUrl = (name: string,) => {
-
-
-
-
-  return `/restconf/data/ietf-interfaces:interfaces/interface=${name}`
-}
-
-export const putInterface = async (name: string, options?: RequestInit): Promise<putInterfaceResponse> => {
-
-  const res = await fetch(getPutInterfaceUrl(name),
-  {
-    ...options,
-    method: 'PUT'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: putInterfaceResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as putInterfaceResponse
-}
-
-
-
-
-export const getPutInterfaceMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putInterface>>, TError,{name: string}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof putInterface>>, TError,{name: string}, TContext> => {
-
-const mutationKey = ['putInterface'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putInterface>>, {name: string}> = (props) => {
-          const {name} = props ?? {};
-
-          return  putInterface(name,fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PutInterfaceMutationResult = NonNullable<Awaited<ReturnType<typeof putInterface>>>
-
-    export type PutInterfaceMutationError = HTTPValidationError
-
-    /**
- * @summary Put Interface
- */
-export const usePutInterface = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putInterface>>, TError,{name: string}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof putInterface>>,
-        TError,
-        {name: string},
-        TContext
-      > => {
-      return useMutation(getPutInterfaceMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Delete Interface
- */
-export type deleteInterfaceResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type deleteInterfaceResponse422 = {
-  data: HTTPValidationError
-  status: 422
-}
-
-export type deleteInterfaceResponseSuccess = (deleteInterfaceResponse200) & {
-  headers: Headers;
-};
-export type deleteInterfaceResponseError = (deleteInterfaceResponse422) & {
-  headers: Headers;
-};
-
-export type deleteInterfaceResponse = (deleteInterfaceResponseSuccess | deleteInterfaceResponseError)
-
-export const getDeleteInterfaceUrl = (name: string,) => {
-
-
-
-
-  return `/restconf/data/ietf-interfaces:interfaces/interface=${name}`
-}
-
-export const deleteInterface = async (name: string, options?: RequestInit): Promise<deleteInterfaceResponse> => {
-
-  const res = await fetch(getDeleteInterfaceUrl(name),
-  {
-    ...options,
-    method: 'DELETE'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: deleteInterfaceResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteInterfaceResponse
-}
-
-
-
-
-export const getDeleteInterfaceMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteInterface>>, TError,{name: string}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteInterface>>, TError,{name: string}, TContext> => {
-
-const mutationKey = ['deleteInterface'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteInterface>>, {name: string}> = (props) => {
-          const {name} = props ?? {};
-
-          return  deleteInterface(name,fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteInterfaceMutationResult = NonNullable<Awaited<ReturnType<typeof deleteInterface>>>
-
-    export type DeleteInterfaceMutationError = HTTPValidationError
-
-    /**
- * @summary Delete Interface
- */
-export const useDeleteInterface = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteInterface>>, TError,{name: string}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteInterface>>,
-        TError,
-        {name: string},
-        TContext
-      > => {
-      return useMutation(getDeleteInterfaceMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Get System
- */
-export type getSystemResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type getSystemResponseSuccess = (getSystemResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getSystemResponse = (getSystemResponseSuccess)
-
-export const getGetSystemUrl = () => {
-
-
-
-
-  return `/restconf/data/ietf-system:system`
-}
-
-export const getSystem = async ( options?: RequestInit): Promise<getSystemResponse> => {
-
-  const res = await fetch(getGetSystemUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getSystemResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getSystemResponse
-}
-
-
-
-
-
-export const getGetSystemQueryKey = () => {
-    return [
-    `/restconf/data/ietf-system:system`
-    ] as const;
-    }
-
-
-export const getGetSystemQueryOptions = <TData = Awaited<ReturnType<typeof getSystem>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData>>, fetch?: RequestInit}
-) => {
-
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetSystemQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSystem>>> = ({ signal }) => getSystem({ signal, ...fetchOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetSystemQueryResult = NonNullable<Awaited<ReturnType<typeof getSystem>>>
-export type GetSystemQueryError = unknown
-
-
-export function useGetSystem<TData = Awaited<ReturnType<typeof getSystem>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getSystem>>,
-          TError,
-          Awaited<ReturnType<typeof getSystem>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetSystem<TData = Awaited<ReturnType<typeof getSystem>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getSystem>>,
-          TError,
-          Awaited<ReturnType<typeof getSystem>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetSystem<TData = Awaited<ReturnType<typeof getSystem>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get System
- */
-
-export function useGetSystem<TData = Awaited<ReturnType<typeof getSystem>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSystem>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetSystemQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-
-
-
-/**
- * @summary Get Modules State
- */
-export type getModulesStateResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type getModulesStateResponseSuccess = (getModulesStateResponse200) & {
-  headers: Headers;
-};
-;
-
-export type getModulesStateResponse = (getModulesStateResponseSuccess)
-
-export const getGetModulesStateUrl = () => {
-
-
-
-
-  return `/restconf/data/ietf-yang-library:modules-state`
-}
-
-export const getModulesState = async ( options?: RequestInit): Promise<getModulesStateResponse> => {
-
-  const res = await fetch(getGetModulesStateUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getModulesStateResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getModulesStateResponse
-}
-
-
-
-
-
-export const getGetModulesStateQueryKey = () => {
-    return [
-    `/restconf/data/ietf-yang-library:modules-state`
-    ] as const;
-    }
-
-
-export const getGetModulesStateQueryOptions = <TData = Awaited<ReturnType<typeof getModulesState>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData>>, fetch?: RequestInit}
-) => {
-
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetModulesStateQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModulesState>>> = ({ signal }) => getModulesState({ signal, ...fetchOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetModulesStateQueryResult = NonNullable<Awaited<ReturnType<typeof getModulesState>>>
-export type GetModulesStateQueryError = unknown
-
-
-export function useGetModulesState<TData = Awaited<ReturnType<typeof getModulesState>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getModulesState>>,
-          TError,
-          Awaited<ReturnType<typeof getModulesState>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetModulesState<TData = Awaited<ReturnType<typeof getModulesState>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getModulesState>>,
-          TError,
-          Awaited<ReturnType<typeof getModulesState>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetModulesState<TData = Awaited<ReturnType<typeof getModulesState>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Modules State
- */
-
-export function useGetModulesState<TData = Awaited<ReturnType<typeof getModulesState>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModulesState>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetModulesStateQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-
-
-
-/**
  * @summary Connect
  */
 export type connectResponse200 = {
-  data: string[]
+  data: unknown
   status: 200
 }
 
@@ -874,31 +215,31 @@ export const useDisconnect = <TError = unknown,
       return useMutation(getDisconnectMutationOptions(options), queryClient);
     }
     /**
- * @summary Get Schemas
+ * @summary Get Available Modules
  */
-export type getSchemasResponse200 = {
+export type getAvailableModulesResponse200 = {
   data: string[]
   status: 200
 }
 
-export type getSchemasResponseSuccess = (getSchemasResponse200) & {
+export type getAvailableModulesResponseSuccess = (getAvailableModulesResponse200) & {
   headers: Headers;
 };
 ;
 
-export type getSchemasResponse = (getSchemasResponseSuccess)
+export type getAvailableModulesResponse = (getAvailableModulesResponseSuccess)
 
-export const getGetSchemasUrl = () => {
-
-
+export const getGetAvailableModulesUrl = () => {
 
 
-  return `/schemas`
+
+
+  return `/modules/available`
 }
 
-export const getSchemas = async ( options?: RequestInit): Promise<getSchemasResponse> => {
+export const getAvailableModules = async ( options?: RequestInit): Promise<getAvailableModulesResponse> => {
 
-  const res = await fetch(getGetSchemasUrl(),
+  const res = await fetch(getGetAvailableModulesUrl(),
   {
     ...options,
     method: 'GET'
@@ -909,77 +250,77 @@ export const getSchemas = async ( options?: RequestInit): Promise<getSchemasResp
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: getSchemasResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getSchemasResponse
+  const data: getAvailableModulesResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getAvailableModulesResponse
 }
 
 
 
 
 
-export const getGetSchemasQueryKey = () => {
+export const getGetAvailableModulesQueryKey = () => {
     return [
-    `/schemas`
+    `/modules/available`
     ] as const;
     }
 
 
-export const getGetSchemasQueryOptions = <TData = Awaited<ReturnType<typeof getSchemas>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData>>, fetch?: RequestInit}
+export const getGetAvailableModulesQueryOptions = <TData = Awaited<ReturnType<typeof getAvailableModules>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAvailableModules>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetSchemasQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetAvailableModulesQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSchemas>>> = ({ signal }) => getSchemas({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAvailableModules>>> = ({ signal }) => getAvailableModules({ signal, ...fetchOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAvailableModules>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetSchemasQueryResult = NonNullable<Awaited<ReturnType<typeof getSchemas>>>
-export type GetSchemasQueryError = unknown
+export type GetAvailableModulesQueryResult = NonNullable<Awaited<ReturnType<typeof getAvailableModules>>>
+export type GetAvailableModulesQueryError = unknown
 
 
-export function useGetSchemas<TData = Awaited<ReturnType<typeof getSchemas>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData>> & Pick<
+export function useGetAvailableModules<TData = Awaited<ReturnType<typeof getAvailableModules>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAvailableModules>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getSchemas>>,
+          Awaited<ReturnType<typeof getAvailableModules>>,
           TError,
-          Awaited<ReturnType<typeof getSchemas>>
+          Awaited<ReturnType<typeof getAvailableModules>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetSchemas<TData = Awaited<ReturnType<typeof getSchemas>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData>> & Pick<
+export function useGetAvailableModules<TData = Awaited<ReturnType<typeof getAvailableModules>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAvailableModules>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getSchemas>>,
+          Awaited<ReturnType<typeof getAvailableModules>>,
           TError,
-          Awaited<ReturnType<typeof getSchemas>>
+          Awaited<ReturnType<typeof getAvailableModules>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetSchemas<TData = Awaited<ReturnType<typeof getSchemas>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData>>, fetch?: RequestInit}
+export function useGetAvailableModules<TData = Awaited<ReturnType<typeof getAvailableModules>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAvailableModules>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get Schemas
+ * @summary Get Available Modules
  */
 
-export function useGetSchemas<TData = Awaited<ReturnType<typeof getSchemas>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchemas>>, TError, TData>>, fetch?: RequestInit}
+export function useGetAvailableModules<TData = Awaited<ReturnType<typeof getAvailableModules>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAvailableModules>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetSchemasQueryOptions(options)
+  const queryOptions = getGetAvailableModulesQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -990,41 +331,157 @@ export function useGetSchemas<TData = Awaited<ReturnType<typeof getSchemas>>, TE
 
 
 /**
- * @summary Get Schema
+ * @summary Get Modules
  */
-export type getSchemaResponse200 = {
+export type getModulesResponse200 = {
+  data: string[]
+  status: 200
+}
+
+export type getModulesResponseSuccess = (getModulesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getModulesResponse = (getModulesResponseSuccess)
+
+export const getGetModulesUrl = () => {
+
+
+
+
+  return `/modules/`
+}
+
+export const getModules = async ( options?: RequestInit): Promise<getModulesResponse> => {
+
+  const res = await fetch(getGetModulesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getModulesResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getModulesResponse
+}
+
+
+
+
+
+export const getGetModulesQueryKey = () => {
+    return [
+    `/modules/`
+    ] as const;
+    }
+
+
+export const getGetModulesQueryOptions = <TData = Awaited<ReturnType<typeof getModules>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModules>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModulesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModules>>> = ({ signal }) => getModules({ signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModules>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetModulesQueryResult = NonNullable<Awaited<ReturnType<typeof getModules>>>
+export type GetModulesQueryError = unknown
+
+
+export function useGetModules<TData = Awaited<ReturnType<typeof getModules>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModules>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModules>>,
+          TError,
+          Awaited<ReturnType<typeof getModules>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModules<TData = Awaited<ReturnType<typeof getModules>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModules>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModules>>,
+          TError,
+          Awaited<ReturnType<typeof getModules>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModules<TData = Awaited<ReturnType<typeof getModules>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModules>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Modules
+ */
+
+export function useGetModules<TData = Awaited<ReturnType<typeof getModules>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModules>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetModulesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
+ * @summary Download Module
+ */
+export type downloadModuleResponse200 = {
   data: unknown
   status: 200
 }
 
-export type getSchemaResponse422 = {
+export type downloadModuleResponse422 = {
   data: HTTPValidationError
   status: 422
 }
 
-export type getSchemaResponseSuccess = (getSchemaResponse200) & {
+export type downloadModuleResponseSuccess = (downloadModuleResponse200) & {
   headers: Headers;
 };
-export type getSchemaResponseError = (getSchemaResponse422) & {
+export type downloadModuleResponseError = (downloadModuleResponse422) & {
   headers: Headers;
 };
 
-export type getSchemaResponse = (getSchemaResponseSuccess | getSchemaResponseError)
+export type downloadModuleResponse = (downloadModuleResponseSuccess | downloadModuleResponseError)
 
-export const getGetSchemaUrl = (schemaName: string,) => {
-
-
+export const getDownloadModuleUrl = (moduleName: string,) => {
 
 
-  return `/schemas/${schemaName}`
+
+
+  return `/modules/${moduleName}/download`
 }
 
-export const getSchema = async (schemaName: string, options?: RequestInit): Promise<getSchemaResponse> => {
+export const downloadModule = async (moduleName: string, options?: RequestInit): Promise<downloadModuleResponse> => {
 
-  const res = await fetch(getGetSchemaUrl(schemaName),
+  const res = await fetch(getDownloadModuleUrl(moduleName),
   {
     ...options,
-    method: 'GET'
+    method: 'POST'
 
 
   }
@@ -1032,83 +489,148 @@ export const getSchema = async (schemaName: string, options?: RequestInit): Prom
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: getSchemaResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getSchemaResponse
+  const data: downloadModuleResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as downloadModuleResponse
 }
 
 
 
 
+export const getDownloadModuleMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof downloadModule>>, TError,{moduleName: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof downloadModule>>, TError,{moduleName: string}, TContext> => {
 
-export const getGetSchemaQueryKey = (schemaName: string,) => {
-    return [
-    `/schemas/${schemaName}`
-    ] as const;
-    }
-
-
-export const getGetSchemaQueryOptions = <TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>>, fetch?: RequestInit}
-) => {
-
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetSchemaQueryKey(schemaName);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSchema>>> = ({ signal }) => getSchema(schemaName, { signal, ...fetchOptions });
+const mutationKey = ['downloadModule'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
 
 
 
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof downloadModule>>, {moduleName: string}> = (props) => {
+          const {moduleName} = props ?? {};
 
-   return  { queryKey, queryFn, enabled: !!(schemaName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetSchemaQueryResult = NonNullable<Awaited<ReturnType<typeof getSchema>>>
-export type GetSchemaQueryError = HTTPValidationError
+          return  downloadModule(moduleName,fetchOptions)
+        }
 
 
-export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
- schemaName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getSchema>>,
-          TError,
-          Awaited<ReturnType<typeof getSchema>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
- schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getSchema>>,
-          TError,
-          Awaited<ReturnType<typeof getSchema>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
- schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Schema
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DownloadModuleMutationResult = NonNullable<Awaited<ReturnType<typeof downloadModule>>>
+
+    export type DownloadModuleMutationError = HTTPValidationError
+
+    /**
+ * @summary Download Module
  */
+export const useDownloadModule = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof downloadModule>>, TError,{moduleName: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof downloadModule>>,
+        TError,
+        {moduleName: string},
+        TContext
+      > => {
+      return useMutation(getDownloadModuleMutationOptions(options), queryClient);
+    }
+    /**
+ * @summary Delete Module
+ */
+export type deleteModuleResponse200 = {
+  data: unknown
+  status: 200
+}
 
-export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
- schemaName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export type deleteModuleResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
 
-  const queryOptions = getGetSchemaQueryOptions(schemaName,options)
+export type deleteModuleResponseSuccess = (deleteModuleResponse200) & {
+  headers: Headers;
+};
+export type deleteModuleResponseError = (deleteModuleResponse422) & {
+  headers: Headers;
+};
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export type deleteModuleResponse = (deleteModuleResponseSuccess | deleteModuleResponseError)
 
-  return { ...query, queryKey: queryOptions.queryKey };
+export const getDeleteModuleUrl = (moduleName: string,) => {
+
+
+
+
+  return `/modules/${moduleName}`
+}
+
+export const deleteModule = async (moduleName: string, options?: RequestInit): Promise<deleteModuleResponse> => {
+
+  const res = await fetch(getDeleteModuleUrl(moduleName),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: deleteModuleResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteModuleResponse
 }
 
 
 
 
+export const getDeleteModuleMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteModule>>, TError,{moduleName: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteModule>>, TError,{moduleName: string}, TContext> => {
+
+const mutationKey = ['deleteModule'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteModule>>, {moduleName: string}> = (props) => {
+          const {moduleName} = props ?? {};
+
+          return  deleteModule(moduleName,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteModuleMutationResult = NonNullable<Awaited<ReturnType<typeof deleteModule>>>
+
+    export type DeleteModuleMutationError = HTTPValidationError
+
+    /**
+ * @summary Delete Module
+ */
+export const useDeleteModule = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteModule>>, TError,{moduleName: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteModule>>,
+        TError,
+        {moduleName: string},
+        TContext
+      > => {
+      return useMutation(getDeleteModuleMutationOptions(options), queryClient);
+    }

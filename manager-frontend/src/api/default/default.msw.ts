@@ -17,80 +17,18 @@ import type {
 } from 'msw';
 
 
-export const getConnectResponseMock = (): string[] => (Array.from({length: faker.number.int({min: 1, max: 10})}, () => faker.word.sample()))
-
 export const getDisconnectResponseMock = (): string[] => (Array.from({length: faker.number.int({min: 1, max: 10})}, () => faker.word.sample()))
 
-export const getGetSchemasResponseMock = (): string[] => (Array.from({length: faker.number.int({min: 1, max: 10})}, () => faker.word.sample()))
+export const getGetAvailableModulesResponseMock = (): string[] => (Array.from({length: faker.number.int({min: 1, max: 10})}, () => faker.word.sample()))
+
+export const getGetModulesResponseMock = (): string[] => (Array.from({length: faker.number.int({min: 1, max: 10})}, () => faker.word.sample()))
 
 
-export const getGetInterfacesMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.get('*/restconf/data/ietf-interfaces\:interfaces', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-
-    return new HttpResponse(null,
-      { status: 200
-      })
-  }, options)
-}
-
-export const getGetInterfaceMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.get('*/restconf/data/ietf-interfaces\:interfaces/interface=:name', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-
-    return new HttpResponse(null,
-      { status: 200
-      })
-  }, options)
-}
-
-export const getPutInterfaceMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.put('*/restconf/data/ietf-interfaces\:interfaces/interface=:name', async (info: Parameters<Parameters<typeof http.put>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-
-    return new HttpResponse(null,
-      { status: 200
-      })
-  }, options)
-}
-
-export const getDeleteInterfaceMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.delete('*/restconf/data/ietf-interfaces\:interfaces/interface=:name', async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-
-    return new HttpResponse(null,
-      { status: 200
-      })
-  }, options)
-}
-
-export const getGetSystemMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.get('*/restconf/data/ietf-system\:system', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-
-    return new HttpResponse(null,
-      { status: 200
-      })
-  }, options)
-}
-
-export const getGetModulesStateMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.get('*/restconf/data/ietf-yang-library\:modules-state', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-
-    return new HttpResponse(null,
-      { status: 200
-      })
-  }, options)
-}
-
-export const getConnectMockHandler = (overrideResponse?: string[] | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<string[]> | string[]), options?: RequestHandlerOptions) => {
+export const getConnectMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
   return http.post('*/connect', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
-
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getConnectResponseMock(),
+    return new HttpResponse(null,
       { status: 200
       })
   }, options)
@@ -108,20 +46,42 @@ export const getDisconnectMockHandler = (overrideResponse?: string[] | ((info: P
   }, options)
 }
 
-export const getGetSchemasMockHandler = (overrideResponse?: string[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<string[]> | string[]), options?: RequestHandlerOptions) => {
-  return http.get('*/schemas', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+export const getGetAvailableModulesMockHandler = (overrideResponse?: string[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<string[]> | string[]), options?: RequestHandlerOptions) => {
+  return http.get('*/modules/available', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetSchemasResponseMock(),
+    : getGetAvailableModulesResponseMock(),
       { status: 200
       })
   }, options)
 }
 
-export const getGetSchemaMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.get('*/schemas/:schemaName', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+export const getGetModulesMockHandler = (overrideResponse?: string[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<string[]> | string[]), options?: RequestHandlerOptions) => {
+  return http.get('*/modules/', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetModulesResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getDownloadModuleMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
+  return http.post('*/modules/:moduleName/download', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+
+    return new HttpResponse(null,
+      { status: 200
+      })
+  }, options)
+}
+
+export const getDeleteModuleMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
+  return http.delete('*/modules/:moduleName', async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
   if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
     return new HttpResponse(null,
@@ -130,14 +90,10 @@ export const getGetSchemaMockHandler = (overrideResponse?: unknown | ((info: Par
   }, options)
 }
 export const getDefaultMock = () => [
-  getGetInterfacesMockHandler(),
-  getGetInterfaceMockHandler(),
-  getPutInterfaceMockHandler(),
-  getDeleteInterfaceMockHandler(),
-  getGetSystemMockHandler(),
-  getGetModulesStateMockHandler(),
   getConnectMockHandler(),
   getDisconnectMockHandler(),
-  getGetSchemasMockHandler(),
-  getGetSchemaMockHandler()
+  getGetAvailableModulesMockHandler(),
+  getGetModulesMockHandler(),
+  getDownloadModuleMockHandler(),
+  getDeleteModuleMockHandler()
 ]
