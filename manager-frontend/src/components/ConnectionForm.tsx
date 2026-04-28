@@ -15,7 +15,7 @@ export function ConnectionForm() {
     <Card title="Device Connection" style={{ marginBottom: 16 }}>
       <Form
         layout="inline"
-        initialValues={{ host: "10.41.102.78", port: 830, user_name: "admin_user", password: "Ericsson1234" }}
+        initialValues={{ host: "10.41.102.39", port: 830, user_name: "admin_user", password: "Ericsson1234" }}
         onFinish={(values) => connect.mutate({ data: values })}
       >
         <Form.Item name="host" label="Host">

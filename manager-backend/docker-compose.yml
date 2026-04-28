@@ -9,6 +9,7 @@ services:
       - .:/app
       - /app/.venv
       - ./resources/yang-modules:/resources/yang-modules
+      - shared-spec:/shared
     networks:
       - shared
     
@@ -24,3 +25,6 @@ services:
 networks:
   shared:
     name: shared
+
+volumes:
+  shared-spec:

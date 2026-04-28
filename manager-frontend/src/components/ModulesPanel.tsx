@@ -1,16 +1,11 @@
-import { Button, Collapse, Flex, Popconfirm, Typography } from "antd";
+import { Button, Card, List, Popconfirm, Tag } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  useGetAvailableModules,
-  useGetModules,
-  useDownloadModule,
-  useDeleteModule,
-} from "../api/default/default";
+import { DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
+import { useGetModules, useDownloadModule, useDeleteModule } from "../api/modules/modules";
 
 export function ModulesPanel() {
   const queryClient = useQueryClient();
-  const available = useGetAvailableModules();
-  const downloaded = useGetModules();
+  const { data } = useGetModules();
   const download = useDownloadModule({
     mutation: { onSuccess: () => queryClient.invalidateQueries() },
   });
@@ -18,56 +13,43 @@ export function ModulesPanel() {
     mutation: { onSuccess: () => queryClient.invalidateQueries() },
   });
 
-  const downloadedSet = new Set(downloaded.data?.data ?? []);
-  const availableModules = Array.isArray(available.data?.data) ? available.data.data : null;
-  const downloadedModules = Array.isArray(downloaded.data?.data) ? downloaded.data.data : [];
+  const modules = Array.isArray(data?.data) ? data.data : [];
 
   return (
-    <Collapse
-      items={[
-        {
-          key: "available",
-          label: `Available Modules (${availableModules?.length ?? 0})`,
-          children: !availableModules ? (
-            <Typography.Text type="secondary">Connect to a device first.</Typography.Text>
-          ) : (
-            <Flex vertical gap={8}>
-              {availableModules.map((name) => (
-                <Flex key={name} justify="space-between" align="center">
-                  <span>{name}</span>
-                  <Button
-                    size="small"
-                    disabled={downloadedSet.has(`${name}.yang`)}
-                    loading={download.isPending && download.variables?.moduleName === name}
-                    onClick={() => download.mutate({ moduleName: name })}
-                  >
-                    {downloadedSet.has(`${name}.yang`) ? "Downloaded" : "Download"}
-                  </Button>
-                </Flex>
-              ))}
-            </Flex>
-          ),
-        },
-        {
-          key: "downloaded",
-          label: `Downloaded Modules (${downloadedModules.length})`,
-          children: (
-            <Flex vertical gap={8}>
-              {downloadedModules.map((name) => (
-                <Flex key={name} justify="space-between" align="center">
-                  <Typography.Text code>{name}</Typography.Text>
-                  <Popconfirm
-                    title="Delete this module?"
-                    onConfirm={() => remove.mutate({ moduleName: name.replace(/\.yang$/, "") })}
-                  >
-                    <Button danger size="small">Delete</Button>
-                  </Popconfirm>
-                </Flex>
-              ))}
-            </Flex>
-          ),
-        },
-      ]}
-    />
+    <Card title={`Modules (${modules.length})`}>
+      <List
+        size="small"
+        dataSource={modules}
+        locale={{ emptyText: "Connect to a device first." }}
+        renderItem={(m) => (
+          <List.Item
+            actions={[
+              m.downloadable ? (
+                <Button
+                  key="dl"
+                  type="text"
+                  size="small"
+                  icon={<DownloadOutlined />}
+                  loading={download.isPending && download.variables?.moduleName === m.name}
+                  onClick={() => download.mutate({ moduleName: m.name })}
+                />
+              ) : (
+                <Popconfirm
+                  key="rm"
+                  title="Delete this module?"
+                  onConfirm={() => remove.mutate({ moduleName: m.name })}
+                >
+                  <Button danger type="text" size="small" icon={<DeleteOutlined />} />
+                </Popconfirm>
+              ),
+            ]}
+          >
+            <span>
+              {m.name} {m.downloadable && <Tag color="blue">available</Tag>}
+            </span>
+          </List.Item>
+        )}
+      />
+    </Card>
   );
 }

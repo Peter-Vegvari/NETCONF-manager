@@ -8,9 +8,13 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - shared-spec:/shared
     networks:
       - shared
 
 networks:
   shared:
     name: shared
+
+volumes:
+  shared-spec:

@@ -7,5 +7,6 @@
 
 export * from './connection';
 export * from './hTTPValidationError';
+export * from './module';
 export * from './validationError';
 export * from './validationErrorCtx';
