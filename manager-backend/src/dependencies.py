@@ -1,26 +1,27 @@
 from pathlib import Path
-from typing import Annotated
-from fastapi import Depends
+
+from wireup import injectable
+
 from src.models.connection import Connection
 
 
-def get_yang_modules_path() -> Path:
-    return Path("../resources/yang-modules")
-
-
-YangModulesPath = Annotated[Path, Depends(get_yang_modules_path)]
-
-
+@injectable
 class ConnectionManager:
     def __init__(self):
         self.connection: Connection | None = None
 
 
-connection_manager = ConnectionManager()
+@injectable
+class YangModulesPath:
+    def __init__(self):
+        self.path = Path("../resources/yang-modules")
 
 
-def get_connection_manager() -> ConnectionManager:
-    return connection_manager
+@injectable
+class GeneratedModulesPath:
+    def __init__(self):
+        self.path = Path("models/generated")
 
 
-ConnManager = Annotated[ConnectionManager, Depends(get_connection_manager)]
+yang_modules_path: YangModulesPath
+connection_manager: ConnectionManager

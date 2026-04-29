@@ -1,11 +1,31 @@
 import json
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
+import wireup
+import wireup.integration.fastapi
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.routers.modules import router as modules_router
-from src.routers.connection import router as connection_router
 
-app = FastAPI()
+import src.dependencies
+from src.routers.connection import router as connection_router
+from src.routers.modules import router as modules_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    with open("/shared/openapi.json", "w") as f:
+        json.dump(app.openapi(), f)
+    src.dependencies.yang_modules_path = await container.get(
+        src.dependencies.YangModulesPath
+    )
+    src.dependencies.connection_manager = await container.get(
+        src.dependencies.ConnectionManager
+    )
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,8 +38,5 @@ app.add_middleware(
 app.include_router(modules_router)
 app.include_router(connection_router)
 
-
-@app.on_event("startup")
-def export_openapi():
-    with open("/shared/openapi.json", "w") as f:
-        json.dump(app.openapi(), f)
+container = wireup.create_async_container(injectables=[src.dependencies])
+wireup.integration.fastapi.setup(container, app)

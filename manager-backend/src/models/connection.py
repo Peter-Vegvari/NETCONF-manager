@@ -41,7 +41,7 @@ class Connection(BaseModel):
 
 
 
-    def connect(self) -> Manager | None:
+    def connect(self) -> Manager:
         return manager.connect(
             host=self.host,
             port=self.port,
