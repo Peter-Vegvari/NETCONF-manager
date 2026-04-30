@@ -28,3 +28,4 @@ networks:
 
 volumes:
   shared-spec:
+    external: true

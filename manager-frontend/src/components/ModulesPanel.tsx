@@ -1,17 +1,22 @@
 import { Button, Card, List, Popconfirm, Tag } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
-import { DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
-import { useGetModules, useDownloadModule, useDeleteModule } from "../api/modules/modules";
+import { DeleteOutlined, DownloadOutlined, ThunderboltOutlined } from "@ant-design/icons";
+import { useGetModules, useDownloadModule, useDeleteModule, useGenerateModule } from "../api/modules/modules";
+import type { Module } from "../api/model";
+
+const statusColor: Record<Module["status"], string> = {
+  remote: "blue",
+  local: "orange",
+  generated: "green",
+};
 
 export function ModulesPanel() {
   const queryClient = useQueryClient();
+  const invalidate = { mutation: { onSuccess: () => queryClient.invalidateQueries() } };
   const { data } = useGetModules();
-  const download = useDownloadModule({
-    mutation: { onSuccess: () => queryClient.invalidateQueries() },
-  });
-  const remove = useDeleteModule({
-    mutation: { onSuccess: () => queryClient.invalidateQueries() },
-  });
+  const download = useDownloadModule(invalidate);
+  const remove = useDeleteModule(invalidate);
+  const generate = useGenerateModule(invalidate);
 
   const modules = Array.isArray(data?.data) ? data.data : [];
 
@@ -20,11 +25,11 @@ export function ModulesPanel() {
       <List
         size="small"
         dataSource={modules}
-        locale={{ emptyText: "Connect to a device first." }}
+        locale={{ emptyText: "No modules found." }}
         renderItem={(m) => (
           <List.Item
             actions={[
-              m.downloadable ? (
+              m.status === "remote" && (
                 <Button
                   key="dl"
                   type="text"
@@ -33,7 +38,18 @@ export function ModulesPanel() {
                   loading={download.isPending && download.variables?.moduleName === m.name}
                   onClick={() => download.mutate({ moduleName: m.name })}
                 />
-              ) : (
+              ),
+              m.status === "local" && (
+                <Button
+                  key="gen"
+                  type="text"
+                  size="small"
+                  icon={<ThunderboltOutlined />}
+                  loading={generate.isPending && generate.variables?.moduleName === m.name}
+                  onClick={() => generate.mutate({ moduleName: m.name })}
+                />
+              ),
+              m.status !== "remote" && (
                 <Popconfirm
                   key="rm"
                   title="Delete this module?"
@@ -42,10 +58,10 @@ export function ModulesPanel() {
                   <Button danger type="text" size="small" icon={<DeleteOutlined />} />
                 </Popconfirm>
               ),
-            ]}
+            ].filter(Boolean)}
           >
             <span>
-              {m.name} {m.downloadable && <Tag color="blue">available</Tag>}
+              {m.name} <Tag color={statusColor[m.status]}>{m.status}</Tag>
             </span>
           </List.Item>
         )}

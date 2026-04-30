@@ -1,5 +1,7 @@
 import os
 import subprocess
+from enum import StrEnum, auto
+from pathlib import Path
 
 from lxml import etree
 from pydantic import BaseModel, computed_field
@@ -7,41 +9,49 @@ from pydantic import BaseModel, computed_field
 import src.dependencies
 
 
+class ModuleStatus(StrEnum):
+    REMOTE = auto()
+    LOCAL = auto()
+    GENERATED = auto()
+
+
 class Module(BaseModel):
     name: str
-    downloadable: bool | None = None
 
     @computed_field
     @property
-    def get_yang_module_name(self) -> str:
-        return f"{self.name}.yang"
+    def status(self) -> ModuleStatus:
+        if self.generated_model_path.exists():
+            return ModuleStatus.GENERATED
+        if self.yang_module_path.exists():
+            return ModuleStatus.LOCAL
+        return ModuleStatus.REMOTE
 
     @computed_field
     @property
-    def get_generated_model_name(self) -> str:
-        return f"{self.name}.py"
+    def yang_module_path(self) -> Path:
+        return src.dependencies.downloaded_modules_path.path / f"{self.name}.yang"
+
+    @computed_field
+    @property
+    def generated_model_path(self) -> Path:
+        return src.dependencies.GeneratedModulesPath().path / f"{self.name}.py"
 
     @computed_field
     @property
     def exists(self) -> bool:
-        return (
-            src.dependencies.yang_modules_path.path / self.get_yang_module_name
-        ).exists()
+        return self.yang_module_path.exists()
 
     def download(self) -> None:
         connection = src.dependencies.connection_manager.connection
         assert connection is not None
         with connection.connect() as m:
-            yang_module = (
-                src.dependencies.yang_modules_path.path / self.get_yang_module_name
-            )
-            with open(yang_module, "w", encoding="utf-8") as f:
+            with open(self.yang_module_path, "w", encoding="utf-8") as f:
                 f.write(m.get_schema(identifier=self.name).data)
 
     def delete(self) -> None:
-        (src.dependencies.yang_modules_path.path / self.get_yang_module_name).unlink(
-            missing_ok=True
-        )
+        self.yang_module_path.unlink(missing_ok=True)
+        self.generated_model_path.unlink(missing_ok=True)
 
     def generate(self) -> None:
         _ = subprocess.run(
@@ -50,9 +60,9 @@ class Module(BaseModel):
                 "run",
                 "pydantify",
                 "-i",
-                str(src.dependencies.yang_modules_path.path),
+                str(src.dependencies.downloaded_modules_path.path),
                 "-o",
-                str(src.dependencies.yang_modules_path.path),
+                str(src.dependencies.downloaded_modules_path.path),
                 "-f",
                 f"{self.name}.py",
             ]
@@ -78,7 +88,14 @@ class Module(BaseModel):
 
     @staticmethod
     def get_local_modules() -> list[str]:
-        yang_modules = src.dependencies.yang_modules_path.path
-        if not yang_modules.exists():
+        modules = src.dependencies.downloaded_modules_path.path
+        if not modules.exists():
             return []
-        return [f.removesuffix(".yang") for f in os.listdir(yang_modules)]
+        return [f.removesuffix(".yang") for f in os.listdir(modules)]
+
+    @staticmethod
+    def get_generated_modules() -> list[str]:
+        modules = src.dependencies.generated_modules_path.path
+        if not modules.exists():
+            return []
+        return [f.removesuffix(".py") for f in os.listdir(modules)]

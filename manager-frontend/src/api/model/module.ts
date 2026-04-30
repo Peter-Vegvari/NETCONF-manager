@@ -4,8 +4,12 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
+import type { ModuleStatus } from './moduleStatus';
 
 export interface Module {
   name: string;
-  downloadable: boolean;
+  readonly status: ModuleStatus;
+  readonly yang_module_path: string;
+  readonly generated_model_path: string;
+  readonly exists: boolean;
 }

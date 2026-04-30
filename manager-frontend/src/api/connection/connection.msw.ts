@@ -21,7 +21,7 @@ export const getDisconnectResponseMock = (): string[] => (Array.from({length: fa
 
 
 export const getConnectMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.post('*/connection/connect', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  return http.post('*/connect', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
   if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
     return new HttpResponse(null,
@@ -31,7 +31,7 @@ export const getConnectMockHandler = (overrideResponse?: unknown | ((info: Param
 }
 
 export const getDisconnectMockHandler = (overrideResponse?: string[] | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<string[]> | string[]), options?: RequestHandlerOptions) => {
-  return http.delete('*/connection/connect', async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
+  return http.delete('*/connect', async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined

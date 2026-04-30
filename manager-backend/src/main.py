@@ -16,8 +16,11 @@ from src.routers.modules import router as modules_router
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     with open("/shared/openapi.json", "w") as f:
         json.dump(app.openapi(), f)
-    src.dependencies.yang_modules_path = await container.get(
-        src.dependencies.YangModulesPath
+    src.dependencies.downloaded_modules_path = await container.get(
+        src.dependencies.DownloadedModulesPath
+    )
+    src.dependencies.generated_modules_path = await container.get(
+        src.dependencies.GeneratedModulesPath
     )
     src.dependencies.connection_manager = await container.get(
         src.dependencies.ConnectionManager

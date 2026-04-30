@@ -336,3 +336,97 @@ export const useDeleteModule = <TError = HTTPValidationError,
       > => {
       return useMutation(getDeleteModuleMutationOptions(options), queryClient);
     }
+    /**
+ * @summary Generate Module
+ */
+export type generateModuleResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type generateModuleResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type generateModuleResponseSuccess = (generateModuleResponse200) & {
+  headers: Headers;
+};
+export type generateModuleResponseError = (generateModuleResponse422) & {
+  headers: Headers;
+};
+
+export type generateModuleResponse = (generateModuleResponseSuccess | generateModuleResponseError)
+
+export const getGenerateModuleUrl = (moduleName: string,) => {
+
+
+
+
+  return `/modules/${moduleName}/generate`
+}
+
+export const generateModule = async (moduleName: string, options?: RequestInit): Promise<generateModuleResponse> => {
+
+  const res = await fetch(getGenerateModuleUrl(moduleName),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: generateModuleResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as generateModuleResponse
+}
+
+
+
+
+export const getGenerateModuleMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateModule>>, TError,{moduleName: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof generateModule>>, TError,{moduleName: string}, TContext> => {
+
+const mutationKey = ['generateModule'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof generateModule>>, {moduleName: string}> = (props) => {
+          const {moduleName} = props ?? {};
+
+          return  generateModule(moduleName,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GenerateModuleMutationResult = NonNullable<Awaited<ReturnType<typeof generateModule>>>
+
+    export type GenerateModuleMutationError = HTTPValidationError
+
+    /**
+ * @summary Generate Module
+ */
+export const useGenerateModule = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateModule>>, TError,{moduleName: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof generateModule>>,
+        TError,
+        {moduleName: string},
+        TContext
+      > => {
+      return useMutation(getGenerateModuleMutationOptions(options), queryClient);
+    }

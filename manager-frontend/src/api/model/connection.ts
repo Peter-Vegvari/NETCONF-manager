@@ -10,5 +10,4 @@ export interface Connection {
   port?: number;
   user_name?: string;
   password?: string;
-  yang_modules?: string;
 }

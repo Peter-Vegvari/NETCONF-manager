@@ -16,12 +16,15 @@ import type {
   RequestHandlerOptions
 } from 'msw';
 
+import {
+  ModuleStatus
+} from '../model';
 import type {
   Module
 } from '../model';
 
 
-export const getGetModulesResponseMock = (): Module[] => (Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({name: faker.string.alpha({length: {min: 10, max: 20}}), downloadable: faker.datatype.boolean()})))
+export const getGetModulesResponseMock = (): Module[] => (Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({name: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(Object.values(ModuleStatus)), yang_module_path: faker.string.alpha({length: {min: 10, max: 20}}), generated_model_path: faker.string.alpha({length: {min: 10, max: 20}}), exists: faker.datatype.boolean()})))
 
 
 export const getGetModulesMockHandler = (overrideResponse?: Module[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<Module[]> | Module[]), options?: RequestHandlerOptions) => {
@@ -55,8 +58,19 @@ export const getDeleteModuleMockHandler = (overrideResponse?: unknown | ((info: 
       })
   }, options)
 }
+
+export const getGenerateModuleMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
+  return http.post('*/modules/:moduleName/generate', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+
+    return new HttpResponse(null,
+      { status: 200
+      })
+  }, options)
+}
 export const getModulesMock = () => [
   getGetModulesMockHandler(),
   getDownloadModuleMockHandler(),
-  getDeleteModuleMockHandler()
+  getDeleteModuleMockHandler(),
+  getGenerateModuleMockHandler()
 ]
