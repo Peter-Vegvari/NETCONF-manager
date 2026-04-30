@@ -1,3 +1,0 @@
-include:
-  - manager-backend/docker-compose.yml
-  - manager-frontend/docker-compose.yml

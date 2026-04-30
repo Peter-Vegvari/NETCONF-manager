@@ -2,14 +2,13 @@ services:
   manager-backend:
     build: .
     container_name: manager-backend
-    user: "${UID:-0}:${GID:-0}"
     ports:
       - "8000:8000"
     volumes:
       - .:/app
       - /app/.venv
-      - ./resources/yang-modules:/resources/yang-modules
-      - shared-spec:/shared
+      - ./resources:/resources
+      - shared:/shared
     networks:
       - shared
     
@@ -27,5 +26,5 @@ networks:
     name: shared
 
 volumes:
-  shared-spec:
-    external: true
+  shared:
+    name: shared

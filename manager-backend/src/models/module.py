@@ -62,9 +62,10 @@ class Module(BaseModel):
                 "-i",
                 str(src.dependencies.downloaded_modules_path.path),
                 "-o",
-                str(src.dependencies.downloaded_modules_path.path),
+                str(src.dependencies.generated_modules_path.path),
                 "-f",
                 f"{self.name}.py",
+                str(self.yang_module_path),
             ]
         )
 
@@ -80,7 +81,6 @@ class Module(BaseModel):
                     </netconf-state>
                 """
             reply = m.get(filter=("subtree", filter_xml))
-            print(reply)
             tree = etree.fromstring(reply.xml.encode())
             ns = {"ncm": "urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring"}
             schemas = tree.xpath("//ncm:schema", namespaces=ns)

@@ -19,12 +19,12 @@ dependencies = [
     "fastapi[standard]",
     "uvicorn",
     "pyang",
-    "pyangbind",
     "lxml",
     "types-lxml",
     "yangson",
     "datamodel-code-generator",
     "wireup>=2.9.0",
+    "pydantify @ git+https://github.com/pydantify/pydantify.git",
 ]
 
 [project.scripts]

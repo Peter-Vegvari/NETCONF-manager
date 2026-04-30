@@ -1,6 +1,6 @@
 import { Button, Card, Form, Input, InputNumber, Space } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
-import { useConnect, useDisconnect } from "../api/default/default";
+import { useConnect, useDisconnect } from "../api/connection/connection";
 
 export function ConnectionForm() {
   const queryClient = useQueryClient();

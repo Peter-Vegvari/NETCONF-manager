@@ -1,6 +1,5 @@
 .idea
 .vscode
-manager-backend/resources/yang-modules
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -353,4 +352,4 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
-.kiro/settings/lsp.json
+.kiro

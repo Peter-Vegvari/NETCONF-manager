@@ -1,14 +1,56 @@
 FROM ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Setup a non-root user matching typical host UID
+RUN groupadd --system --gid 1000 nonroot \
+    && useradd --system --gid 1000 --uid 1000 --create-home nonroot
+
+# Install the project into `/app`
 WORKDIR /app
 
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+
+# Copy from the cache instead of linking since it's a mounted volume
+ENV UV_LINK_MODE=copy
+
+# Omit development dependencies
+ENV UV_NO_DEV=1
+
+# Ensure installed tools can be executed out of the box
+ENV UV_TOOL_BIN_DIR=/usr/local/bin
+
+# Install the project's dependencies using the lockfile and settings
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-install-project
 
-COPY . /app
+# Then, add the rest of the project source code and install it
+# Installing separately from its dependencies allows optimal layer caching
+COPY --chown=nonroot:nonroot . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked
-    
-EXPOSE 8000
-CMD ["uv", "run", "fastapi", "dev", "--host", "0.0.0.0", "src/main.py"]
+
+# Place executables in the environment at the front of the path
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Reset the entrypoint, don't invoke `uv`
+ENTRYPOINT []
+
+# Ensure the shared volume mount point is writable by nonroot
+RUN mkdir -p /shared && chmod 755 /shared && chown nonroot:nonroot /shared \
+    && chown -R nonroot:nonroot /app/.venv
+
+# Use the non-root user to run our application
+USER nonroot
+
+# Run the FastAPI application by default
+# Uses `uv run` to sync dependencies on startup, respecting UV_NO_DEV
+# Uses `fastapi dev` to enable hot-reloading when the `watch` sync occurs
+# Uses `--host 0.0.0.0` to allow access from outside the container
+# Note in production, you should use `fastapi run` instead
+CMD ["fastapi", "dev", "--host", "0.0.0.0", "src/main.py"]
