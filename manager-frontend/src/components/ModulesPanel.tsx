@@ -1,9 +1,8 @@
 import { useMemo, useState } from "react";
-import { Button, Card, Collapse, Descriptions, Input, Popconfirm, Select, Space, Spin, Tag, message } from "antd";
+import { Button, Card, Collapse, Descriptions, Input, Popconfirm, Select, Space, Tag, message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { DeleteOutlined, DownloadOutlined, CloudDownloadOutlined } from "@ant-design/icons";
 import { useGetModules, useDownloadModule, useDeleteModule, useDownloadAllModules, useDeleteAllModules } from "../api/modules/modules";
-import { useGetModuleSchema } from "../api/schema/schema";
 import type { Module, SchemaNode } from "../api/model";
 
 const statusColor: Record<Module["status"], string> = {
@@ -27,14 +26,6 @@ function SchemaTree({ node }: { node: SchemaNode }) {
   );
 }
 
-function ModuleSchema({ moduleName }: { moduleName: string }) {
-  const { data, isLoading } = useGetModuleSchema(moduleName);
-
-  if (isLoading) return <Spin size="small" />;
-  if (!data?.data?.children || Object.keys(data.data.children).length === 0) return <span>No schema available.</span>;
-  return <SchemaTree node={data.data} />;
-}
-
 export function ModulesPanel() {
   const [msg, contextHolder] = message.useMessage();
   const queryClient = useQueryClient();
@@ -56,7 +47,7 @@ export function ModulesPanel() {
     mutation: { onSuccess: () => { queryClient.invalidateQueries(); msg.success("All modules deleted"); }, onError: () => msg.error("Failed to delete all modules") },
   });
 
-  const modules = Array.isArray(data?.data) ? data.data : [];
+  const modules = useMemo(() => Array.isArray(data?.data) ? data.data : [], [data]);
 
   const filtered = useMemo(() => {
     let result = modules.filter((m) => m.name.toLowerCase().includes(search.toLowerCase()));
@@ -98,7 +89,9 @@ export function ModulesPanel() {
                 <Button danger type="text" size="small" icon={<DeleteOutlined />} onClick={(e) => e.stopPropagation()} />
               </Popconfirm>
             ),
-            children: m.status === "local" ? <ModuleSchema moduleName={m.name} /> : <span>Download module to view schema.</span>,
+            children: m.status === "local" && m.schema_node?.children
+              ? <SchemaTree node={m.schema_node} />
+              : <span>{m.status === "local" ? "No schema available." : "Download module to view schema."}</span>,
           }))} />
         )}
       </Card>

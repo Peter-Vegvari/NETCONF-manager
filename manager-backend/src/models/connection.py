@@ -23,4 +23,5 @@ class Connection(BaseModel):
             device_params={"name": "default"},
             allow_agent=False,
             look_for_keys=False,
+            timeout=10,
         )
