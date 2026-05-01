@@ -34,7 +34,7 @@ async def download_module(module_name: str):
 @router.delete("/{module_name}", operation_id="deleteModule")
 async def delete_module(module_name: str):
     module = Module(name=module_name)
-    if not module.yang_module_path.exists():
+    if not module.path.exists():
         raise HTTPException(404, "Module not found")
     module.delete()
 

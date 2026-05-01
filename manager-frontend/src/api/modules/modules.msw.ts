@@ -24,7 +24,7 @@ import type {
 } from '../model';
 
 
-export const getGetModulesResponseMock = (): Module[] => (Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({name: faker.string.alpha({length: {min: 10, max: 20}}), yang_module_path: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(Object.values(ModuleStatus))})))
+export const getGetModulesResponseMock = (): Module[] => (Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({name: faker.string.alpha({length: {min: 10, max: 20}}), path: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(Object.values(ModuleStatus)), revision: faker.string.alpha({length: {min: 10, max: 20}})})))
 
 
 export const getGetModulesMockHandler = (overrideResponse?: Module[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<Module[]> | Module[]), options?: RequestHandlerOptions) => {
