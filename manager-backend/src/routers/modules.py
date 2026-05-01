@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 import src.dependencies
 from src.models.module import Module
+from src.models.schema import SchemaNode
 
 router = APIRouter(prefix="/modules", tags=["modules"])
 
@@ -43,3 +44,9 @@ async def delete_module(module_name: str):
 async def delete_all_modules():
     for module in Module.get_local_modules():
         module.delete()
+
+
+@router.get("/{module_name}/schema", operation_id="getSchema")
+async def get_module_schema(module_name: str) -> SchemaNode:
+    module = Module(name=module_name)
+    return module.schema_node

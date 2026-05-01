@@ -25,6 +25,10 @@ export const getGetSchemaResponseMock = (overrideResponse: Partial<Extract<Schem
         [faker.string.alphanumeric(5)]: {kind: faker.string.alpha({length: {min: 10, max: 20}}), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined])}
       },null,]), undefined]), ...overrideResponse})
 
+export const getGetModuleSchemaResponseMock = (overrideResponse: Partial<Extract<SchemaNode, object>> = {}): SchemaNode => ({kind: faker.string.alpha({length: {min: 10, max: 20}}), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: {kind: faker.string.alpha({length: {min: 10, max: 20}}), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined])}
+      },null,]), undefined]), ...overrideResponse})
+
 
 export const getGetSchemaMockHandler = (overrideResponse?: SchemaNode | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<SchemaNode> | SchemaNode), options?: RequestHandlerOptions) => {
   return http.get('*/schema/', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
@@ -37,6 +41,19 @@ export const getGetSchemaMockHandler = (overrideResponse?: SchemaNode | ((info: 
       })
   }, options)
 }
+
+export const getGetModuleSchemaMockHandler = (overrideResponse?: SchemaNode | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<SchemaNode> | SchemaNode), options?: RequestHandlerOptions) => {
+  return http.get('*/schema/:moduleName', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetModuleSchemaResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
 export const getSchemaMock = () => [
-  getGetSchemaMockHandler()
+  getGetSchemaMockHandler(),
+  getGetModuleSchemaMockHandler()
 ]

@@ -20,6 +20,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  HTTPValidationError,
   SchemaNode
 } from '../model';
 
@@ -134,6 +135,129 @@ export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TErr
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetSchemaQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
+ * @summary Get Module Schema
+ */
+export type getModuleSchemaResponse200 = {
+  data: SchemaNode
+  status: 200
+}
+
+export type getModuleSchemaResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type getModuleSchemaResponseSuccess = (getModuleSchemaResponse200) & {
+  headers: Headers;
+};
+export type getModuleSchemaResponseError = (getModuleSchemaResponse422) & {
+  headers: Headers;
+};
+
+export type getModuleSchemaResponse = (getModuleSchemaResponseSuccess | getModuleSchemaResponseError)
+
+export const getGetModuleSchemaUrl = (moduleName: string,) => {
+
+
+
+
+  return `/schema/${moduleName}`
+}
+
+export const getModuleSchema = async (moduleName: string, options?: RequestInit): Promise<getModuleSchemaResponse> => {
+
+  const res = await fetch(getGetModuleSchemaUrl(moduleName),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getModuleSchemaResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getModuleSchemaResponse
+}
+
+
+
+
+
+export const getGetModuleSchemaQueryKey = (moduleName: string,) => {
+    return [
+    `/schema/${moduleName}`
+    ] as const;
+    }
+
+
+export const getGetModuleSchemaQueryOptions = <TData = Awaited<ReturnType<typeof getModuleSchema>>, TError = HTTPValidationError>(moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModuleSchema>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModuleSchemaQueryKey(moduleName);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModuleSchema>>> = ({ signal }) => getModuleSchema(moduleName, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(moduleName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModuleSchema>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetModuleSchemaQueryResult = NonNullable<Awaited<ReturnType<typeof getModuleSchema>>>
+export type GetModuleSchemaQueryError = HTTPValidationError
+
+
+export function useGetModuleSchema<TData = Awaited<ReturnType<typeof getModuleSchema>>, TError = HTTPValidationError>(
+ moduleName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModuleSchema>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModuleSchema>>,
+          TError,
+          Awaited<ReturnType<typeof getModuleSchema>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModuleSchema<TData = Awaited<ReturnType<typeof getModuleSchema>>, TError = HTTPValidationError>(
+ moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModuleSchema>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModuleSchema>>,
+          TError,
+          Awaited<ReturnType<typeof getModuleSchema>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModuleSchema<TData = Awaited<ReturnType<typeof getModuleSchema>>, TError = HTTPValidationError>(
+ moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModuleSchema>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Module Schema
+ */
+
+export function useGetModuleSchema<TData = Awaited<ReturnType<typeof getModuleSchema>>, TError = HTTPValidationError>(
+ moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModuleSchema>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetModuleSchemaQueryOptions(moduleName,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

@@ -25,7 +25,8 @@ import type {
 
 import type {
   HTTPValidationError,
-  Module
+  Module,
+  SchemaNode
 } from '../model';
 
 
@@ -510,3 +511,126 @@ export const useDeleteModule = <TError = HTTPValidationError,
       > => {
       return useMutation(getDeleteModuleMutationOptions(options), queryClient);
     }
+    /**
+ * @summary Get Module Schema
+ */
+export type getSchemaResponse200 = {
+  data: SchemaNode
+  status: 200
+}
+
+export type getSchemaResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type getSchemaResponseSuccess = (getSchemaResponse200) & {
+  headers: Headers;
+};
+export type getSchemaResponseError = (getSchemaResponse422) & {
+  headers: Headers;
+};
+
+export type getSchemaResponse = (getSchemaResponseSuccess | getSchemaResponseError)
+
+export const getGetSchemaUrl = (moduleName: string,) => {
+
+
+
+
+  return `/modules/${moduleName}/schema`
+}
+
+export const getSchema = async (moduleName: string, options?: RequestInit): Promise<getSchemaResponse> => {
+
+  const res = await fetch(getGetSchemaUrl(moduleName),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getSchemaResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getSchemaResponse
+}
+
+
+
+
+
+export const getGetSchemaQueryKey = (moduleName: string,) => {
+    return [
+    `/modules/${moduleName}/schema`
+    ] as const;
+    }
+
+
+export const getGetSchemaQueryOptions = <TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSchemaQueryKey(moduleName);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSchema>>> = ({ signal }) => getSchema(moduleName, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(moduleName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetSchemaQueryResult = NonNullable<Awaited<ReturnType<typeof getSchema>>>
+export type GetSchemaQueryError = HTTPValidationError
+
+
+export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
+ moduleName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSchema>>,
+          TError,
+          Awaited<ReturnType<typeof getSchema>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
+ moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSchema>>,
+          TError,
+          Awaited<ReturnType<typeof getSchema>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
+ moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Module Schema
+ */
+
+export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TError = HTTPValidationError>(
+ moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSchema>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetSchemaQueryOptions(moduleName,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+

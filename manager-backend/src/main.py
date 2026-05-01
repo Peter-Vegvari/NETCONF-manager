@@ -10,13 +10,19 @@ from fastapi.middleware.cors import CORSMiddleware
 import src.dependencies
 from src.routers.connection import router as connection_router
 from src.routers.modules import router as modules_router
-from src.routers.schema import router as schema_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    with open("/shared/openapi.json", "w") as f:
+    import os
+    import tempfile
+
+    with tempfile.NamedTemporaryFile(
+        "w", dir="/shared", suffix=".tmp", delete=False
+    ) as f:
         json.dump(app.openapi(), f)
+        tmp = f.name
+    os.replace(tmp, "/shared/openapi.json")
     src.dependencies.downloaded_modules_path = await container.get(
         src.dependencies.DownloadedModulesPath
     )
@@ -38,7 +44,6 @@ app.add_middleware(
 
 app.include_router(modules_router)
 app.include_router(connection_router)
-app.include_router(schema_router)
 
 container = wireup.create_async_container(injectables=[src.dependencies])
 wireup.integration.fastapi.setup(container, app)

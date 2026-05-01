@@ -20,11 +20,16 @@ import {
   ModuleStatus
 } from '../model';
 import type {
-  Module
+  Module,
+  SchemaNode
 } from '../model';
 
 
-export const getGetModulesResponseMock = (): Module[] => (Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({name: faker.string.alpha({length: {min: 10, max: 20}}), path: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(Object.values(ModuleStatus)), revision: faker.string.alpha({length: {min: 10, max: 20}})})))
+export const getGetModulesResponseMock = (): Module[] => (Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({name: faker.string.alpha({length: {min: 10, max: 20}}), path: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(Object.values(ModuleStatus)), revision: faker.string.alpha({length: {min: 10, max: 20}}), schema_node: {kind: faker.string.alpha({length: {min: 10, max: 20}}), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined])}})))
+
+export const getGetSchemaResponseMock = (overrideResponse: Partial<Extract<SchemaNode, object>> = {}): SchemaNode => ({kind: faker.string.alpha({length: {min: 10, max: 20}}), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: {kind: faker.string.alpha({length: {min: 10, max: 20}}), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined])}
+      },null,]), undefined]), ...overrideResponse})
 
 
 export const getGetModulesMockHandler = (overrideResponse?: Module[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<Module[]> | Module[]), options?: RequestHandlerOptions) => {
@@ -78,10 +83,23 @@ export const getDeleteModuleMockHandler = (overrideResponse?: unknown | ((info: 
       })
   }, options)
 }
+
+export const getGetSchemaMockHandler = (overrideResponse?: SchemaNode | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<SchemaNode> | SchemaNode), options?: RequestHandlerOptions) => {
+  return http.get('*/modules/:moduleName/schema', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetSchemaResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
 export const getModulesMock = () => [
   getGetModulesMockHandler(),
   getDeleteAllModulesMockHandler(),
   getDownloadAllModulesMockHandler(),
   getDownloadModuleMockHandler(),
-  getDeleteModuleMockHandler()
+  getDeleteModuleMockHandler(),
+  getGetSchemaMockHandler()
 ]

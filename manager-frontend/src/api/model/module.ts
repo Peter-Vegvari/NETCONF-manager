@@ -5,10 +5,12 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { ModuleStatus } from './moduleStatus';
+import type { SchemaNode } from './schemaNode';
 
 export interface Module {
   name: string;
   readonly path: string;
   readonly status: ModuleStatus;
   readonly revision: string;
+  readonly schema_node: SchemaNode;
 }

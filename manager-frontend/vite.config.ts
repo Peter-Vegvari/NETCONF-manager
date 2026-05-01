@@ -14,7 +14,6 @@ export default defineConfig({
     proxy: {
       '/connect': 'http://manager-backend:8000',
       '/modules': 'http://manager-backend:8000',
-      '/schema': 'http://manager-backend:8000',
     },
   },
 })

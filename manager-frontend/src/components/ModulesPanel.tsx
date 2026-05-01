@@ -1,13 +1,38 @@
-import { Button, Card, List, Popconfirm, Tag, message } from "antd";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { Button, Card, Collapse, Descriptions, Popconfirm, Spin, Tag, message } from "antd";
+import { useQueryClient } from "@tanstack/react-query";
 import { DeleteOutlined, DownloadOutlined, CloudDownloadOutlined } from "@ant-design/icons";
-import { useGetModules, useDownloadModule, useDeleteModule } from "../api/modules/modules";
-import type { Module } from "../api/model";
+import { useGetModules, useDownloadModule, useDeleteModule, useDownloadAllModules, useDeleteAllModules } from "../api/modules/modules";
+import { useGetModuleSchema } from "../api/schema/schema";
+import type { Module, SchemaNode } from "../api/model";
 
 const statusColor: Record<Module["status"], string> = {
   remote: "blue",
   local: "green",
 };
+
+function SchemaTree({ node }: { node: SchemaNode }) {
+  if (!node.children) return null;
+  return (
+    <Collapse size="small" items={Object.entries(node.children).map(([name, child]) => ({
+      key: name,
+      label: <span>{name} <Tag>{child.kind}</Tag>{child.mandatory && <Tag color="red">required</Tag>}{child.type && <Tag color="purple">{String(child.type["base"] ?? "")}</Tag>}</span>,
+      children: child.children ? <SchemaTree node={child} /> : (
+        <Descriptions size="small" column={1}>
+          {child.description && <Descriptions.Item label="Description">{child.description}</Descriptions.Item>}
+          {child.default !== undefined && <Descriptions.Item label="Default">{String(child.default)}</Descriptions.Item>}
+        </Descriptions>
+      ),
+    }))} />
+  );
+}
+
+function ModuleSchema({ moduleName }: { moduleName: string }) {
+  const { data, isLoading } = useGetModuleSchema(moduleName);
+
+  if (isLoading) return <Spin size="small" />;
+  if (!data?.data?.children || Object.keys(data.data.children).length === 0) return <span>No schema available.</span>;
+  return <SchemaTree node={data.data} />;
+}
 
 export function ModulesPanel() {
   const [msg, contextHolder] = message.useMessage();
@@ -19,16 +44,12 @@ export function ModulesPanel() {
   const download = useDownloadModule(onSuccess("Module downloaded"));
   const remove = useDeleteModule(onSuccess("Module deleted"));
 
-  const downloadAll = useMutation({
-    mutationFn: async () => { const r = await fetch("/modules/download-all", { method: "POST" }); if (!r.ok) throw new Error(); },
-    onSuccess: () => { queryClient.invalidateQueries(); msg.success("All modules downloaded"); },
-    onError: () => msg.error("Failed to download all modules"),
+  const downloadAll = useDownloadAllModules({
+    mutation: { onSuccess: () => { queryClient.invalidateQueries(); msg.success("All modules downloaded"); }, onError: () => msg.error("Failed to download all modules") },
   });
 
-  const deleteAll = useMutation({
-    mutationFn: async () => { const r = await fetch("/modules/", { method: "DELETE" }); if (!r.ok) throw new Error(); },
-    onSuccess: () => { queryClient.invalidateQueries(); msg.success("All modules deleted"); },
-    onError: () => msg.error("Failed to delete all modules"),
+  const deleteAll = useDeleteAllModules({
+    mutation: { onSuccess: () => { queryClient.invalidateQueries(); msg.success("All modules deleted"); }, onError: () => msg.error("Failed to delete all modules") },
   });
 
   const modules = Array.isArray(data?.data) ? data.data : [];
@@ -46,29 +67,22 @@ export function ModulesPanel() {
           </Button>
         </Popconfirm>
       </>}>
-        <List
-          size="small"
-          dataSource={modules}
-          locale={{ emptyText: "No modules found." }}
-          renderItem={(m) => (
-            <List.Item
-              actions={[
-                m.status === "remote" && (
-                  <Button key="dl" type="text" size="small" icon={<DownloadOutlined />}
-                    loading={download.isPending && download.variables?.moduleName === m.name}
-                    onClick={() => download.mutate({ moduleName: m.name })} />
-                ),
-                m.status !== "remote" && (
-                  <Popconfirm key="rm" title="Delete this module?" onConfirm={() => remove.mutate({ moduleName: m.name })}>
-                    <Button danger type="text" size="small" icon={<DeleteOutlined />} />
-                  </Popconfirm>
-                ),
-              ].filter(Boolean)}
-            >
-              <span>{m.name} <Tag color={statusColor[m.status]}>{m.status}</Tag></span>
-            </List.Item>
-          )}
-        />
+        {modules.length === 0 ? "No modules found." : (
+          <Collapse items={modules.map((m) => ({
+            key: m.name,
+            label: <span>{m.name} <Tag color={statusColor[m.status]}>{m.status}</Tag></span>,
+            extra: m.status === "remote" ? (
+              <Button type="text" size="small" icon={<DownloadOutlined />}
+                loading={download.isPending && download.variables?.moduleName === m.name}
+                onClick={(e) => { e.stopPropagation(); download.mutate({ moduleName: m.name }); }} />
+            ) : (
+              <Popconfirm title="Delete this module?" onConfirm={() => remove.mutate({ moduleName: m.name })} onPopupClick={(e) => e.stopPropagation()}>
+                <Button danger type="text" size="small" icon={<DeleteOutlined />} onClick={(e) => e.stopPropagation()} />
+              </Popconfirm>
+            ),
+            children: m.status === "local" ? <ModuleSchema moduleName={m.name} /> : <span>Download module to view schema.</span>,
+          }))} />
+        )}
       </Card>
     </>
   );
