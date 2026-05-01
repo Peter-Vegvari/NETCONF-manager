@@ -1,4 +1,5 @@
-import { Button, Card, Collapse, Descriptions, Popconfirm, Spin, Tag, message } from "antd";
+import { useMemo, useState } from "react";
+import { Button, Card, Collapse, Descriptions, Input, Popconfirm, Select, Space, Spin, Tag, message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { DeleteOutlined, DownloadOutlined, CloudDownloadOutlined } from "@ant-design/icons";
 import { useGetModules, useDownloadModule, useDeleteModule, useDownloadAllModules, useDeleteAllModules } from "../api/modules/modules";
@@ -37,6 +38,9 @@ function ModuleSchema({ moduleName }: { moduleName: string }) {
 export function ModulesPanel() {
   const [msg, contextHolder] = message.useMessage();
   const queryClient = useQueryClient();
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string | undefined>();
+  const [sort, setSort] = useState<"name" | "status">("name");
 
   const onSuccess = (text: string) => ({ mutation: { onSuccess: () => { queryClient.invalidateQueries(); msg.success(text); }, onError: () => msg.error(`Failed: ${text}`) } });
 
@@ -54,10 +58,17 @@ export function ModulesPanel() {
 
   const modules = Array.isArray(data?.data) ? data.data : [];
 
+  const filtered = useMemo(() => {
+    let result = modules.filter((m) => m.name.toLowerCase().includes(search.toLowerCase()));
+    if (statusFilter) result = result.filter((m) => m.status === statusFilter);
+    result.sort((a, b) => sort === "name" ? a.name.localeCompare(b.name) : a.status.localeCompare(b.status));
+    return result;
+  }, [modules, search, statusFilter, sort]);
+
   return (
     <>
       {contextHolder}
-      <Card title={`Modules (${modules.length})`} extra={<>
+      <Card title={`Modules (${filtered.length}/${modules.length})`} extra={<>
         <Button icon={<CloudDownloadOutlined />} loading={downloadAll.isPending} onClick={() => downloadAll.mutate()}>
           Download All
         </Button>
@@ -67,8 +78,15 @@ export function ModulesPanel() {
           </Button>
         </Popconfirm>
       </>}>
-        {modules.length === 0 ? "No modules found." : (
-          <Collapse items={modules.map((m) => ({
+        <Space style={{ marginBottom: 16, width: "100%" }}>
+          <Input.Search placeholder="Filter by name" allowClear onChange={(e) => setSearch(e.target.value)} style={{ width: 250 }} />
+          <Select placeholder="Status" allowClear onChange={setStatusFilter} style={{ width: 120 }}
+            options={[{ value: "local", label: "Local" }, { value: "remote", label: "Remote" }]} />
+          <Select value={sort} onChange={setSort} style={{ width: 140 }}
+            options={[{ value: "name", label: "Sort: Name" }, { value: "status", label: "Sort: Status" }]} />
+        </Space>
+        {filtered.length === 0 ? "No modules found." : (
+          <Collapse items={filtered.map((m) => ({
             key: m.name,
             label: <span>{m.name} <Tag color={statusColor[m.status]}>{m.status}</Tag></span>,
             extra: m.status === "remote" ? (
