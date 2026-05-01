@@ -1,14 +1,11 @@
-import json
 import os
 from enum import StrEnum, auto
 from pathlib import Path
 
 from lxml import etree
 from pydantic import BaseModel, computed_field
-from yangson import DataModel
 
 import src.dependencies
-from src.models.schema import SchemaNode
 
 _NETCONF_SCHEMAS_FILTER = """
     <netconf-state xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring">
@@ -55,37 +52,6 @@ class Module(BaseModel):
 
     def delete(self) -> None:
         self.yang_module_path.unlink(missing_ok=True)
-
-    @staticmethod
-    def get_schema() -> SchemaNode:
-        modules = []
-        for module in Module.get_local_modules():
-            revision = ""
-            with open(module.yang_module_path, "r") as f:
-                for line in f:
-                    stripped = line.strip()
-                    if stripped.startswith("revision "):
-                        revision = stripped.split()[1].rstrip("{").strip('"').strip("'")
-                        break
-            modules.append(
-                {
-                    "name": module.name,
-                    "revision": revision,
-                    "conformance-type": "implement",
-                }
-            )
-
-        yang_library = {
-            "ietf-yang-library:modules-state": {
-                "module-set-id": "1",
-                "module": modules,
-            }
-        }
-
-        dm = DataModel(
-            json.dumps(yang_library), mod_path=[str(src.dependencies.downloaded_modules_path.path)]
-        )
-        return SchemaNode.model_validate(json.loads(dm.schema_digest()))
 
     @staticmethod
     def download_all() -> None:
