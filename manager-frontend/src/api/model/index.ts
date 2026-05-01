@@ -7,5 +7,10 @@
 
 export * from './connection';
 export * from './hTTPValidationError';
+export * from './module';
+export * from './moduleStatus';
+export * from './schemaNode';
+export * from './schemaNodeChildren';
+export * from './schemaNodeType';
 export * from './validationError';
 export * from './validationErrorCtx';

@@ -5,20 +5,26 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./src:/app/src
-      - ./resources/yang-modules:/resources/yang-modules
+      - .:/app
+      - /app/.venv
+      - ./resources:/resources
+      - shared:/shared
     networks:
       - shared
     
-  notconf:
-    image: ghcr.io/notconf/notconf-ietf:latest
-    container_name: notconf
-    ports:
-      - "830:830"
-      - "80:80"
-    networks:
-      - shared
+  # notconf:
+  #   image: ghcr.io/notconf/notconf-ietf:latest
+  #   container_name: notconf
+  #   ports:
+  #     - "830:830"
+  #     - "80:80"
+  #   networks:
+  #     - shared
 
 networks:
+  shared:
+    name: shared
+
+volumes:
   shared:
     name: shared

@@ -5,10 +5,18 @@ services:
     ports:
       - "3000:5173"
     volumes:
-      - ./src:/app/src
+      - .:/app
+      - /app/node_modules
+      - shared:/shared
     networks:
       - shared
 
 networks:
   shared:
     name: shared
+    external: true
+
+volumes:
+  shared:
+    name: shared
+    external: true

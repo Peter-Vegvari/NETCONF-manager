@@ -1,54 +1,44 @@
-import os
-from pathlib import Path
-import shutil
+import json
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+import wireup
+import wireup.integration.fastapi
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
-from src.models import Connection, disconnect
-from src.restconf import router as restconf_router
 
-app = FastAPI()
+import src.dependencies
+from src.routers.connection import router as connection_router
+from src.routers.modules import router as modules_router
+from src.routers.schema import router as schema_router
 
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    with open("/shared/openapi.json", "w") as f:
+        json.dump(app.openapi(), f)
+    src.dependencies.downloaded_modules_path = await container.get(
+        src.dependencies.DownloadedModulesPath
+    )
+    src.dependencies.connection_manager = await container.get(
+        src.dependencies.ConnectionManager
+    )
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(restconf_router)
+app.include_router(modules_router)
+app.include_router(connection_router)
+app.include_router(schema_router)
 
-yang_modules: Path = Path("../resources/yang-modules")
-
-
-@app.post("/connect", operation_id="connect")
-async def connect(new_connection: Connection) -> list[str]:
-    return new_connection.download_schemas()
-
-
-@app.delete("/connect", operation_id="disconnect")
-async def disconnect_route() -> list[str]:
-    deleted_schemas: list[str] = os.listdir(yang_modules) if yang_modules.exists() else []
-    disconnect()
-    if yang_modules.exists():
-        shutil.rmtree(yang_modules)
-        os.makedirs(yang_modules)
-    return deleted_schemas
-
-
-@app.get("/schemas", operation_id="getSchemas")
-async def get_schemas() -> list[str]:
-    if not yang_modules.exists():
-        return []
-    return os.listdir(yang_modules)
-
-
-@app.get("/schemas/{schema_name}", operation_id="getSchema", response_model=None)
-async def get_schema(schema_name: str) -> FileResponse:
-    return FileResponse(f"{yang_modules}/{schema_name}.yang")
+container = wireup.create_async_container(injectables=[src.dependencies])
+wireup.integration.fastapi.setup(container, app)

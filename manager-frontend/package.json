@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev-api": "orval && vite",
-    "build": "tsc -b && vite build",
+    "dev-api": "orval --watch & vite",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -1,15 +1,21 @@
 import { Button, Card, Form, Input, InputNumber, Space } from "antd";
-import { useConnect, useDisconnect } from "../api/default/default";
+import { useQueryClient } from "@tanstack/react-query";
+import { useConnect, useDisconnect } from "../api/connection/connection";
 
 export function ConnectionForm() {
-  const connect = useConnect();
-  const disconnect = useDisconnect();
+  const queryClient = useQueryClient();
+  const connect = useConnect({
+    mutation: { onSuccess: () => queryClient.invalidateQueries() },
+  });
+  const disconnect = useDisconnect({
+    mutation: { onSuccess: () => queryClient.invalidateQueries() },
+  });
 
   return (
     <Card title="Device Connection" style={{ marginBottom: 16 }}>
       <Form
         layout="inline"
-        initialValues={{ host: "notconf", port: 830, user_name: "admin", password: "admin" }}
+        initialValues={{ host: "10.41.102.39", port: 830, user_name: "admin_user", password: "Ericsson1234" }}
         onFinish={(values) => connect.mutate({ data: values })}
       >
         <Form.Item name="host" label="Host">

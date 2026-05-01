@@ -19,11 +19,12 @@ dependencies = [
     "fastapi[standard]",
     "uvicorn",
     "pyang",
-    "pyangbind",
     "lxml",
     "types-lxml",
     "yangson",
     "datamodel-code-generator",
+    "wireup>=2.9.0",
+    "pydantify @ git+https://github.com/pydantify/pydantify.git",
 ]
 
 [project.scripts]
@@ -58,3 +59,10 @@ reportOptionalContextManager = false
 minversion = "8.4.1"
 addopts = "-ra -q"
 testpaths = ["tests"]
+
+[tool.ruff.lint]
+extend-select = ["I"]
+fixable = ["I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
