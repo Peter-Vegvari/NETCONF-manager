@@ -23,7 +23,7 @@ export function SchemaPanel() {
 
   return (
     <Card title="Schema">
-      {data?.data?.children ? <SchemaTree node={data.data} /> : "No schema available."}
+      {data?.data?.children && Object.keys(data.data.children).length > 0 ? <SchemaTree node={data.data} /> : "No schema available."}
     </Card>
   );
 }

@@ -7,4 +7,7 @@ router = APIRouter(prefix="/schema", tags=["schema"])
 
 @router.get("/", operation_id="getSchema")
 async def get_schema() -> SchemaNode:
-    return SchemaNode.get_schema()
+    try:
+        return SchemaNode.get_schema()
+    except Exception:
+        return SchemaNode()

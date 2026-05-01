@@ -39,8 +39,9 @@ class Module(BaseModel):
         connection = src.dependencies.connection_manager.connection
         assert connection is not None
         with connection.connect() as m:
-            with open(self.path, "w", encoding="utf-8") as f:
-                f.write(m.get_schema(identifier=self.name).data)
+            content = m.get_schema(identifier=self.name).data
+        with open(self.path, "w", encoding="utf-8") as f:
+            f.write(content)
 
     @computed_field
     @property
@@ -59,15 +60,18 @@ class Module(BaseModel):
 
     @staticmethod
     def download_all() -> None:
-        assert src.dependencies.connection_manager.connection is not None
-        for module in Module.get_remote_modules():
-            if module.path.exists():
-                continue
-            try:
-                with open(module.path, "w", encoding="utf-8") as f:
-                    f.write(m.get_schema(identifier=module.name).data)
-            except Exception:
-                pass
+        connection = src.dependencies.connection_manager.connection
+        assert connection is not None
+        with connection.connect() as m:
+            for module in Module.get_remote_modules():
+                if module.path.exists():
+                    continue
+                try:
+                    content = m.get_schema(identifier=module.name).data
+                    with open(module.path, "w", encoding="utf-8") as f:
+                        f.write(content)
+                except Exception:
+                    pass
 
     @staticmethod
     def get_remote_modules() -> "list[Module]":
