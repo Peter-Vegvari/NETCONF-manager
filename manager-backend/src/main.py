@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import src.dependencies
 from src.routers.connection import router as connection_router
 from src.routers.modules import router as modules_router
+from src.routers.schema import router as schema_router
 
 
 @asynccontextmanager
@@ -18,9 +19,6 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         json.dump(app.openapi(), f)
     src.dependencies.downloaded_modules_path = await container.get(
         src.dependencies.DownloadedModulesPath
-    )
-    src.dependencies.generated_modules_path = await container.get(
-        src.dependencies.GeneratedModulesPath
     )
     src.dependencies.connection_manager = await container.get(
         src.dependencies.ConnectionManager
@@ -40,6 +38,7 @@ app.add_middleware(
 
 app.include_router(modules_router)
 app.include_router(connection_router)
+app.include_router(schema_router)
 
 container = wireup.create_async_container(injectables=[src.dependencies])
 wireup.integration.fastapi.setup(container, app)

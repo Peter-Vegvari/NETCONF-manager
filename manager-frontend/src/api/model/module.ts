@@ -8,8 +8,6 @@ import type { ModuleStatus } from './moduleStatus';
 
 export interface Module {
   name: string;
-  readonly status: ModuleStatus;
   readonly yang_module_path: string;
-  readonly generated_model_path: string;
-  readonly exists: boolean;
+  readonly status: ModuleStatus;
 }

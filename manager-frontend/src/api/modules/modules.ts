@@ -149,6 +149,180 @@ export function useGetModules<TData = Awaited<ReturnType<typeof getModules>>, TE
 
 
 /**
+ * @summary Delete All Modules
+ */
+export type deleteAllModulesResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type deleteAllModulesResponseSuccess = (deleteAllModulesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type deleteAllModulesResponse = (deleteAllModulesResponseSuccess)
+
+export const getDeleteAllModulesUrl = () => {
+
+
+
+
+  return `/modules/`
+}
+
+export const deleteAllModules = async ( options?: RequestInit): Promise<deleteAllModulesResponse> => {
+
+  const res = await fetch(getDeleteAllModulesUrl(),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: deleteAllModulesResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteAllModulesResponse
+}
+
+
+
+
+export const getDeleteAllModulesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAllModules>>, TError,void, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAllModules>>, TError,void, TContext> => {
+
+const mutationKey = ['deleteAllModules'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAllModules>>, void> = () => {
+
+
+          return  deleteAllModules(fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAllModulesMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAllModules>>>
+
+    export type DeleteAllModulesMutationError = unknown
+
+    /**
+ * @summary Delete All Modules
+ */
+export const useDeleteAllModules = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAllModules>>, TError,void, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAllModules>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getDeleteAllModulesMutationOptions(options), queryClient);
+    }
+    /**
+ * @summary Download All Modules
+ */
+export type downloadAllModulesResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type downloadAllModulesResponseSuccess = (downloadAllModulesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type downloadAllModulesResponse = (downloadAllModulesResponseSuccess)
+
+export const getDownloadAllModulesUrl = () => {
+
+
+
+
+  return `/modules/download-all`
+}
+
+export const downloadAllModules = async ( options?: RequestInit): Promise<downloadAllModulesResponse> => {
+
+  const res = await fetch(getDownloadAllModulesUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: downloadAllModulesResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as downloadAllModulesResponse
+}
+
+
+
+
+export const getDownloadAllModulesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof downloadAllModules>>, TError,void, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof downloadAllModules>>, TError,void, TContext> => {
+
+const mutationKey = ['downloadAllModules'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof downloadAllModules>>, void> = () => {
+
+
+          return  downloadAllModules(fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DownloadAllModulesMutationResult = NonNullable<Awaited<ReturnType<typeof downloadAllModules>>>
+
+    export type DownloadAllModulesMutationError = unknown
+
+    /**
+ * @summary Download All Modules
+ */
+export const useDownloadAllModules = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof downloadAllModules>>, TError,void, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof downloadAllModules>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getDownloadAllModulesMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Download Module
  */
 export type downloadModuleResponse200 = {
@@ -335,98 +509,4 @@ export const useDeleteModule = <TError = HTTPValidationError,
         TContext
       > => {
       return useMutation(getDeleteModuleMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Generate Module
- */
-export type generateModuleResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type generateModuleResponse422 = {
-  data: HTTPValidationError
-  status: 422
-}
-
-export type generateModuleResponseSuccess = (generateModuleResponse200) & {
-  headers: Headers;
-};
-export type generateModuleResponseError = (generateModuleResponse422) & {
-  headers: Headers;
-};
-
-export type generateModuleResponse = (generateModuleResponseSuccess | generateModuleResponseError)
-
-export const getGenerateModuleUrl = (moduleName: string,) => {
-
-
-
-
-  return `/modules/${moduleName}/generate`
-}
-
-export const generateModule = async (moduleName: string, options?: RequestInit): Promise<generateModuleResponse> => {
-
-  const res = await fetch(getGenerateModuleUrl(moduleName),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: generateModuleResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as generateModuleResponse
-}
-
-
-
-
-export const getGenerateModuleMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateModule>>, TError,{moduleName: string}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof generateModule>>, TError,{moduleName: string}, TContext> => {
-
-const mutationKey = ['generateModule'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof generateModule>>, {moduleName: string}> = (props) => {
-          const {moduleName} = props ?? {};
-
-          return  generateModule(moduleName,fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type GenerateModuleMutationResult = NonNullable<Awaited<ReturnType<typeof generateModule>>>
-
-    export type GenerateModuleMutationError = HTTPValidationError
-
-    /**
- * @summary Generate Module
- */
-export const useGenerateModule = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateModule>>, TError,{moduleName: string}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof generateModule>>,
-        TError,
-        {moduleName: string},
-        TContext
-      > => {
-      return useMutation(getGenerateModuleMutationOptions(options), queryClient);
     }

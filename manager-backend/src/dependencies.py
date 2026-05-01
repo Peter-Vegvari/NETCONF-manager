@@ -21,14 +21,5 @@ class DownloadedModulesPath:
         self.path.mkdir(parents=True, exist_ok=True)
 
 
-@injectable
-@final
-class GeneratedModulesPath:
-    def __init__(self):
-        self.path = Path("../resources/generated-modules")
-        self.path.mkdir(parents=True, exist_ok=True)
-
-
 downloaded_modules_path: DownloadedModulesPath
-generated_modules_path: DownloadedModulesPath
 connection_manager: ConnectionManager

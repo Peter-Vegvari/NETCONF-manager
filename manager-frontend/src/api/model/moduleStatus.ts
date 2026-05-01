@@ -11,5 +11,4 @@ export type ModuleStatus = typeof ModuleStatus[keyof typeof ModuleStatus];
 export const ModuleStatus = {
   remote: 'remote',
   local: 'local',
-  generated: 'generated',
 } as const;

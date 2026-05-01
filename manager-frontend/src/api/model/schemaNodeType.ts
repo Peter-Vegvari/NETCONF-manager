@@ -5,9 +5,4 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface Connection {
-  host: string;
-  port: number;
-  user_name: string;
-  password: string;
-}
+export type SchemaNodeType = { [key: string]: unknown } | null;

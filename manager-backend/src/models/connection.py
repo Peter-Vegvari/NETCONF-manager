@@ -8,10 +8,10 @@ from pydantic import BaseModel
 
 
 class Connection(BaseModel):
-    host: str = "notconf"
-    port: int = 830
-    user_name: str = "admin"
-    password: str = "admin"
+    host: str
+    port: int
+    user_name: str
+    password: str
 
     def connect(self) -> Manager:
         return manager.connect(

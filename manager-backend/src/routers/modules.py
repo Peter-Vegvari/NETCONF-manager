@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from wireup import Injected
 
-from src.dependencies import ConnectionManager
+import src.dependencies
 from src.models.module import Module
 
 router = APIRouter(prefix="/modules", tags=["modules"])
@@ -9,16 +8,22 @@ router = APIRouter(prefix="/modules", tags=["modules"])
 
 @router.get("/", operation_id="getModules")
 async def get_modules() -> list[Module]:
-    generated = Module.get_generated_modules()
     downloaded = Module.get_local_modules()
     remote = Module.get_remote_modules()
     seen = set()
     result = []
-    for name in [*generated, *downloaded, *remote]:
-        if name not in seen:
-            seen.add(name)
-            result.append(Module(name=name))
+    for mod in [*downloaded, *remote]:
+        if mod.name not in seen:
+            seen.add(mod.name)
+            result.append(mod)
     return result
+
+
+@router.post("/download-all", operation_id="downloadAllModules")
+async def download_all_modules():
+    if src.dependencies.connection_manager.connection is None:
+        raise HTTPException(400, "Not connected")
+    Module.download_all()
 
 
 @router.post("/{module_name}/download", operation_id="downloadModule")
@@ -29,12 +34,12 @@ async def download_module(module_name: str):
 @router.delete("/{module_name}", operation_id="deleteModule")
 async def delete_module(module_name: str):
     module = Module(name=module_name)
-    if not module.exists:
+    if not module.yang_module_path.exists():
         raise HTTPException(404, "Module not found")
     module.delete()
 
 
-@router.post("/{module_name}/generate", operation_id="generateModule")
-async def generate_module(module_name: str):
-    module = Module(name=module_name)
-    module.generate()
+@router.delete("/", operation_id="deleteAllModules")
+async def delete_all_modules():
+    for module in Module.get_local_modules():
+        module.delete()

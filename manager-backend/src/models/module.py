@@ -1,31 +1,38 @@
+import json
 import os
-import subprocess
 from enum import StrEnum, auto
 from pathlib import Path
 
 from lxml import etree
 from pydantic import BaseModel, computed_field
+from yangson import DataModel
 
 import src.dependencies
+from src.models.schema import SchemaNode
+
+_NETCONF_SCHEMAS_FILTER = """
+    <netconf-state xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring">
+        <schemas/>
+    </netconf-state>
+"""
+_NETCONF_NS = {"ncm": "urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring"}
+
+
+def _fetch_remote_modules(session) -> "list[Module]":
+    """Fetch modules from a NETCONF session."""
+    reply = session.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))
+    tree = etree.fromstring(reply.xml.encode())
+    schemas = tree.xpath("//ncm:schema", namespaces=_NETCONF_NS)
+    return [Module(name=s.find("ncm:identifier", _NETCONF_NS).text) for s in schemas]
 
 
 class ModuleStatus(StrEnum):
     REMOTE = auto()
     LOCAL = auto()
-    GENERATED = auto()
 
 
 class Module(BaseModel):
     name: str
-
-    @computed_field
-    @property
-    def status(self) -> ModuleStatus:
-        if self.generated_model_path.exists():
-            return ModuleStatus.GENERATED
-        if self.yang_module_path.exists():
-            return ModuleStatus.LOCAL
-        return ModuleStatus.REMOTE
 
     @computed_field
     @property
@@ -34,13 +41,10 @@ class Module(BaseModel):
 
     @computed_field
     @property
-    def generated_model_path(self) -> Path:
-        return src.dependencies.GeneratedModulesPath().path / f"{self.name}.py"
-
-    @computed_field
-    @property
-    def exists(self) -> bool:
-        return self.yang_module_path.exists()
+    def status(self) -> ModuleStatus:
+        if self.yang_module_path.exists():
+            return ModuleStatus.LOCAL
+        return ModuleStatus.REMOTE
 
     def download(self) -> None:
         connection = src.dependencies.connection_manager.connection
@@ -51,51 +55,62 @@ class Module(BaseModel):
 
     def delete(self) -> None:
         self.yang_module_path.unlink(missing_ok=True)
-        self.generated_model_path.unlink(missing_ok=True)
 
-    def generate(self) -> None:
-        _ = subprocess.run(
-            [
-                "uv",
-                "run",
-                "pydantify",
-                "-i",
-                str(src.dependencies.downloaded_modules_path.path),
-                "-o",
-                str(src.dependencies.generated_modules_path.path),
-                "-f",
-                f"{self.name}.py",
-                str(self.yang_module_path),
-            ]
+    @staticmethod
+    def get_schema() -> SchemaNode:
+        modules = []
+        for module in Module.get_local_modules():
+            revision = ""
+            with open(module.yang_module_path, "r") as f:
+                for line in f:
+                    stripped = line.strip()
+                    if stripped.startswith("revision "):
+                        revision = stripped.split()[1].rstrip("{").strip('"').strip("'")
+                        break
+            modules.append(
+                {
+                    "name": module.name,
+                    "revision": revision,
+                    "conformance-type": "implement",
+                }
+            )
+
+        yang_library = {
+            "ietf-yang-library:modules-state": {
+                "module-set-id": "1",
+                "module": modules,
+            }
+        }
+
+        dm = DataModel(
+            json.dumps(yang_library), mod_path=[str(src.dependencies.downloaded_modules_path.path)]
         )
+        return SchemaNode.model_validate(json.loads(dm.schema_digest()))
 
     @staticmethod
-    def get_remote_modules() -> list[str]:
-        connection = src.dependencies.connection_manager.connection
-        if connection is None:
-            return []
-        with connection.connect() as m:
-            filter_xml = """
-                    <netconf-state xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring">
-                        <schemas/>
-                    </netconf-state>
-                """
-            reply = m.get(filter=("subtree", filter_xml))
-            tree = etree.fromstring(reply.xml.encode())
-            ns = {"ncm": "urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring"}
-            schemas = tree.xpath("//ncm:schema", namespaces=ns)
-            return [s.find("ncm:identifier", ns).text for s in schemas]
+    def download_all() -> None:
+        assert src.dependencies.connection_manager.connection is not None
+        with src.dependencies.connection_manager.connection.connect() as m:
+            for mod in _fetch_remote_modules(m):
+                if mod.yang_module_path.exists():
+                    continue
+                try:
+                    with open(mod.yang_module_path, "w", encoding="utf-8") as f:
+                        f.write(m.get_schema(identifier=mod.name).data)
+                except Exception:
+                    pass
 
     @staticmethod
-    def get_local_modules() -> list[str]:
-        modules = src.dependencies.downloaded_modules_path.path
-        if not modules.exists():
+    def get_remote_modules() -> "list[Module]":
+        if src.dependencies.connection_manager.connection is None:
             return []
-        return [f.removesuffix(".yang") for f in os.listdir(modules)]
+        with src.dependencies.connection_manager.connection.connect() as m:
+            return _fetch_remote_modules(m)
 
     @staticmethod
-    def get_generated_modules() -> list[str]:
-        modules = src.dependencies.generated_modules_path.path
-        if not modules.exists():
-            return []
-        return [f.removesuffix(".py") for f in os.listdir(modules)]
+    def get_local_modules() -> "list[Module]":
+        return [
+            Module(name=f.removesuffix(".yang"))
+            for f in os.listdir(src.dependencies.downloaded_modules_path.path)
+            if f.endswith(".yang")
+        ]
