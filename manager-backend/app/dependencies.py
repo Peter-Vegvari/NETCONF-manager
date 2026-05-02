@@ -3,7 +3,7 @@ from typing import final
 
 from wireup import injectable
 
-from src.models.connection import Connection
+from app.models.connection import Connection
 
 
 @injectable

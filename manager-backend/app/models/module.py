@@ -7,8 +7,8 @@ from lxml import etree
 from pydantic import BaseModel, computed_field
 from yangson import DataModel
 
-import src.dependencies
-from src.models.schema import SchemaNode
+import app.dependencies
+from app.models.schema import SchemaNode
 
 _NETCONF_SCHEMAS_FILTER = """
     <netconf-state xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring">
@@ -29,7 +29,7 @@ class Module(BaseModel):
     @computed_field
     @property
     def path(self) -> Path:
-        return src.dependencies.downloaded_modules_path.path / f"{self.name}.yang"
+        return app.dependencies.downloaded_modules_path.path / f"{self.name}.yang"
 
     @computed_field
     @property
@@ -39,7 +39,7 @@ class Module(BaseModel):
         return ModuleStatus.REMOTE
 
     def download(self) -> None:
-        connection = src.dependencies.connection_manager.connection
+        connection = app.dependencies.connection_manager.connection
         assert connection is not None
         with connection.connect() as m:
             content = m.get_schema(identifier=self.name).data
@@ -77,7 +77,7 @@ class Module(BaseModel):
 
     @staticmethod
     def download_all() -> None:
-        connection = src.dependencies.connection_manager.connection
+        connection = app.dependencies.connection_manager.connection
         assert connection is not None
         with connection.connect() as m:
             for module in Module.get_remote_modules():
@@ -92,9 +92,9 @@ class Module(BaseModel):
 
     @staticmethod
     def get_remote_modules() -> "list[Module]":
-        if src.dependencies.connection_manager.connection is None:
+        if app.dependencies.connection_manager.connection is None:
             return []
-        with src.dependencies.connection_manager.connection.connect() as m:
+        with app.dependencies.connection_manager.connection.connect() as m:
             reply = m.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))
             tree = etree.fromstring(reply.xml.encode())
             schemas = tree.xpath("//ncm:schema", namespaces=_NETCONF_NS)
@@ -106,7 +106,7 @@ class Module(BaseModel):
     def get_local_modules() -> "list[Module]":
         return [
             Module(name=f.removesuffix(".yang"))
-            for f in os.listdir(src.dependencies.downloaded_modules_path.path)
+            for f in os.listdir(app.dependencies.downloaded_modules_path.path)
             if f.endswith(".yang")
         ]
 
@@ -128,6 +128,6 @@ class Module(BaseModel):
             }
         }
 
-        modules_path = src.dependencies.downloaded_modules_path.path
+        modules_path = app.dependencies.downloaded_modules_path.path
         dm = DataModel(json.dumps(yang_library), mod_path=[str(modules_path)])
         return SchemaNode.model_validate(json.loads(dm.schema_digest()))

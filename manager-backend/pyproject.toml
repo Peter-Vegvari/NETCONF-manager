@@ -28,7 +28,7 @@ dependencies = [
 ]
 
 [project.scripts]
-manager-backend = "src:main"
+manager-backend = "app:main"
 
 [project.urls]
 Homepage = "https://github.com/Peter-Vegvari/NETCONF-manager"
@@ -38,13 +38,13 @@ requires = ["uv_build>=0.10.10,<0.11.0"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
-module-name = "src"
+module-name = "app"
 module-root = ""
 
 [tool.basedpyright]
 venvPath = "."
 venv = ".venv"
-include = ["src"]
+include = ["app"]
 defineConstant = { DEBUG = true }
 reportImportCycles = false
 failOnWarnings = false
@@ -52,7 +52,7 @@ reportAny = false
 reportExplicitAny = false
 reportUnusedCallResult = false
 reportUnusedParameter = false
-allowedUntypedLibraries = ["ncclient", "src"]
+allowedUntypedLibraries = ["ncclient", "app"]
 reportOptionalContextManager = false
 
 [tool.pytest.ini_options]
@@ -65,4 +65,4 @@ extend-select = ["I"]
 fixable = ["I"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["src"]
+known-first-party = ["app"]
