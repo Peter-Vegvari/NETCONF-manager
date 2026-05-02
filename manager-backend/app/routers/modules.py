@@ -11,8 +11,8 @@ module_router = APIRouter(prefix="/modules", tags=["modules"])
 async def get_modules() -> list[Module]:
     downloaded = Module.get_local_modules()
     remote = Module.get_remote_modules()
-    seen = set()
-    result = []
+    seen: set[str] = set()
+    result: list[Module] = []
     for mod in [*downloaded, *remote]:
         if mod.name not in seen:
             seen.add(mod.name)

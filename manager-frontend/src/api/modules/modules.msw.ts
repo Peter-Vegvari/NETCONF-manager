@@ -33,7 +33,7 @@ export const getGetSchemaResponseMock = (overrideResponse: Partial<Extract<Schem
 
 
 export const getGetModulesMockHandler = (overrideResponse?: Module[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<Module[]> | Module[]), options?: RequestHandlerOptions) => {
-  return http.get('*/modules/', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+  return http.get('*/api/v1/modules/', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -45,7 +45,7 @@ export const getGetModulesMockHandler = (overrideResponse?: Module[] | ((info: P
 }
 
 export const getDeleteAllModulesMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.delete('*/modules/', async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
+  return http.delete('*/api/v1/modules/', async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
   if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
     return new HttpResponse(null,
@@ -55,7 +55,7 @@ export const getDeleteAllModulesMockHandler = (overrideResponse?: unknown | ((in
 }
 
 export const getDownloadAllModulesMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.post('*/modules/download-all', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  return http.post('*/api/v1/modules/download-all', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
   if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
     return new HttpResponse(null,
@@ -65,7 +65,7 @@ export const getDownloadAllModulesMockHandler = (overrideResponse?: unknown | ((
 }
 
 export const getDownloadModuleMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.post('*/modules/:moduleName/download', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  return http.post('*/api/v1/modules/:moduleName/download', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
   if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
     return new HttpResponse(null,
@@ -75,7 +75,7 @@ export const getDownloadModuleMockHandler = (overrideResponse?: unknown | ((info
 }
 
 export const getDeleteModuleMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.delete('*/modules/:moduleName', async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
+  return http.delete('*/api/v1/modules/:moduleName', async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
   if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
     return new HttpResponse(null,
@@ -85,7 +85,7 @@ export const getDeleteModuleMockHandler = (overrideResponse?: unknown | ((info: 
 }
 
 export const getGetSchemaMockHandler = (overrideResponse?: SchemaNode | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<SchemaNode> | SchemaNode), options?: RequestHandlerOptions) => {
-  return http.get('*/modules/:moduleName/schema', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+  return http.get('*/api/v1/modules/:moduleName/schema', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined

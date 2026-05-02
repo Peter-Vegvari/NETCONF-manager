@@ -17,6 +17,7 @@ dependencies = [
     "pytest-cov",
     "six",
     "fastapi[standard]",
+    "pydantic-settings",
     "uvicorn",
     "pyang",
     "lxml",

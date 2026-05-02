@@ -1,7 +1,3 @@
-import os
-from pathlib import Path
-
-from lxml import etree
 from ncclient import manager
 from ncclient.manager import Manager
 from pydantic import BaseModel
@@ -14,7 +10,7 @@ class Connection(BaseModel):
     password: str
 
     def connect(self) -> Manager:
-        return manager.connect(
+        result = manager.connect(
             host=self.host,
             port=self.port,
             username=self.user_name,
@@ -25,3 +21,5 @@ class Connection(BaseModel):
             look_for_keys=False,
             timeout=10,
         )
+        assert result is not None
+        return result

@@ -50,7 +50,7 @@ export const getConnectUrl = () => {
 
 
 
-  return `/connect`
+  return `/api/v1/connect`
 }
 
 export const connect = async (connection: Connection, options?: RequestInit): Promise<connectResponse> => {
@@ -138,7 +138,7 @@ export const getDisconnectUrl = () => {
 
 
 
-  return `/connect`
+  return `/api/v1/connect`
 }
 
 export const disconnect = async ( options?: RequestInit): Promise<disconnectResponse> => {

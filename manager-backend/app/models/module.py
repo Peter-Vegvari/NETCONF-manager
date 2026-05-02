@@ -8,6 +8,7 @@ from pydantic import BaseModel, computed_field
 from yangson import DataModel
 
 import app.dependencies
+from app.core.config import settings
 from app.models.schema import SchemaNode
 
 _NETCONF_SCHEMAS_FILTER = """
@@ -29,7 +30,7 @@ class Module(BaseModel):
     @computed_field
     @property
     def path(self) -> Path:
-        return app.dependencies.downloaded_modules_path.path / f"{self.name}.yang"
+        return settings.DOWNLOADED_MODULES_PATH / f"{self.name}.yang"
 
     @computed_field
     @property
@@ -42,9 +43,9 @@ class Module(BaseModel):
         connection = app.dependencies.connection_manager.connection
         assert connection is not None
         with connection.connect() as m:
-            content = m.get_schema(identifier=self.name).data
+            content: str = m.get_schema(identifier=self.name).data  # type: ignore[reportUnknownMemberType]
         with open(self.path, "w", encoding="utf-8") as f:
-            f.write(content)
+            _ = f.write(content)
 
     @computed_field
     @property
@@ -84,9 +85,9 @@ class Module(BaseModel):
                 if module.path.exists():
                     continue
                 try:
-                    content = m.get_schema(identifier=module.name).data
+                    content: str = m.get_schema(identifier=module.name).data  # type: ignore[reportUnknownMemberType]
                     with open(module.path, "w", encoding="utf-8") as f:
-                        f.write(content)
+                        _ = f.write(content)
                 except Exception:
                     pass
 
@@ -95,18 +96,20 @@ class Module(BaseModel):
         if app.dependencies.connection_manager.connection is None:
             return []
         with app.dependencies.connection_manager.connection.connect() as m:
-            reply = m.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))
-            tree = etree.fromstring(reply.xml.encode())
-            schemas = tree.xpath("//ncm:schema", namespaces=_NETCONF_NS)
+            reply = m.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))  # type: ignore[reportUnknownMemberType]
+            xml: str = reply.xml  # type: ignore[reportUnknownMemberType]
+            tree = etree.fromstring(xml.encode())
+            schemas: list[etree._Element] = tree.xpath("//ncm:schema", namespaces=_NETCONF_NS)  # type: ignore[assignment]
             return [
-                Module(name=s.find("ncm:identifier", _NETCONF_NS).text) for s in schemas
+                Module(name=s.findtext("ncm:identifier", default="", namespaces=_NETCONF_NS))
+                for s in schemas
             ]
 
     @staticmethod
     def get_local_modules() -> "list[Module]":
         return [
             Module(name=f.removesuffix(".yang"))
-            for f in os.listdir(app.dependencies.downloaded_modules_path.path)
+            for f in os.listdir(settings.DOWNLOADED_MODULES_PATH)
             if f.endswith(".yang")
         ]
 
@@ -128,6 +131,6 @@ class Module(BaseModel):
             }
         }
 
-        modules_path = app.dependencies.downloaded_modules_path.path
+        modules_path = settings.DOWNLOADED_MODULES_PATH
         dm = DataModel(json.dumps(yang_library), mod_path=[str(modules_path)])
         return SchemaNode.model_validate(json.loads(dm.schema_digest()))

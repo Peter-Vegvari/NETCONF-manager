@@ -53,7 +53,7 @@ export const getGetModulesUrl = () => {
 
 
 
-  return `/modules/`
+  return `/api/v1/modules/`
 }
 
 export const getModules = async ( options?: RequestInit): Promise<getModulesResponse> => {
@@ -79,7 +79,7 @@ export const getModules = async ( options?: RequestInit): Promise<getModulesResp
 
 export const getGetModulesQueryKey = () => {
     return [
-    `/modules/`
+    `/api/v1/modules/`
     ] as const;
     }
 
@@ -169,7 +169,7 @@ export const getDeleteAllModulesUrl = () => {
 
 
 
-  return `/modules/`
+  return `/api/v1/modules/`
 }
 
 export const deleteAllModules = async ( options?: RequestInit): Promise<deleteAllModulesResponse> => {
@@ -256,7 +256,7 @@ export const getDownloadAllModulesUrl = () => {
 
 
 
-  return `/modules/download-all`
+  return `/api/v1/modules/download-all`
 }
 
 export const downloadAllModules = async ( options?: RequestInit): Promise<downloadAllModulesResponse> => {
@@ -350,7 +350,7 @@ export const getDownloadModuleUrl = (moduleName: string,) => {
 
 
 
-  return `/modules/${moduleName}/download`
+  return `/api/v1/modules/${moduleName}/download`
 }
 
 export const downloadModule = async (moduleName: string, options?: RequestInit): Promise<downloadModuleResponse> => {
@@ -444,7 +444,7 @@ export const getDeleteModuleUrl = (moduleName: string,) => {
 
 
 
-  return `/modules/${moduleName}`
+  return `/api/v1/modules/${moduleName}`
 }
 
 export const deleteModule = async (moduleName: string, options?: RequestInit): Promise<deleteModuleResponse> => {
@@ -538,7 +538,7 @@ export const getGetSchemaUrl = (moduleName: string,) => {
 
 
 
-  return `/modules/${moduleName}/schema`
+  return `/api/v1/modules/${moduleName}/schema`
 }
 
 export const getSchema = async (moduleName: string, options?: RequestInit): Promise<getSchemaResponse> => {
@@ -564,7 +564,7 @@ export const getSchema = async (moduleName: string, options?: RequestInit): Prom
 
 export const getGetSchemaQueryKey = (moduleName: string,) => {
     return [
-    `/modules/${moduleName}/schema`
+    `/api/v1/modules/${moduleName}/schema`
     ] as const;
     }
 

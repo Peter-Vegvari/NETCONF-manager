@@ -12,8 +12,7 @@ export default defineConfig({
     watch: { usePolling: true },
     hmr: { clientPort: 3000 },
     proxy: {
-      '/connect': 'http://manager-backend:8000',
-      '/modules': 'http://manager-backend:8000',
+      '/api/v1': 'http://manager-backend:8000',
     },
   },
 })
