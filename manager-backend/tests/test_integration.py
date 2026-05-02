@@ -1,18 +1,17 @@
 from fastapi.testclient import TestClient
 
-from app.core.config import settings
+from tests.config import settings
 
 
 def test_connect(client: TestClient):
-    from app.core.config import test_settings
 
     response = client.post(
         f"{settings.API_V1_STR}/connect",
         json={
-            "host": test_settings.NOTCONF_HOST,
-            "port": test_settings.NOTCONF_PORT,
-            "user_name": test_settings.NOTCONF_USER,
-            "password": test_settings.NOTCONF_PASSWORD,
+            "host": settings.NOTCONF_HOST,
+            "port": settings.NOTCONF_PORT,
+            "user_name": settings.NOTCONF_USER,
+            "password": settings.NOTCONF_PASSWORD,
         },
     )
     assert response.status_code == 200

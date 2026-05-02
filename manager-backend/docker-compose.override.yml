@@ -1,0 +1,21 @@
+services:
+  manager-backend:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - /app/.venv
+      - ./app/resources:/resources
+      - shared:/shared
+    networks:
+      - shared
+    command: fastapi dev --host 0.0.0.0 app/main.py
+
+networks:
+  shared:
+    name: shared
+
+volumes:
+  shared:
+    name: shared

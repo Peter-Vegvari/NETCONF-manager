@@ -1,4 +1,6 @@
 import json
+import os
+import tempfile
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -16,15 +18,15 @@ from app.routers.modules import module_router
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
-    import os
-    import tempfile
+    settings.DOWNLOADED_MODULES_PATH.mkdir(parents=True, exist_ok=True)
 
-    with tempfile.NamedTemporaryFile(
-        "w", dir="/shared", suffix=".tmp", delete=False
-    ) as f:
-        json.dump(_app.openapi(), f)
-        tmp = f.name
-    os.replace(tmp, "/shared/openapi.json")
+    if settings.ENVIRONMENT != "testing":
+        with tempfile.NamedTemporaryFile(
+            "w", dir="/shared", suffix=".tmp", delete=False
+        ) as f:
+            json.dump(_app.openapi(), f)
+            tmp = f.name
+        os.replace(tmp, "/shared/openapi.json")
     _dependencies.connection_manager = await container.get(ConnectionManager)
     yield
 

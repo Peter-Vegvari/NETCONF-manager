@@ -1,15 +1,25 @@
 services:
   manager-backend:
+    build: .
     container_name: test-manager-backend
-    ports:
-      - "8001:8000"
+    command: pytest
+    environment:
+      - ENVIRONMENT=testing
+      - DOWNLOADED_MODULES_PATH=/tmp/downloaded-modules
+    networks:
+      - test-shared
+    depends_on:
+      notconf:
+        condition: service_started
 
   notconf:
-    container_name: test-notconf
-    ports:
-      - "8310:830"
-      - "8080:80"
+    image: ghcr.io/notconf/notconf:latest
+    container_name: notconf
+    volumes:
+      - ./tests/resources/yang-modules/startup:/yang-modules/startup
+    networks:
+      - test-shared
 
 networks:
-  shared:
+  test-shared:
     name: test-shared

@@ -22,7 +22,7 @@ class Settings(BaseSettings):
 
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "NETCONF-manager"
-    ENVIRONMENT: Literal["local", "staging", "production"] = "local"
+    ENVIRONMENT: Literal["local", "staging", "production", "testing"] = "local"
     FRONTEND_HOST: str = "http://localhost:3000"
     DOWNLOADED_MODULES_PATH: Path = Path("../resources/downloaded-modules")
 
@@ -37,19 +37,4 @@ class Settings(BaseSettings):
         ]
 
 
-class TestSettings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_prefix="TEST_",
-        env_ignore_empty=True,
-        extra="ignore",
-    )
-
-    NOTCONF_HOST: str = "notconf"
-    NOTCONF_PORT: int = 830
-    NOTCONF_USER: str = "admin"
-    NOTCONF_PASSWORD: str = "admin"
-
-
-settings = Settings()  # type: ignore
-settings.DOWNLOADED_MODULES_PATH.mkdir(parents=True, exist_ok=True)
-test_settings = TestSettings()  # type: ignore
+settings = Settings()
