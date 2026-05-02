@@ -37,5 +37,19 @@ class Settings(BaseSettings):
         ]
 
 
+class TestSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_prefix="TEST_",
+        env_ignore_empty=True,
+        extra="ignore",
+    )
+
+    NOTCONF_HOST: str = "notconf"
+    NOTCONF_PORT: int = 830
+    NOTCONF_USER: str = "admin"
+    NOTCONF_PASSWORD: str = "admin"
+
+
 settings = Settings()  # type: ignore
 settings.DOWNLOADED_MODULES_PATH.mkdir(parents=True, exist_ok=True)
+test_settings = TestSettings()  # type: ignore

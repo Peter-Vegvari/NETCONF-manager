@@ -1,30 +1,28 @@
-from collections.abc import Iterator
-from pathlib import Path
-
 import pytest
 from fastapi.testclient import TestClient
 
-import app.dependencies
-from app.core.config import settings
-from app.dependencies import ConnectionManager
+from app.core.config import settings, test_settings
 from app.main import app
 
 
-@pytest.fixture
-def tmp_modules_dir(tmp_path: Path) -> Path:
-    return tmp_path
-
-
-@pytest.fixture
-def client(tmp_modules_dir: Path) -> Iterator[TestClient]:
-    original_path = settings.DOWNLOADED_MODULES_PATH
-    settings.DOWNLOADED_MODULES_PATH = tmp_modules_dir
-
-    cm = ConnectionManager.__new__(ConnectionManager)
-    cm.connection = None
-    app.dependencies.connection_manager = cm
-
+@pytest.fixture()
+def client():
     with TestClient(app) as c:
         yield c
 
-    settings.DOWNLOADED_MODULES_PATH = original_path
+
+@pytest.fixture()
+def connected_client(client: TestClient):
+    """Client already connected to the notconf container."""
+    response = client.post(
+        f"{settings.API_V1_STR}/connect",
+        json={
+            "host": test_settings.NOTCONF_HOST,
+            "port": test_settings.NOTCONF_PORT,
+            "user_name": test_settings.NOTCONF_USER,
+            "password": test_settings.NOTCONF_PASSWORD,
+        },
+    )
+    assert response.status_code == 200
+    yield client
+    client.delete(f"{settings.API_V1_STR}/connect")

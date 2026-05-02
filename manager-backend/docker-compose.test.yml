@@ -1,0 +1,15 @@
+services:
+  manager-backend:
+    container_name: test-manager-backend
+    ports:
+      - "8001:8000"
+
+  notconf:
+    container_name: test-notconf
+    ports:
+      - "8310:830"
+      - "8080:80"
+
+networks:
+  shared:
+    name: test-shared
