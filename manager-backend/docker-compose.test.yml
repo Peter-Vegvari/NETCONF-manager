@@ -2,7 +2,7 @@ services:
   manager-backend:
     build: .
     container_name: test-manager-backend
-    command: pytest
+    command: pytest -v
     environment:
       - ENVIRONMENT=testing
       - DOWNLOADED_MODULES_PATH=/tmp/downloaded-modules
