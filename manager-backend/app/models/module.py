@@ -43,7 +43,7 @@ class Module(BaseModel):
         connection = app.dependencies.connection_manager.connection
         assert connection is not None
         with connection.connect() as m:
-            content: str = m.get_schema(identifier=self.name).data  # type: ignore[reportUnknownMemberType]
+            content: str = m.get_schema(identifier=self.name).data
         with open(self.path, "w", encoding="utf-8") as f:
             _ = f.write(content)
 
@@ -85,7 +85,7 @@ class Module(BaseModel):
                 if module.path.exists():
                     continue
                 try:
-                    content: str = m.get_schema(identifier=module.name).data  # type: ignore[reportUnknownMemberType]
+                    content: str = m.get_schema(identifier=module.name).data
                     with open(module.path, "w", encoding="utf-8") as f:
                         _ = f.write(content)
                 except Exception:
@@ -95,15 +95,18 @@ class Module(BaseModel):
     def get_remote_modules() -> "list[Module]":
         if app.dependencies.connection_manager.connection is None:
             return []
-        with app.dependencies.connection_manager.connection.connect() as m:
-            reply = m.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))  # type: ignore[reportUnknownMemberType]
-            xml: str = reply.xml  # type: ignore[reportUnknownMemberType]
-            tree = etree.fromstring(xml.encode())
-            schemas: list[etree._Element] = tree.xpath("//ncm:schema", namespaces=_NETCONF_NS)  # type: ignore[assignment]
-            return [
-                Module(name=s.findtext("ncm:identifier", default="", namespaces=_NETCONF_NS))
-                for s in schemas
-            ]
+        try:
+            with app.dependencies.connection_manager.connection.connect() as m:
+                reply = m.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))
+                xml: str = reply.xml
+                tree = etree.fromstring(xml.encode())
+                schemas: list[etree._Element] = tree.xpath("//ncm:schema", namespaces=_NETCONF_NS)
+                return [
+                    Module(name=s.findtext("ncm:identifier", default="", namespaces=_NETCONF_NS))
+                    for s in schemas
+                ]
+        except Exception:
+            return []
 
     @staticmethod
     def get_local_modules() -> "list[Module]":

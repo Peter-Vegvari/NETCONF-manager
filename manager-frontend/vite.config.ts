@@ -6,7 +6,10 @@ import babel from '@rolldown/plugin-babel'
 export default defineConfig({
   plugins: [
     react(),
-    babel({ presets: [reactCompilerPreset()] })
+    babel({
+      presets: [reactCompilerPreset()],
+      exclude: [/node_modules/, /src\/api/],
+    })
   ],
   server: {
     watch: { usePolling: true },

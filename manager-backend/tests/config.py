@@ -15,5 +15,10 @@ class Settings(BaseSettings):
     NOTCONF_USER: str = "admin"
     NOTCONF_PASSWORD: str = "admin"
 
+    REAL_DEVICE_HOST: str = "10.41.101.188"
+    REAL_DEVICE_PORT: int = 830
+    REAL_DEVICE_USER: str = "admin_user"
+    REAL_DEVICE_PASSWORD: str = "Ericsson1234"
+
 
 settings = Settings()

@@ -1,5 +1,8 @@
+import pytest
 from fastapi.testclient import TestClient
 
+import app.dependencies
+from app.models.connection import Connection
 from tests.config import settings
 
 
@@ -20,10 +23,21 @@ class TestGetModules:
         assert response.status_code == 200
         assert response.json() == []
 
+    def test_unreachable_host_returns_200(self, client: TestClient):
+        """When connection exists but host is unreachable, should return 200 with local modules only."""
+        app.dependencies.connection_manager.connection = Connection(
+            host="10.255.255.1", port=830, user_name="admin", password="admin"
+        )
+        try:
+            response = client.get(f"{settings.API_V1_STR}/modules/")
+            assert response.status_code == 200
+            assert isinstance(response.json(), list)
+        finally:
+            app.dependencies.connection_manager.connection = None
+
 
 class TestDownloadModule:
     def test_download_single_module(self, connected_client: TestClient):
-        # Get a module name from the remote list
         modules = connected_client.get(f"{settings.API_V1_STR}/modules/").json()
         assert len(modules) > 0
         module_name = modules[0]["name"]
@@ -33,10 +47,12 @@ class TestDownloadModule:
         )
         assert response.status_code == 200
 
-        # Verify it's now local
         modules_after = connected_client.get(f"{settings.API_V1_STR}/modules/").json()
         downloaded = next(m for m in modules_after if m["name"] == module_name)
         assert downloaded["status"] == "local"
+
+        # Cleanup
+        connected_client.delete(f"{settings.API_V1_STR}/modules/{module_name}")
 
 
 class TestDownloadAllModules:
@@ -45,6 +61,8 @@ class TestDownloadAllModules:
             f"{settings.API_V1_STR}/modules/download-all"
         )
         assert response.status_code == 200
+        # Cleanup
+        connected_client.delete(f"{settings.API_V1_STR}/modules/")
 
     def test_not_connected_returns_400(self, client: TestClient):
         response = client.post(f"{settings.API_V1_STR}/modules/download-all")
@@ -53,12 +71,10 @@ class TestDownloadAllModules:
 
 class TestDeleteModule:
     def test_delete_downloaded_module(self, connected_client: TestClient):
-        # Download one first
         modules = connected_client.get(f"{settings.API_V1_STR}/modules/").json()
         module_name = modules[0]["name"]
         connected_client.post(f"{settings.API_V1_STR}/modules/{module_name}/download")
 
-        # Delete it
         response = connected_client.delete(
             f"{settings.API_V1_STR}/modules/{module_name}"
         )
@@ -71,7 +87,6 @@ class TestDeleteModule:
 
 class TestDeleteAllModules:
     def test_delete_all(self, connected_client: TestClient):
-        # Download one first so there's something to delete
         modules = connected_client.get(f"{settings.API_V1_STR}/modules/").json()
         module_name = modules[0]["name"]
         connected_client.post(f"{settings.API_V1_STR}/modules/{module_name}/download")
@@ -79,12 +94,12 @@ class TestDeleteAllModules:
         response = connected_client.delete(f"{settings.API_V1_STR}/modules/")
         assert response.status_code == 200
 
-        # Verify no local modules remain
         modules_after = connected_client.get(f"{settings.API_V1_STR}/modules/").json()
         local = [m for m in modules_after if m["status"] == "local"]
         assert local == []
 
 
+@pytest.mark.notconf_only
 class TestGetModuleSchema:
     def test_schema_after_download_all(self, connected_client: TestClient):
         connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
@@ -98,11 +113,12 @@ class TestGetModuleSchema:
         assert any(
             key.startswith("ietf-interfaces:") for key in schema["children"].keys()
         )
+        # Cleanup
+        connected_client.delete(f"{settings.API_V1_STR}/modules/")
 
     def test_schema_not_downloaded(self, client: TestClient):
         response = client.get(
             f"{settings.API_V1_STR}/modules/nonexistent-module/schema"
         )
         assert response.status_code == 200
-        # Returns empty schema node
         assert response.json()["kind"] == ""
