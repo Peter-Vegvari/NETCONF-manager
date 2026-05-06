@@ -22,10 +22,12 @@ function getNestedValue(data: any, key: string): any {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function SchemaTree({ node, data }: { node: SchemaNode; data?: any }) {
   if (!node.children) return null;
+  const entries = Object.entries(node.children);
   return (
-    <Collapse size="small" items={Object.entries(node.children).map(([name, child]) => {
+    <Collapse size="small" items={entries.map(([name, child]) => {
       const childData = getNestedValue(data, name);
       const isLeaf = !child.children;
+      const isArray = Array.isArray(childData);
       return {
         key: name,
         label: (
@@ -36,22 +38,20 @@ function SchemaTree({ node, data }: { node: SchemaNode; data?: any }) {
             {isLeaf && childData !== undefined && <Tag color="green">{String(childData)}</Tag>}
           </span>
         ),
-        children: child.children ? (
-          Array.isArray(childData) ? (
-            <Collapse size="small" items={childData.map((item: unknown, i: number) => ({
-              key: i,
-              label: <span>{name}[{i}]</span>,
-              children: <SchemaTree node={child} data={item} />,
-            }))} />
-          ) : (
-            <SchemaTree node={child} data={childData} />
-          )
-        ) : (
+        children: isLeaf ? (
           <Descriptions size="small" column={1}>
             {child.description && <Descriptions.Item label="Description">{child.description}</Descriptions.Item>}
             {child.default !== undefined && <Descriptions.Item label="Default">{String(child.default)}</Descriptions.Item>}
             {childData !== undefined && <Descriptions.Item label="Value">{String(childData)}</Descriptions.Item>}
           </Descriptions>
+        ) : isArray ? (
+          <Collapse size="small" items={childData.map((item: unknown, i: number) => ({
+            key: i,
+            label: <span>{name}[{i}]</span>,
+            children: <SchemaTree node={child} data={item as Record<string, unknown>} />,
+          }))} />
+        ) : (
+          <SchemaTree node={child} data={childData ?? data} />
         ),
       };
     })} />
@@ -71,10 +71,11 @@ function ModuleContent({ module }: { module: Module }) {
 function ModuleSchemaWithData({ module, topContainer }: { module: Module; topContainer: string }) {
   const { data, isLoading } = useGetData(module.name, topContainer, { query: { enabled: !!topContainer } });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataObj = (data?.data as any)?.[`${module.name}:${topContainer}`] ?? (data?.data as any)?.[topContainer];
+  const rawData = data?.data as any;
+  const dataObj = rawData?.[`${module.name}:${topContainer}`] ?? rawData?.[topContainer];
 
   if (isLoading) return <span>Loading...</span>;
-  return <SchemaTree node={module.schema_node} data={{ [Object.keys(module.schema_node.children!)[0]]: dataObj }} />;
+  return <SchemaTree node={module.schema_node} data={rawData} />;
 }
 
 export function ModulesPanel() {
