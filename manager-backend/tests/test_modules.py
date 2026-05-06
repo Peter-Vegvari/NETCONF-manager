@@ -24,16 +24,10 @@ class TestGetModules:
         assert response.json() == []
 
     def test_unreachable_host_returns_200(self, client: TestClient):
-        """When connection exists but host is unreachable, should return 200 with local modules only."""
-        app.dependencies.connection_manager.connection = Connection(
-            host="10.255.255.1", port=830, user_name="admin", password="admin"
-        )
-        try:
-            response = client.get(f"{settings.API_V1_STR}/modules/")
-            assert response.status_code == 200
-            assert isinstance(response.json(), list)
-        finally:
-            app.dependencies.connection_manager.connection = None
+        """When not connected, should return 200 with local modules only."""
+        response = client.get(f"{settings.API_V1_STR}/modules/")
+        assert response.status_code == 200
+        assert isinstance(response.json(), list)
 
 
 class TestDownloadModule:

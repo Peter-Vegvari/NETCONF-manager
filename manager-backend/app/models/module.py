@@ -40,10 +40,9 @@ class Module(BaseModel):
         return ModuleStatus.REMOTE
 
     def download(self) -> None:
-        connection = app.dependencies.connection_manager.connection
-        assert connection is not None
-        with connection.connect() as m:
-            content: str = m.get_schema(identifier=self.name).data
+        m = app.dependencies.connection_manager.session
+        assert m is not None
+        content: str = m.get_schema(identifier=self.name).data
         with open(self.path, "w", encoding="utf-8") as f:
             _ = f.write(content)
 
@@ -78,33 +77,32 @@ class Module(BaseModel):
 
     @staticmethod
     def download_all() -> None:
-        connection = app.dependencies.connection_manager.connection
-        assert connection is not None
-        with connection.connect() as m:
-            for module in Module.get_remote_modules():
-                if module.path.exists():
-                    continue
-                try:
-                    content: str = m.get_schema(identifier=module.name).data
-                    with open(module.path, "w", encoding="utf-8") as f:
-                        _ = f.write(content)
-                except Exception:
-                    pass
+        m = app.dependencies.connection_manager.session
+        assert m is not None
+        for module in Module.get_remote_modules():
+            if module.path.exists():
+                continue
+            try:
+                content: str = m.get_schema(identifier=module.name).data
+                with open(module.path, "w", encoding="utf-8") as f:
+                    _ = f.write(content)
+            except Exception:
+                pass
 
     @staticmethod
     def get_remote_modules() -> "list[Module]":
-        if app.dependencies.connection_manager.connection is None:
+        m = app.dependencies.connection_manager.session
+        if m is None:
             return []
         try:
-            with app.dependencies.connection_manager.connection.connect() as m:
-                reply = m.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))
-                xml: str = reply.xml
-                tree = etree.fromstring(xml.encode())
-                schemas: list[etree._Element] = tree.xpath("//ncm:schema", namespaces=_NETCONF_NS)
-                return [
-                    Module(name=s.findtext("ncm:identifier", default="", namespaces=_NETCONF_NS))
-                    for s in schemas
-                ]
+            reply = m.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))
+            xml: str = reply.xml
+            tree = etree.fromstring(xml.encode())
+            schemas: list[etree._Element] = tree.xpath("//ncm:schema", namespaces=_NETCONF_NS)
+            return [
+                Module(name=s.findtext("ncm:identifier", default="", namespaces=_NETCONF_NS))
+                for s in schemas
+            ]
         except Exception:
             return []
 

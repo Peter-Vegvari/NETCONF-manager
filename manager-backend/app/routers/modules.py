@@ -24,7 +24,7 @@ async def get_modules() -> list[Module]:
 
 @module_router.post("/download-all", operation_id="downloadAllModules")
 async def download_all_modules():
-    if app.dependencies.connection_manager.connection is None:
+    if app.dependencies.connection_manager.session is None:
         raise HTTPException(400, "Not connected")
     Module.download_all()
 
