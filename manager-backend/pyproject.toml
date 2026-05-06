@@ -60,10 +60,6 @@ reportOptionalContextManager = false
 minversion = "8.4.1"
 addopts = "-ra -q"
 testpaths = ["tests"]
-markers = [
-    "real_device: tests against the real NETCONF device",
-    "notconf_only: tests that only work with the notconf container",
-]
 
 [tool.ruff.lint]
 extend-select = ["I"]

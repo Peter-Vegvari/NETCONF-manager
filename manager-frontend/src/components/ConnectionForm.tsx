@@ -12,8 +12,8 @@ export function ConnectionForm() {
     mutation: {
       onSuccess: (res) => {
         if (res.status === 200) {
-          queryClient.invalidateQueries();
           msg.success("Connected");
+          queryClient.refetchQueries();
         } else {
           msg.error("Connection failed");
         }
@@ -24,7 +24,7 @@ export function ConnectionForm() {
 
   const disconnect = useDisconnect({
     mutation: {
-      onSuccess: () => { queryClient.invalidateQueries(); msg.success("Disconnected"); },
+      onSuccess: () => { queryClient.refetchQueries(); msg.success("Disconnected"); },
     },
   });
 
@@ -40,7 +40,7 @@ export function ConnectionForm() {
         <Form
           form={form}
           layout="inline"
-          initialValues={{ host: "10.41.101.188", port: 830, user_name: "admin_user", password: "Ericsson1234" }}
+          initialValues={{ host: "10.41.104.26", port: 830, user_name: "admin_user", password: "Ericsson1234" }}
         >
           <Form.Item name="host" label="Host">
             <Input />
@@ -60,6 +60,9 @@ export function ConnectionForm() {
             </Button>
             <Button danger onClick={() => disconnect.mutate()} loading={disconnect.isPending}>
               Disconnect
+            </Button>
+            <Button onClick={() => queryClient.refetchQueries()}>
+              Refresh
             </Button>
           </Space>
         </Form>

@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import APIRouter, HTTPException
 
 import app.dependencies
@@ -10,7 +12,7 @@ module_router = APIRouter(prefix="/modules", tags=["modules"])
 @module_router.get("/", operation_id="getModules")
 async def get_modules() -> list[Module]:
     downloaded = Module.get_local_modules()
-    remote = Module.get_remote_modules()
+    remote = await asyncio.to_thread(Module.get_remote_modules)
     seen: set[str] = set()
     result: list[Module] = []
     for mod in [*downloaded, *remote]:

@@ -99,7 +99,6 @@ class TestDeleteAllModules:
         assert local == []
 
 
-@pytest.mark.notconf_only
 class TestGetModuleSchema:
     def test_schema_after_download_all(self, connected_client: TestClient):
         connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
