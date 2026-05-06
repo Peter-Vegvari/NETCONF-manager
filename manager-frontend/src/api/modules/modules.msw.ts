@@ -95,11 +95,22 @@ export const getGetSchemaMockHandler = (overrideResponse?: SchemaNode | ((info: 
       })
   }, options)
 }
+
+export const getGetDataMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
+  return http.get('*/api/v1/modules/:moduleName/data/:path', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+
+    return new HttpResponse(null,
+      { status: 200
+      })
+  }, options)
+}
 export const getModulesMock = () => [
   getGetModulesMockHandler(),
   getDeleteAllModulesMockHandler(),
   getDownloadAllModulesMockHandler(),
   getDownloadModuleMockHandler(),
   getDeleteModuleMockHandler(),
-  getGetSchemaMockHandler()
+  getGetSchemaMockHandler(),
+  getGetDataMockHandler()
 ]

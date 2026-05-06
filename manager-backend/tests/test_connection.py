@@ -117,3 +117,21 @@ class TestDisconnect:
         response = client.delete(f"{settings.API_V1_STR}/connect")
         assert response.status_code == 200
         assert response.json() == []
+
+
+class TestConnectionStatus:
+    def test_status_not_connected(self, client: TestClient):
+        response = client.get(f"{settings.API_V1_STR}/connect")
+        assert response.status_code == 200
+        assert response.json() is False
+
+    def test_status_connected(self, connected_client: TestClient):
+        response = connected_client.get(f"{settings.API_V1_STR}/connect")
+        assert response.status_code == 200
+        assert response.json() is True
+
+    def test_status_after_disconnect(self, connected_client: TestClient):
+        connected_client.delete(f"{settings.API_V1_STR}/connect")
+        response = connected_client.get(f"{settings.API_V1_STR}/connect")
+        assert response.status_code == 200
+        assert response.json() is False

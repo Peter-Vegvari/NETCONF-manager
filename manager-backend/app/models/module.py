@@ -58,6 +58,17 @@ class Module(BaseModel):
                     return stripped.split()[1].rstrip("{").strip('"').strip("'")
         return ""
 
+    @property
+    def namespace(self) -> str:
+        if not self.path.exists():
+            return ""
+        with open(self.path, "r") as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped.startswith("namespace "):
+                    return stripped.split('"')[1] if '"' in stripped else ""
+        return ""
+
     @computed_field
     @property
     def schema_node(self) -> SchemaNode:
@@ -71,6 +82,54 @@ class Module(BaseModel):
             k: v for k, v in full.children.items() if k.startswith(f"{self.name}:")
         }
         return SchemaNode(children=filtered if filtered else None)
+
+    def get_data(self, path: str) -> dict:
+        s = app.dependencies.connection_manager.session
+        assert s is not None
+        parts = path.strip("/").split("/")
+        root = parts[0]
+        inner = "".join(f"<{p}/>" for p in parts[1:]) if len(parts) > 1 else ""
+        subtree = f'<{root} xmlns="urn:ietf:params:xml:ns:yang:{self.name}">{inner}</{root}>'
+        reply = s.get(filter=("subtree", subtree))
+        return Module._xml_to_json(reply.data_ele, self.name)
+
+    @staticmethod
+    def _xml_to_json(data_ele, module_name: str) -> dict:
+        """Convert NETCONF <data> element to RFC 7951-style JSON."""
+        result: dict = {}
+        for child in data_ele:
+            tag = etree.QName(child).localname
+            key = f"{module_name}:{tag}"
+            value = Module._element_to_value(child)
+            if key in result:
+                existing = result[key]
+                if isinstance(existing, list):
+                    existing.append(value)
+                else:
+                    result[key] = [existing, value]
+            else:
+                result[key] = value
+        return result
+
+    @staticmethod
+    def _element_to_value(el):
+        children = list(el)
+        if not children:
+            return el.text or ""
+        # Check if children are a list (same tag repeated)
+        result: dict = {}
+        for child in children:
+            tag = etree.QName(child).localname
+            value = Module._element_to_value(child)
+            if tag in result:
+                existing = result[tag]
+                if isinstance(existing, list):
+                    existing.append(value)
+                else:
+                    result[tag] = [existing, value]
+            else:
+                result[tag] = value
+        return result
 
     def delete(self) -> None:
         self.path.unlink(missing_ok=True)
@@ -98,9 +157,15 @@ class Module(BaseModel):
             reply = m.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))
             xml: str = reply.xml
             tree = etree.fromstring(xml.encode())
-            schemas: list[etree._Element] = tree.xpath("//ncm:schema", namespaces=_NETCONF_NS)
+            schemas: list[etree._Element] = tree.xpath(
+                "//ncm:schema", namespaces=_NETCONF_NS
+            )
             return [
-                Module(name=s.findtext("ncm:identifier", default="", namespaces=_NETCONF_NS))
+                Module(
+                    name=s.findtext(
+                        "ncm:identifier", default="", namespaces=_NETCONF_NS
+                    )
+                )
                 for s in schemas
             ]
         except Exception:
@@ -115,9 +180,8 @@ class Module(BaseModel):
         ]
 
     @staticmethod
-    def get_schemas() -> "SchemaNode":
+    def _build_data_model() -> DataModel:
         modules = Module.get_local_modules()
-
         yang_library = {
             "ietf-yang-library:modules-state": {
                 "module-set-id": "1",
@@ -125,13 +189,17 @@ class Module(BaseModel):
                     {
                         "name": m.name,
                         "revision": m.revision,
+                        "namespace": m.namespace,
                         "conformance-type": "implement",
                     }
                     for m in modules
                 ],
             }
         }
-
         modules_path = settings.DOWNLOADED_MODULES_PATH
-        dm = DataModel(json.dumps(yang_library), mod_path=[str(modules_path)])
+        return DataModel(json.dumps(yang_library), mod_path=[str(modules_path)])
+
+    @staticmethod
+    def get_schemas() -> "SchemaNode":
+        dm = Module._build_data_model()
         return SchemaNode.model_validate(json.loads(dm.schema_digest()))

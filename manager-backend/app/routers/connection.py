@@ -6,6 +6,11 @@ from app.models.connection import Connection
 connection_router = APIRouter(tags=["connection"])
 
 
+@connection_router.get("/connect", operation_id="getConnectionStatus")
+async def get_connection_status() -> bool:
+    return app.dependencies.connection_manager.session is not None
+
+
 @connection_router.post("/connect", operation_id="connect")
 async def connect(new_connection: Connection):
     try:

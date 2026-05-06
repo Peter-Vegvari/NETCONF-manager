@@ -17,8 +17,22 @@ import type {
 } from 'msw';
 
 
+export const getGetConnectionStatusResponseMock = (): boolean => (faker.datatype.boolean())
+
 export const getDisconnectResponseMock = (): string[] => (Array.from({length: faker.number.int({min: 1, max: 10})}, () => faker.word.sample()))
 
+
+export const getGetConnectionStatusMockHandler = (overrideResponse?: boolean | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<boolean> | boolean), options?: RequestHandlerOptions) => {
+  return http.get('*/api/v1/connect', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetConnectionStatusResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
 
 export const getConnectMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
   return http.post('*/api/v1/connect', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
@@ -42,6 +56,7 @@ export const getDisconnectMockHandler = (overrideResponse?: string[] | ((info: P
   }, options)
 }
 export const getConnectionMock = () => [
+  getGetConnectionStatusMockHandler(),
   getConnectMockHandler(),
   getDisconnectMockHandler()
 ]

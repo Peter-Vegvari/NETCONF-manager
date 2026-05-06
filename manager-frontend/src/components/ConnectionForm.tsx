@@ -1,12 +1,14 @@
-import { Button, Card, Form, Input, InputNumber, Space, message } from "antd";
+import { Badge, Button, Card, Form, Input, InputNumber, Space, message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
-import { useConnect, useDisconnect } from "../api/connection/connection";
+import { useConnect, useDisconnect, useGetConnectionStatus } from "../api/connection/connection";
 import type { Connection } from "../api/model";
 
 export function ConnectionForm() {
   const [form] = Form.useForm<Connection>();
   const [msg, contextHolder] = message.useMessage();
   const queryClient = useQueryClient();
+  const { data: statusRes } = useGetConnectionStatus();
+  const connected = statusRes?.data === true;
 
   const connectMutation = useConnect({
     mutation: {
@@ -36,7 +38,7 @@ export function ConnectionForm() {
   return (
     <>
       {contextHolder}
-      <Card title="Device Connection" style={{ marginBottom: 16 }}>
+      <Card title={<Space>Device Connection <Badge status={connected ? "success" : "default"} text={connected ? "Connected" : "Disconnected"} /></Space>} style={{ marginBottom: 16 }}>
         <Form
           form={form}
           layout="inline"

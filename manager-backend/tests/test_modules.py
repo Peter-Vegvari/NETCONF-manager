@@ -115,3 +115,24 @@ class TestGetModuleSchema:
         )
         assert response.status_code == 200
         assert response.json()["kind"] == ""
+
+
+class TestGetData:
+    def test_get_data_interfaces(self, connected_client: TestClient):
+        connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
+        response = connected_client.get(
+            f"{settings.API_V1_STR}/modules/ietf-interfaces/data/interfaces"
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert "ietf-interfaces:interfaces" in data
+        interfaces = data["ietf-interfaces:interfaces"]["interface"]
+        names = [i["name"] for i in interfaces]
+        assert "GigabitEthernet0/0/0" in names
+        assert "GigabitEthernet0/0/1" in names
+
+    def test_get_data_not_connected(self, client: TestClient):
+        response = client.get(
+            f"{settings.API_V1_STR}/modules/ietf-interfaces/data/interfaces"
+        )
+        assert response.status_code == 400

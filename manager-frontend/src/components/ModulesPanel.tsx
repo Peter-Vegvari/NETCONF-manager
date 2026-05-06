@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Button, Card, Collapse, Descriptions, Input, Popconfirm, Select, Space, Tag, message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { DeleteOutlined, DownloadOutlined, CloudDownloadOutlined } from "@ant-design/icons";
-import { useGetModules, useDownloadModule, useDeleteModule, useDownloadAllModules, useDeleteAllModules } from "../api/modules/modules";
+import { useGetModules, useDownloadModule, useDeleteModule, useDownloadAllModules, useDeleteAllModules, useGetData } from "../api/modules/modules";
 import type { Module, SchemaNode } from "../api/model";
 
 const statusColor: Record<Module["status"], string> = {
@@ -10,20 +10,71 @@ const statusColor: Record<Module["status"], string> = {
   local: "green",
 };
 
-function SchemaTree({ node }: { node: SchemaNode }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getNestedValue(data: any, key: string): any {
+  if (!data || typeof data !== "object") return undefined;
+  // key may be "module:name", strip prefix
+  const localName = key.includes(":") ? key.split(":")[1] : key;
+  // Try both prefixed and local
+  return data[key] ?? data[localName];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function SchemaTree({ node, data }: { node: SchemaNode; data?: any }) {
   if (!node.children) return null;
   return (
-    <Collapse size="small" items={Object.entries(node.children).map(([name, child]) => ({
-      key: name,
-      label: <span>{name} <Tag>{child.kind}</Tag>{child.mandatory && <Tag color="red">required</Tag>}{child.type && <Tag color="purple">{String(child.type["base"] ?? "")}</Tag>}</span>,
-      children: child.children ? <SchemaTree node={child} /> : (
-        <Descriptions size="small" column={1}>
-          {child.description && <Descriptions.Item label="Description">{child.description}</Descriptions.Item>}
-          {child.default !== undefined && <Descriptions.Item label="Default">{String(child.default)}</Descriptions.Item>}
-        </Descriptions>
-      ),
-    }))} />
+    <Collapse size="small" items={Object.entries(node.children).map(([name, child]) => {
+      const childData = getNestedValue(data, name);
+      const isLeaf = !child.children;
+      return {
+        key: name,
+        label: (
+          <span>
+            {name} <Tag>{child.kind}</Tag>
+            {child.mandatory && <Tag color="red">required</Tag>}
+            {child.type && <Tag color="purple">{String(child.type["base"] ?? "")}</Tag>}
+            {isLeaf && childData !== undefined && <Tag color="green">{String(childData)}</Tag>}
+          </span>
+        ),
+        children: child.children ? (
+          Array.isArray(childData) ? (
+            <Collapse size="small" items={childData.map((item: unknown, i: number) => ({
+              key: i,
+              label: <span>{name}[{i}]</span>,
+              children: <SchemaTree node={child} data={item} />,
+            }))} />
+          ) : (
+            <SchemaTree node={child} data={childData} />
+          )
+        ) : (
+          <Descriptions size="small" column={1}>
+            {child.description && <Descriptions.Item label="Description">{child.description}</Descriptions.Item>}
+            {child.default !== undefined && <Descriptions.Item label="Default">{String(child.default)}</Descriptions.Item>}
+            {childData !== undefined && <Descriptions.Item label="Value">{String(childData)}</Descriptions.Item>}
+          </Descriptions>
+        ),
+      };
+    })} />
   );
+}
+
+function ModuleContent({ module }: { module: Module }) {
+  if (module.status !== "local") return <span>Download module to view schema.</span>;
+  const children = module.schema_node?.children;
+  if (!children) return <span>No schema available.</span>;
+  const firstKey = Object.keys(children)[0];
+  const topContainer = firstKey?.split(":")[1] ?? firstKey ?? "";
+
+  return <ModuleSchemaWithData module={module} topContainer={topContainer} />;
+}
+
+function ModuleSchemaWithData({ module, topContainer }: { module: Module; topContainer: string }) {
+  const { data, isLoading } = useGetData(module.name, topContainer, { query: { enabled: !!topContainer } });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dataObj = (data?.data as any)?.[`${module.name}:${topContainer}`] ?? (data?.data as any)?.[topContainer];
+
+  if (isLoading) return <span>Loading...</span>;
+  return <SchemaTree node={module.schema_node} data={{ [Object.keys(module.schema_node.children!)[0]]: dataObj }} />;
 }
 
 export function ModulesPanel() {
@@ -89,9 +140,7 @@ export function ModulesPanel() {
                 <Button danger type="text" size="small" icon={<DeleteOutlined />} onClick={(e) => e.stopPropagation()} />
               </Popconfirm>
             ),
-            children: m.status === "local" && m.schema_node?.children
-              ? <SchemaTree node={m.schema_node} />
-              : <span>{m.status === "local" ? "No schema available." : "Download module to view schema."}</span>,
+            children: <ModuleContent module={m} />,
           }))} />
         )}
       </Card>

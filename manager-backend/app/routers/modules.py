@@ -52,3 +52,10 @@ async def delete_all_modules():
 async def get_module_schema(module_name: str) -> SchemaNode:
     module = Module(name=module_name)
     return module.schema_node
+
+
+@module_router.get("/{module_name}/data/{path:path}", operation_id="getData")
+async def get_data(module_name: str, path: str):
+    if app.dependencies.connection_manager.session is None:
+        raise HTTPException(400, "Not connected")
+    return Module(name=module_name).get_data(path)

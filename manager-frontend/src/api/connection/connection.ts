@@ -5,13 +5,22 @@
  * OpenAPI spec version: 0.1.0
  */
 import {
-  useMutation
+  useMutation,
+  useQuery
 } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -19,6 +28,122 @@ import type {
   HTTPValidationError
 } from '../model';
 
+
+
+
+
+/**
+ * @summary Get Connection Status
+ */
+export type getConnectionStatusResponse200 = {
+  data: boolean
+  status: 200
+}
+
+export type getConnectionStatusResponseSuccess = (getConnectionStatusResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getConnectionStatusResponse = (getConnectionStatusResponseSuccess)
+
+export const getGetConnectionStatusUrl = () => {
+
+
+
+
+  return `/api/v1/connect`
+}
+
+export const getConnectionStatus = async ( options?: RequestInit): Promise<getConnectionStatusResponse> => {
+
+  const res = await fetch(getGetConnectionStatusUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getConnectionStatusResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getConnectionStatusResponse
+}
+
+
+
+
+
+export const getGetConnectionStatusQueryKey = () => {
+    return [
+    `/api/v1/connect`
+    ] as const;
+    }
+
+
+export const getGetConnectionStatusQueryOptions = <TData = Awaited<ReturnType<typeof getConnectionStatus>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetConnectionStatusQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectionStatus>>> = ({ signal }) => getConnectionStatus({ signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetConnectionStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getConnectionStatus>>>
+export type GetConnectionStatusQueryError = unknown
+
+
+export function useGetConnectionStatus<TData = Awaited<ReturnType<typeof getConnectionStatus>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getConnectionStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getConnectionStatus>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetConnectionStatus<TData = Awaited<ReturnType<typeof getConnectionStatus>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getConnectionStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getConnectionStatus>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetConnectionStatus<TData = Awaited<ReturnType<typeof getConnectionStatus>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Connection Status
+ */
+
+export function useGetConnectionStatus<TData = Awaited<ReturnType<typeof getConnectionStatus>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetConnectionStatusQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
 
 
 
