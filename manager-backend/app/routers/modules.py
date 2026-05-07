@@ -1,4 +1,5 @@
 import asyncio
+from typing import Any
 
 from fastapi import APIRouter, HTTPException
 
@@ -57,7 +58,7 @@ async def get_module_schema(module_name: str) -> SchemaNode:
 
 
 @module_router.get("/{module_name}/data", operation_id="getModuleData")
-async def get_module_data(module_name: str):
+async def get_module_data(module_name: str) -> dict[str, Any]:
     if app.dependencies.connection_manager.session is None:
         raise HTTPException(400, "Not connected")
     module = Module(name=module_name)
@@ -70,7 +71,7 @@ async def get_module_data(module_name: str):
 
 
 @module_router.get("/{module_name}/data/{path:path}", operation_id="getData")
-async def get_data(module_name: str, path: str):
+async def get_data(module_name: str, path: str) -> dict[str, Any]:
     if app.dependencies.connection_manager.session is None:
         raise HTTPException(400, "Not connected")
     return Module(name=module_name).get_data(path)

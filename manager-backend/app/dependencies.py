@@ -1,4 +1,4 @@
-from typing import final
+from typing import Any, cast, final
 
 from ncclient.manager import Manager
 from wireup import injectable
@@ -13,9 +13,12 @@ class ConnectionManager:
         self.connection: Connection | None = None
         self._session: Manager | None = None
 
+    def _is_connected(self, session: Manager) -> bool:
+        return cast(bool, session.connected)
+
     @property
     def session(self) -> Manager | None:
-        if self._session and self._session.connected:
+        if self._session and self._is_connected(self._session):
             return self._session
         if self.connection:
             self._session = self.connection.connect()
@@ -28,9 +31,9 @@ class ConnectionManager:
         self._session = connection.connect()
         return self._session
 
-    def disconnect(self):
-        if self._session and self._session.connected:
-            self._session.close_session()
+    def disconnect(self) -> None:
+        if self._session and self._is_connected(self._session):
+            cast(Any, self._session).close_session()
         self._session = None
         self.connection = None
 

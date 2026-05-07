@@ -20,6 +20,8 @@ import {
   ModuleStatus
 } from '../model';
 import type {
+  GetData200,
+  GetModuleData200,
   ModuleSummary,
   SchemaNode
 } from '../model';
@@ -30,6 +32,10 @@ export const getGetModulesResponseMock = (): ModuleSummary[] => (Array.from({ le
 export const getGetSchemaResponseMock = (overrideResponse: Partial<Extract<SchemaNode, object>> = {}): SchemaNode => ({kind: faker.string.alpha({length: {min: 10, max: 20}}), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: {kind: faker.string.alpha({length: {min: 10, max: 20}}), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined])}
       },null,]), undefined]), ...overrideResponse})
+
+export const getGetModuleDataResponseMock = (): GetModuleData200 => ({})
+
+export const getGetDataResponseMock = (): GetData200 => ({})
 
 
 export const getGetModulesMockHandler = (overrideResponse?: ModuleSummary[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ModuleSummary[]> | ModuleSummary[]), options?: RequestHandlerOptions) => {
@@ -96,21 +102,25 @@ export const getGetSchemaMockHandler = (overrideResponse?: SchemaNode | ((info: 
   }, options)
 }
 
-export const getGetModuleDataMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
+export const getGetModuleDataMockHandler = (overrideResponse?: GetModuleData200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetModuleData200> | GetModuleData200), options?: RequestHandlerOptions) => {
   return http.get('*/api/v1/modules/:moduleName/data', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
-    return new HttpResponse(null,
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetModuleDataResponseMock(),
       { status: 200
       })
   }, options)
 }
 
-export const getGetDataMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
+export const getGetDataMockHandler = (overrideResponse?: GetData200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetData200> | GetData200), options?: RequestHandlerOptions) => {
   return http.get('*/api/v1/modules/:moduleName/data/:path', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
-    return new HttpResponse(null,
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetDataResponseMock(),
       { status: 200
       })
   }, options)

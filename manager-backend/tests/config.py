@@ -16,6 +16,4 @@ class Settings(BaseSettings):
     NOTCONF_PASSWORD: str = "admin"
 
 
-
-
 settings = Settings()

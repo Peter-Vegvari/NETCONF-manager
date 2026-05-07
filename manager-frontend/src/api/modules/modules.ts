@@ -24,6 +24,8 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  GetData200,
+  GetModuleData200,
   HTTPValidationError,
   ModuleSummary,
   SchemaNode
@@ -638,7 +640,7 @@ export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TErr
  * @summary Get Module Data
  */
 export type getModuleDataResponse200 = {
-  data: unknown
+  data: GetModuleData200
   status: 200
 }
 
@@ -761,7 +763,7 @@ export function useGetModuleData<TData = Awaited<ReturnType<typeof getModuleData
  * @summary Get Data
  */
 export type getDataResponse200 = {
-  data: unknown
+  data: GetData200
   status: 200
 }
 

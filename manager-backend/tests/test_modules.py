@@ -48,9 +48,7 @@ class TestDownloadModule:
 
 class TestDownloadAllModules:
     def test_download_all(self, connected_client: TestClient):
-        response = connected_client.post(
-            f"{settings.API_V1_STR}/modules/download-all"
-        )
+        response = connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
         assert response.status_code == 200
         # Cleanup
         connected_client.delete(f"{settings.API_V1_STR}/modules/")
@@ -126,9 +124,7 @@ class TestGetData:
         connected_client.delete(f"{settings.API_V1_STR}/modules/")
 
     def test_get_module_data_not_connected(self, client: TestClient):
-        response = client.get(
-            f"{settings.API_V1_STR}/modules/ietf-interfaces/data"
-        )
+        response = client.get(f"{settings.API_V1_STR}/modules/ietf-interfaces/data")
         assert response.status_code == 400
 
     def test_get_data_interfaces(self, connected_client: TestClient):

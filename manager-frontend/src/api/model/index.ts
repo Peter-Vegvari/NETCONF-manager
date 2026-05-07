@@ -6,6 +6,8 @@
  */
 
 export * from './connection';
+export * from './getData200';
+export * from './getModuleData200';
 export * from './hTTPValidationError';
 export * from './moduleStatus';
 export * from './moduleSummary';

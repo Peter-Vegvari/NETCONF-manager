@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { Collapse } from "antd";
 import type { ModuleSummary } from "../../api/model";
-import { ModuleCollapseItem } from "./ModuleCollapseItem";
+import { ModuleItemLabel, ModuleItemActions } from "./ModuleItem";
+import { ModuleContent } from "./ModuleContent";
 import { ModulesToolbar } from "./ModulesToolbar";
 
 interface Props {
@@ -23,23 +24,17 @@ export function ModuleList({ modules, onDownload, onDelete, downloadPending, dow
       .sort((a, b) => a[sort].localeCompare(b[sort]));
   }, [modules, search, statusFilter, sort]);
 
+  const items = filtered.map((m) => ({
+    key: m.name,
+    label: <ModuleItemLabel module={m} />,
+    extra: <ModuleItemActions module={m} onDownload={onDownload} onDelete={onDelete} downloadPending={downloadPending} downloadingName={downloadingName} />,
+    children: <ModuleContent module={m} />,
+  }));
+
   return (
     <>
       <ModulesToolbar onSearchChange={setSearch} onStatusChange={setStatusFilter} sort={sort} onSortChange={setSort} />
-      {filtered.length === 0 ? "No modules found." : (
-        <Collapse>
-          {filtered.map((m) => (
-            <ModuleCollapseItem
-              key={m.name}
-              module={m}
-              onDownload={onDownload}
-              onDelete={onDelete}
-              downloadPending={downloadPending}
-              downloadingName={downloadingName}
-            />
-          ))}
-        </Collapse>
-      )}
+      {filtered.length === 0 ? "No modules found." : <Collapse items={items} />}
     </>
   );
 }

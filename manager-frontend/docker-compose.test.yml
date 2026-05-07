@@ -1,0 +1,13 @@
+services:
+  manager-backend:
+    build: .
+    container_name: test-manager-frontend
+    command: pytest -v
+    environment:
+      - ENVIRONMENT=testing
+      - DOWNLOADED_MODULES_PATH=/tmp/downloaded-modules
+    networks:
+      - test-shared
+    depends_on:
+      notconf:
+        condition: service_started

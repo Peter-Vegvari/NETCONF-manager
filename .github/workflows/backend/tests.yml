@@ -8,7 +8,22 @@ on:
     branches: [main]
 
 jobs:
+  static-analysis:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: manager-backend
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run basedpyright
+
   test:
+    needs: static-analysis
     runs-on: ubuntu-latest
     defaults:
       run:

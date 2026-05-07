@@ -1,22 +1,3 @@
 services:
   manager-frontend:
-    build: .
     container_name: manager-frontend
-    ports:
-      - "3000:5173"
-    volumes:
-      - .:/app
-      - /app/node_modules
-      - shared:/shared
-    networks:
-      - shared
-
-networks:
-  shared:
-    name: shared
-    external: true
-
-volumes:
-  shared:
-    name: shared
-    external: true

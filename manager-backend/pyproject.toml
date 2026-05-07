@@ -15,17 +15,13 @@ dependencies = [
     "pytest",
     "pytest-asyncio",
     "pytest-cov",
-    "six",
     "fastapi[standard]",
     "pydantic-settings",
     "uvicorn",
-    "pyang",
     "lxml",
     "types-lxml",
     "yangson",
-    "datamodel-code-generator",
     "wireup>=2.9.0",
-    "pydantify @ git+https://github.com/pydantify/pydantify.git",
 ]
 
 [project.scripts]
@@ -53,8 +49,7 @@ reportAny = false
 reportExplicitAny = false
 reportUnusedCallResult = false
 reportUnusedParameter = false
-allowedUntypedLibraries = ["ncclient", "app"]
-reportOptionalContextManager = false
+allowedUntypedLibraries = ["ncclient", "app", "yangson"]
 
 [tool.pytest.ini_options]
 minversion = "8.4.1"

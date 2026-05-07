@@ -2,8 +2,10 @@ import json
 import os
 from enum import StrEnum, auto
 from pathlib import Path
+from typing import Any, cast
 
 from lxml import etree
+from lxml.etree import Element
 from pydantic import BaseModel
 from yangson import DataModel
 
@@ -49,7 +51,7 @@ class Module(BaseModel):
     def download(self) -> None:
         m = app.dependencies.connection_manager.session
         assert m is not None
-        content: str = m.get_schema(identifier=self.name).data
+        content = cast(str, cast(Any, m).get_schema(identifier=self.name).data)
         with open(self.path, "w", encoding="utf-8") as f:
             _ = f.write(content)
 
@@ -88,20 +90,22 @@ class Module(BaseModel):
         }
         return SchemaNode(children=filtered if filtered else None)
 
-    def get_data(self, path: str) -> dict:
+    def get_data(self, path: str) -> dict[str, Any]:
         s = app.dependencies.connection_manager.session
         assert s is not None
         parts = path.strip("/").split("/")
         root = parts[0]
         inner = "".join(f"<{p}/>" for p in parts[1:]) if len(parts) > 1 else ""
-        subtree = f'<{root} xmlns="urn:ietf:params:xml:ns:yang:{self.name}">{inner}</{root}>'
-        reply = s.get(filter=("subtree", subtree))
-        return Module._xml_to_json(reply.data_ele, self.name)
+        subtree = (
+            f'<{root} xmlns="urn:ietf:params:xml:ns:yang:{self.name}">{inner}</{root}>'
+        )
+        reply = cast(Any, s).get(filter=("subtree", subtree))
+        return Module._xml_to_json(cast(Element, reply.data_ele), self.name)
 
     @staticmethod
-    def _xml_to_json(data_ele, module_name: str) -> dict:
+    def _xml_to_json(data_ele: Element, module_name: str) -> dict[str, Any]:
         """Convert NETCONF <data> element to RFC 7951-style JSON."""
-        result: dict = {}
+        result: dict[str, Any] = {}
         for child in data_ele:
             tag = etree.QName(child).localname
             key = f"{module_name}:{tag}"
@@ -109,7 +113,7 @@ class Module(BaseModel):
             if key in result:
                 existing = result[key]
                 if isinstance(existing, list):
-                    existing.append(value)
+                    cast(list[Any], existing).append(value)
                 else:
                     result[key] = [existing, value]
             else:
@@ -117,19 +121,19 @@ class Module(BaseModel):
         return result
 
     @staticmethod
-    def _element_to_value(el):
+    def _element_to_value(el: Element) -> Any:
         children = list(el)
         if not children:
             return el.text or ""
         # Check if children are a list (same tag repeated)
-        result: dict = {}
+        result: dict[str, Any] = {}
         for child in children:
             tag = etree.QName(child).localname
             value = Module._element_to_value(child)
             if tag in result:
                 existing = result[tag]
                 if isinstance(existing, list):
-                    existing.append(value)
+                    cast(list[Any], existing).append(value)
                 else:
                     result[tag] = [existing, value]
             else:
@@ -147,7 +151,9 @@ class Module(BaseModel):
             if module.path.exists():
                 continue
             try:
-                content: str = m.get_schema(identifier=module.name).data
+                content = cast(
+                    str, cast(Any, m).get_schema(identifier=module.name).data
+                )
                 with open(module.path, "w", encoding="utf-8") as f:
                     _ = f.write(content)
             except Exception:
@@ -159,12 +165,10 @@ class Module(BaseModel):
         if m is None:
             return []
         try:
-            reply = m.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))
-            xml: str = reply.xml
-            tree = etree.fromstring(xml.encode())
-            schemas: list[etree._Element] = tree.xpath(
-                "//ncm:schema", namespaces=_NETCONF_NS
-            )
+            reply = cast(Any, m).get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))
+            xml = cast(str, reply.xml)
+            tree = etree.fromstring(xml.encode("utf-8"))
+            schemas = tree.xpath("//ncm:schema", namespaces=_NETCONF_NS)
             return [
                 Module(
                     name=s.findtext(

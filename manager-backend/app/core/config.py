@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, ClassVar, Literal, cast
 
 from pydantic import AnyUrl, BeforeValidator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -8,13 +8,15 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 def parse_cors(v: Any) -> list[str] | str:
     if isinstance(v, str) and not v.startswith("["):
         return [i.strip() for i in v.split(",") if i.strip()]
-    elif isinstance(v, list | str):
+    elif isinstance(v, list):
+        return cast(list[str], v)
+    elif isinstance(v, str):
         return v
     raise ValueError(v)
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
+    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
         env_file="../.env",
         env_ignore_empty=True,
         extra="ignore",
