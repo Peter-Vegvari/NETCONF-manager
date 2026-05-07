@@ -10,7 +10,7 @@ services:
       - test-shared
     depends_on:
       notconf:
-        condition: service_started
+        condition: service_healthy
 
   notconf:
     image: ghcr.io/notconf/notconf:latest
@@ -19,6 +19,12 @@ services:
       - ./tests/resources/yang-modules/startup:/yang-modules/startup
     networks:
       - test-shared
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/830"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
 
 networks:
   test-shared:
