@@ -3,22 +3,22 @@ import asyncio
 from fastapi import APIRouter, HTTPException
 
 import app.dependencies
-from app.models.module import Module
+from app.models.module import Module, ModuleSummary
 from app.models.schema import SchemaNode
 
 module_router = APIRouter(prefix="/modules", tags=["modules"])
 
 
 @module_router.get("/", operation_id="getModules")
-async def get_modules() -> list[Module]:
+async def get_modules() -> list[ModuleSummary]:
     downloaded = Module.get_local_modules()
     remote = await asyncio.to_thread(Module.get_remote_modules)
     seen: set[str] = set()
-    result: list[Module] = []
+    result: list[ModuleSummary] = []
     for mod in [*downloaded, *remote]:
         if mod.name not in seen:
             seen.add(mod.name)
-            result.append(mod)
+            result.append(mod.to_summary())
     return result
 
 
@@ -51,7 +51,22 @@ async def delete_all_modules():
 @module_router.get("/{module_name}/schema", operation_id="getSchema")
 async def get_module_schema(module_name: str) -> SchemaNode:
     module = Module(name=module_name)
+    if not module.path.exists():
+        raise HTTPException(404, "Module not downloaded")
     return module.schema_node
+
+
+@module_router.get("/{module_name}/data", operation_id="getModuleData")
+async def get_module_data(module_name: str):
+    if app.dependencies.connection_manager.session is None:
+        raise HTTPException(400, "Not connected")
+    module = Module(name=module_name)
+    schema = module.schema_node
+    if not schema.children:
+        raise HTTPException(404, "No schema available")
+    first_key = next(iter(schema.children))
+    top_container = first_key.split(":")[1] if ":" in first_key else first_key
+    return module.get_data(top_container)
 
 
 @module_router.get("/{module_name}/data/{path:path}", operation_id="getData")

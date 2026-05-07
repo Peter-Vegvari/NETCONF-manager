@@ -4,7 +4,7 @@ from enum import StrEnum, auto
 from pathlib import Path
 
 from lxml import etree
-from pydantic import BaseModel, computed_field
+from pydantic import BaseModel
 from yangson import DataModel
 
 import app.dependencies
@@ -24,20 +24,27 @@ class ModuleStatus(StrEnum):
     LOCAL = auto()
 
 
+class ModuleSummary(BaseModel):
+    name: str
+    status: ModuleStatus
+    revision: str = ""
+
+
 class Module(BaseModel):
     name: str
 
-    @computed_field
     @property
     def path(self) -> Path:
         return settings.DOWNLOADED_MODULES_PATH / f"{self.name}.yang"
 
-    @computed_field
     @property
     def status(self) -> ModuleStatus:
         if self.path.exists():
             return ModuleStatus.LOCAL
         return ModuleStatus.REMOTE
+
+    def to_summary(self) -> "ModuleSummary":
+        return ModuleSummary(name=self.name, status=self.status, revision=self.revision)
 
     def download(self) -> None:
         m = app.dependencies.connection_manager.session
@@ -46,7 +53,6 @@ class Module(BaseModel):
         with open(self.path, "w", encoding="utf-8") as f:
             _ = f.write(content)
 
-    @computed_field
     @property
     def revision(self) -> str:
         if not self.path.exists():
@@ -69,7 +75,6 @@ class Module(BaseModel):
                     return stripped.split('"')[1] if '"' in stripped else ""
         return ""
 
-    @computed_field
     @property
     def schema_node(self) -> SchemaNode:
         try:

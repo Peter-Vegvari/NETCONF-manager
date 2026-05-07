@@ -1,8 +1,5 @@
-import pytest
 from fastapi.testclient import TestClient
 
-import app.dependencies
-from app.models.connection import Connection
 from tests.config import settings
 
 
@@ -113,11 +110,27 @@ class TestGetModuleSchema:
         response = client.get(
             f"{settings.API_V1_STR}/modules/nonexistent-module/schema"
         )
-        assert response.status_code == 200
-        assert response.json()["kind"] == ""
+        assert response.status_code == 404
 
 
 class TestGetData:
+    def test_get_module_data_auto(self, connected_client: TestClient):
+        connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
+        response = connected_client.get(
+            f"{settings.API_V1_STR}/modules/ietf-interfaces/data"
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert "ietf-interfaces:interfaces" in data
+        # Cleanup
+        connected_client.delete(f"{settings.API_V1_STR}/modules/")
+
+    def test_get_module_data_not_connected(self, client: TestClient):
+        response = client.get(
+            f"{settings.API_V1_STR}/modules/ietf-interfaces/data"
+        )
+        assert response.status_code == 400
+
     def test_get_data_interfaces(self, connected_client: TestClient):
         connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
         response = connected_client.get(

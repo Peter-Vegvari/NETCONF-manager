@@ -2,8 +2,8 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { App as AntApp, ConfigProvider, Layout, Switch, Typography, theme } from "antd";
-import { ConnectionForm } from "./components/ConnectionForm";
-import { ModulesPanel } from "./components/ModulesPanel";
+import { ConnectionForm } from "./components/connection/ConnectionForm";
+import { ModulesPanel } from "./components/module/ModulesPanel";
 
 const queryClient = new QueryClient();
 

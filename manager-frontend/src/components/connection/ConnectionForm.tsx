@@ -1,7 +1,7 @@
 import { Badge, Button, Card, Form, Input, InputNumber, Space, message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
-import { useConnect, useDisconnect, useGetConnectionStatus } from "../api/connection/connection";
-import type { Connection } from "../api/model";
+import { useConnect, useDisconnect, useGetConnectionStatus } from "../../api/connection/connection";
+import type { Connection } from "../../api/model";
 
 export function ConnectionForm() {
   const [form] = Form.useForm<Connection>();
@@ -27,6 +27,7 @@ export function ConnectionForm() {
   const disconnect = useDisconnect({
     mutation: {
       onSuccess: () => { queryClient.refetchQueries(); msg.success("Disconnected"); },
+      onError: () => { msg.error("Disconnect failed"); },
     },
   });
 

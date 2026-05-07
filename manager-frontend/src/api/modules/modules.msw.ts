@@ -20,19 +20,19 @@ import {
   ModuleStatus
 } from '../model';
 import type {
-  Module,
+  ModuleSummary,
   SchemaNode
 } from '../model';
 
 
-export const getGetModulesResponseMock = (): Module[] => (Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({name: faker.string.alpha({length: {min: 10, max: 20}}), path: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(Object.values(ModuleStatus)), revision: faker.string.alpha({length: {min: 10, max: 20}}), schema_node: {kind: faker.string.alpha({length: {min: 10, max: 20}}), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined])}})))
+export const getGetModulesResponseMock = (): ModuleSummary[] => (Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({name: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(Object.values(ModuleStatus)), revision: faker.string.alpha({length: {min: 10, max: 20}})})))
 
 export const getGetSchemaResponseMock = (overrideResponse: Partial<Extract<SchemaNode, object>> = {}): SchemaNode => ({kind: faker.string.alpha({length: {min: 10, max: 20}}), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: {kind: faker.string.alpha({length: {min: 10, max: 20}}), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined])}
       },null,]), undefined]), ...overrideResponse})
 
 
-export const getGetModulesMockHandler = (overrideResponse?: Module[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<Module[]> | Module[]), options?: RequestHandlerOptions) => {
+export const getGetModulesMockHandler = (overrideResponse?: ModuleSummary[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ModuleSummary[]> | ModuleSummary[]), options?: RequestHandlerOptions) => {
   return http.get('*/api/v1/modules/', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 
 
@@ -96,6 +96,16 @@ export const getGetSchemaMockHandler = (overrideResponse?: SchemaNode | ((info: 
   }, options)
 }
 
+export const getGetModuleDataMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
+  return http.get('*/api/v1/modules/:moduleName/data', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+
+    return new HttpResponse(null,
+      { status: 200
+      })
+  }, options)
+}
+
 export const getGetDataMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
   return http.get('*/api/v1/modules/:moduleName/data/:path', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
   if (typeof overrideResponse === 'function') {await overrideResponse(info); }
@@ -112,5 +122,6 @@ export const getModulesMock = () => [
   getDownloadModuleMockHandler(),
   getDeleteModuleMockHandler(),
   getGetSchemaMockHandler(),
+  getGetModuleDataMockHandler(),
   getGetDataMockHandler()
 ]

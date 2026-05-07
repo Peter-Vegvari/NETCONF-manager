@@ -25,7 +25,7 @@ import type {
 
 import type {
   HTTPValidationError,
-  Module,
+  ModuleSummary,
   SchemaNode
 } from '../model';
 
@@ -37,7 +37,7 @@ import type {
  * @summary Get Modules
  */
 export type getModulesResponse200 = {
-  data: Module[]
+  data: ModuleSummary[]
   status: 200
 }
 
@@ -625,6 +625,129 @@ export function useGetSchema<TData = Awaited<ReturnType<typeof getSchema>>, TErr
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetSchemaQueryOptions(moduleName,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
+ * @summary Get Module Data
+ */
+export type getModuleDataResponse200 = {
+  data: unknown
+  status: 200
+}
+
+export type getModuleDataResponse422 = {
+  data: HTTPValidationError
+  status: 422
+}
+
+export type getModuleDataResponseSuccess = (getModuleDataResponse200) & {
+  headers: Headers;
+};
+export type getModuleDataResponseError = (getModuleDataResponse422) & {
+  headers: Headers;
+};
+
+export type getModuleDataResponse = (getModuleDataResponseSuccess | getModuleDataResponseError)
+
+export const getGetModuleDataUrl = (moduleName: string,) => {
+
+
+
+
+  return `/api/v1/modules/${moduleName}/data`
+}
+
+export const getModuleData = async (moduleName: string, options?: RequestInit): Promise<getModuleDataResponse> => {
+
+  const res = await fetch(getGetModuleDataUrl(moduleName),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getModuleDataResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getModuleDataResponse
+}
+
+
+
+
+
+export const getGetModuleDataQueryKey = (moduleName: string,) => {
+    return [
+    `/api/v1/modules/${moduleName}/data`
+    ] as const;
+    }
+
+
+export const getGetModuleDataQueryOptions = <TData = Awaited<ReturnType<typeof getModuleData>>, TError = HTTPValidationError>(moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModuleData>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModuleDataQueryKey(moduleName);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModuleData>>> = ({ signal }) => getModuleData(moduleName, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(moduleName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModuleData>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetModuleDataQueryResult = NonNullable<Awaited<ReturnType<typeof getModuleData>>>
+export type GetModuleDataQueryError = HTTPValidationError
+
+
+export function useGetModuleData<TData = Awaited<ReturnType<typeof getModuleData>>, TError = HTTPValidationError>(
+ moduleName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModuleData>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModuleData>>,
+          TError,
+          Awaited<ReturnType<typeof getModuleData>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModuleData<TData = Awaited<ReturnType<typeof getModuleData>>, TError = HTTPValidationError>(
+ moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModuleData>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModuleData>>,
+          TError,
+          Awaited<ReturnType<typeof getModuleData>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModuleData<TData = Awaited<ReturnType<typeof getModuleData>>, TError = HTTPValidationError>(
+ moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModuleData>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Module Data
+ */
+
+export function useGetModuleData<TData = Awaited<ReturnType<typeof getModuleData>>, TError = HTTPValidationError>(
+ moduleName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModuleData>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetModuleDataQueryOptions(moduleName,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
