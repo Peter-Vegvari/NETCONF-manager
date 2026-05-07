@@ -1,5 +1,5 @@
 # .github/workflows/tests.yml
-name: Integration Tests
+name: Backend tests
 
 on:
   push:

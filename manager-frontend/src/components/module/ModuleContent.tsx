@@ -9,7 +9,7 @@ export function ModuleContent({ module }: { module: ModuleSummary }) {
 
   if (!isLocal) return <span>Download module to view schema.</span>;
   if (schemaLoading || dataLoading) return <span>Loading...</span>;
-  if (!schemaRes?.data?.children) return <span>No schema available.</span>;
+  if (!schemaRes || schemaRes.status !== 200 || !schemaRes.data.children) return <span>No schema available.</span>;
 
-  return <SchemaTree node={schemaRes.data} data={dataRes?.data} />;
+  return <SchemaTree node={schemaRes.data} data={dataRes?.status === 200 ? dataRes.data : undefined} />;
 }

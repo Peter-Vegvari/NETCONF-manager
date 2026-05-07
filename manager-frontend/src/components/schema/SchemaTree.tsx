@@ -4,7 +4,7 @@ import { getNestedValue } from "../../utils/schema";
 import { SchemaNodeLabel } from "./SchemaNodeLabel";
 import { SchemaLeafDetail } from "./SchemaLeafDetail";
 
-export function SchemaTree({ node, data }: { node: SchemaNode; data?: any }) {
+export function SchemaTree({ node, data }: { node: SchemaNode; data?: Record<string, unknown> }) {
   if (!node.children) return null;
   const entries = Object.entries(node.children);
   return (
