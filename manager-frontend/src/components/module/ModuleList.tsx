@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { Collapse } from "antd";
 import type { ModuleSummary } from "../../api/model";
-import { ModuleItemLabel, ModuleItemActions } from "./ModuleItem";
-import { ModuleContent } from "./ModuleContent";
+import { ModuleCollapseItem } from "./ModuleCollapseItem";
 import { ModulesToolbar } from "./ModulesToolbar";
 
 interface Props {
@@ -19,22 +18,27 @@ export function ModuleList({ modules, onDownload, onDelete, downloadPending, dow
   const [sort, setSort] = useState<"name" | "status">("name");
 
   const filtered = useMemo(() => {
-    let result = modules.filter((m) => m.name.toLowerCase().includes(search.toLowerCase()));
-    if (statusFilter) result = result.filter((m) => m.status === statusFilter);
-    result.sort((a, b) => sort === "name" ? a.name.localeCompare(b.name) : a.status.localeCompare(b.status));
-    return result;
+    return modules
+      .filter((m) => m.name.includes(search) && (!statusFilter || m.status === statusFilter))
+      .sort((a, b) => a[sort].localeCompare(b[sort]));
   }, [modules, search, statusFilter, sort]);
 
   return (
     <>
       <ModulesToolbar onSearchChange={setSearch} onStatusChange={setStatusFilter} sort={sort} onSortChange={setSort} />
       {filtered.length === 0 ? "No modules found." : (
-        <Collapse items={filtered.map((m) => ({
-          key: m.name,
-          label: <ModuleItemLabel module={m} />,
-          extra: <ModuleItemActions module={m} onDownload={onDownload} onDelete={onDelete} downloadPending={downloadPending} downloadingName={downloadingName} />,
-          children: <ModuleContent module={m} />,
-        }))} />
+        <Collapse>
+          {filtered.map((m) => (
+            <ModuleCollapseItem
+              key={m.name}
+              module={m}
+              onDownload={onDownload}
+              onDelete={onDelete}
+              downloadPending={downloadPending}
+              downloadingName={downloadingName}
+            />
+          ))}
+        </Collapse>
       )}
     </>
   );
