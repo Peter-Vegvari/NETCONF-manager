@@ -1,7 +1,7 @@
 import json
 import os
 import tempfile
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 import wireup
@@ -17,7 +17,7 @@ from app.routers.modules import module_router
 
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+async def lifespan(_app: FastAPI) -> AsyncGenerator[None]:
     settings.DOWNLOADED_MODULES_PATH.mkdir(parents=True, exist_ok=True)
 
     if settings.ENVIRONMENT != "testing":

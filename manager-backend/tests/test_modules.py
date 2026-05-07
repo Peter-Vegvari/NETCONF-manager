@@ -1,3 +1,6 @@
+import time
+from typing import Any
+
 from fastapi.testclient import TestClient
 
 from tests.config import settings
@@ -112,13 +115,27 @@ class TestGetModuleSchema:
 
 
 class TestGetData:
+    @staticmethod
+    def _wait_for_data(
+        client: TestClient, url: str, key: str, retries: int = 5, delay: float = 2
+    ) -> dict[str, Any]:
+        data: dict[str, Any] = {}
+        for _ in range(retries):
+            resp = client.get(url)
+            assert resp.status_code == 200
+            data = resp.json()
+            if key in data:
+                return data
+            time.sleep(delay)
+        return data
+
     def test_get_module_data_auto(self, connected_client: TestClient):
         connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
-        response = connected_client.get(
-            f"{settings.API_V1_STR}/modules/ietf-interfaces/data"
+        data = self._wait_for_data(
+            connected_client,
+            f"{settings.API_V1_STR}/modules/ietf-interfaces/data",
+            "ietf-interfaces:interfaces",
         )
-        assert response.status_code == 200
-        data = response.json()
         assert "ietf-interfaces:interfaces" in data
         # Cleanup
         connected_client.delete(f"{settings.API_V1_STR}/modules/")
@@ -129,11 +146,11 @@ class TestGetData:
 
     def test_get_data_interfaces(self, connected_client: TestClient):
         connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
-        response = connected_client.get(
-            f"{settings.API_V1_STR}/modules/ietf-interfaces/data/interfaces"
+        data = self._wait_for_data(
+            connected_client,
+            f"{settings.API_V1_STR}/modules/ietf-interfaces/data/interfaces",
+            "ietf-interfaces:interfaces",
         )
-        assert response.status_code == 200
-        data = response.json()
         assert "ietf-interfaces:interfaces" in data
         interfaces = data["ietf-interfaces:interfaces"]["interface"]
         names = [i["name"] for i in interfaces]

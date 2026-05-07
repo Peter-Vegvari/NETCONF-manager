@@ -41,7 +41,7 @@ module-root = ""
 [tool.basedpyright]
 venvPath = "."
 venv = ".venv"
-include = ["app"]
+include = ["app", "tests"]
 defineConstant = { DEBUG = true }
 reportImportCycles = false
 reportAny = false
