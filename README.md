@@ -6,15 +6,11 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-
-
 <br />
 <div align="center">
   <h3 align="center">NETCONF/YANG Browser</h3>
 
 </div>
-
-
 
 <details>
   <summary>Table of Contents</summary>
@@ -34,24 +30,17 @@
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
 
-
-
 ## About The Project
-
 This application connects to any network device supporting NETCONF/YANG management and:
 
 1. **Reads** the device's complete YANG datastore via the NETCONF protocol
 2. **Displays** the datastore in an easily navigable, tree-structured format
 3. **Allows editing** of writable datastore elements
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 ### Built With
-
 * [![Python][Python]][Python-url]
 * [![FastAPI][FastAPI]][FastAPI-url]
 * [![Ant Design][AntDesign]][AntDesign-url]
@@ -60,19 +49,13 @@ This application connects to any network device supporting NETCONF/YANG manageme
 * [![Vite][Vite]][Vite-url]
 * [![Docker][Docker]][Docker-url]
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 ## Getting Started
 
 ### Prerequisites
-
 * Docker and Docker Compose
 * Node.js 22+, Python 3.14+ and [uv](https://docs.astral.sh/uv/) for local development
 
 ### Installation
-
 1. Clone the repo
    ```sh
    git clone https://github.com/Peter-Vegvari/NETCONF-manager.git
@@ -83,28 +66,14 @@ This application connects to any network device supporting NETCONF/YANG manageme
    cd ../manager-frontend && docker compose up -d
    ```
 
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 ## Roadmap
-
 - [x] NETCONF connection management
 - [x] Multi-device support
 - [x] YANG datastore displa
 - [ ] Editing writable datastore elements
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 ## License
-
 Distributed under the MIT License. See `LICENSE` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [contributors-shield]: https://img.shields.io/github/contributors/Peter-Vegvari/NETCONF-manager.svg?style=for-the-badge
