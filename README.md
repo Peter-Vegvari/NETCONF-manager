@@ -37,7 +37,7 @@
 This application connects to any network device supporting NETCONF/YANG management and:
 
 1. **Reads** the device's complete YANG datastore via the NETCONF protocol
-2. **Displays** the datastore in an easily navigable, tree-structured format
+2. **Displays** the datastore in an easily navigable format
 3. **Allows editing** of writable datastore elements
 
 ### Built With
