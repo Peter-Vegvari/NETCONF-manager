@@ -9,6 +9,7 @@ import type { SchemaNodeType } from './schemaNodeType';
 
 export interface SchemaNode {
   kind?: string;
+  config?: boolean | null;
   description?: string | null;
   mandatory?: boolean | null;
   default?: unknown | null;

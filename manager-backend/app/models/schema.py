@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class SchemaNode(BaseModel):
     kind: str = ""
+    config: bool | None = None
     description: str | None = None
     mandatory: bool | None = None
     default: object | None = None

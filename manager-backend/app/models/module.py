@@ -96,9 +96,8 @@ class Module(BaseModel):
         parts = path.strip("/").split("/")
         root = parts[0]
         inner = "".join(f"<{p}/>" for p in parts[1:]) if len(parts) > 1 else ""
-        subtree = (
-            f'<{root} xmlns="urn:ietf:params:xml:ns:yang:{self.name}">{inner}</{root}>'
-        )
+        ns = self.namespace or f"urn:ietf:params:xml:ns:yang:{self.name}"
+        subtree = f'<{root} xmlns="{ns}">{inner}</{root}>'
         reply = cast(Any, s).get(filter=("subtree", subtree))
         return Module._xml_to_json(cast(Element, reply.data_ele), self.name)
 
