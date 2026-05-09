@@ -16,7 +16,9 @@ export function SchemaNodeLabel({ name, node, value }: Props) {
       {node.mandatory && <Tag color="red">required</Tag>}
       {node.type && <Tag color="purple">{String(node.type["base"] ?? "")}</Tag>}
       {node.config === false && <Tag color="orange">read-only</Tag>}
-      {isLeaf && value !== undefined && <Tag color="green">{String(value)}</Tag>}
+      {isLeaf && value !== undefined && (
+        <Tag color="green">{String(value)}</Tag>
+      )}
     </span>
   );
 }
