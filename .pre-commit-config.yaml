@@ -6,10 +6,12 @@ repos:
         args: [--fix, --select, I]
       - id: ruff-format
 
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.39.4
+  - repo: local
     hooks:
       - id: eslint
+        name: eslint
+        entry: npx eslint
+        language: system
         types_or: [ts, tsx]
         files: ^manager-frontend/src/
 
@@ -23,7 +25,20 @@ repos:
       - id: sort-simple-yaml
       - id: check-added-large-files
 
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: "v3.1.0"
+  - repo: local
     hooks:
       - id: prettier
+        name: prettier
+        entry: npx prettier --write --ignore-unknown
+        language: system
+        types: [file]
+
+  - repo: local
+    hooks:
+      - id: act
+        name: act
+        entry: act push
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
