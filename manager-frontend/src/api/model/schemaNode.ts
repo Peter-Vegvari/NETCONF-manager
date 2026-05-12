@@ -4,15 +4,15 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
-import type { SchemaNodeChildren } from './schemaNodeChildren';
-import type { SchemaNodeType } from './schemaNodeType';
+import type { SchemaNodeChildren } from "./schemaNodeChildren";
+import type { SchemaNodeType } from "./schemaNodeType";
 
 export interface SchemaNode {
-  kind?: string;
-  config?: boolean | null;
-  description?: string | null;
-  mandatory?: boolean | null;
-  default?: unknown | null;
-  type?: SchemaNodeType;
-  children?: SchemaNodeChildren;
+	kind?: string;
+	config?: boolean | null;
+	description?: string | null;
+	mandatory?: boolean | null;
+	default?: unknown | null;
+	type?: SchemaNodeType;
+	children?: SchemaNodeChildren;
 }

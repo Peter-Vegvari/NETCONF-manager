@@ -4,6 +4,6 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
-import type { SchemaNode } from './schemaNode';
+import type { SchemaNode } from "./schemaNode";
 
-export type SchemaNodeChildren = {[key: string]: SchemaNode} | null;
+export type SchemaNodeChildren = { [key: string]: SchemaNode } | null;

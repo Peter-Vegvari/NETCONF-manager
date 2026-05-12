@@ -1,23 +1,19 @@
 {
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ],
-  "compilerOptions": {
-    "declaration": true, // THIS IS IMPORTANT
-    "composite": true, // THIS IS IMPORTANT
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "noUncheckedIndexedAccess": true
-  },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "src/api"
-  ],
+	"references": [
+		{
+			"path": "./tsconfig.app.json"
+		},
+		{
+			"path": "./tsconfig.node.json"
+		}
+	],
+	"compilerOptions": {
+		"declaration": true, // THIS IS IMPORTANT
+		"composite": true, // THIS IS IMPORTANT
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"noUncheckedIndexedAccess": true
+	},
+	"include": ["src"],
+	"exclude": ["src/api"]
 }

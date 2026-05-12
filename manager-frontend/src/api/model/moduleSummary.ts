@@ -4,10 +4,10 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
-import type { ModuleStatus } from './moduleStatus';
+import type { ModuleStatus } from "./moduleStatus";
 
 export interface ModuleSummary {
-  name: string;
-  status: ModuleStatus;
-  revision?: string;
+	name: string;
+	status: ModuleStatus;
+	revision?: string;
 }

@@ -4,329 +4,409 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
-import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  MutationFunction,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
-  UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
 
 import type {
-  Connection,
-  HTTPValidationError
-} from '../model';
+	DataTag,
+	DefinedInitialDataOptions,
+	DefinedUseQueryResult,
+	MutationFunction,
+	QueryClient,
+	QueryFunction,
+	QueryKey,
+	UndefinedInitialDataOptions,
+	UseMutationOptions,
+	UseMutationResult,
+	UseQueryOptions,
+	UseQueryResult,
+} from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-
-
-
+import type { Connection, HTTPValidationError } from "../model";
 
 /**
  * @summary Get Connection Status
  */
 export type getConnectionStatusResponse200 = {
-  data: boolean
-  status: 200
-}
-
-export type getConnectionStatusResponseSuccess = (getConnectionStatusResponse200) & {
-  headers: Headers;
+	data: boolean;
+	status: 200;
 };
-;
 
-export type getConnectionStatusResponse = (getConnectionStatusResponseSuccess)
+export type getConnectionStatusResponseSuccess =
+	getConnectionStatusResponse200 & {
+		headers: Headers;
+	};
+
+export type getConnectionStatusResponse = getConnectionStatusResponseSuccess;
 
 export const getGetConnectionStatusUrl = () => {
+	return `/api/v1/connect`;
+};
 
+export const getConnectionStatus = async (
+	options?: RequestInit,
+): Promise<getConnectionStatusResponse> => {
+	const res = await fetch(getGetConnectionStatusUrl(), {
+		...options,
+		method: "GET",
+	});
 
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-
-  return `/api/v1/connect`
-}
-
-export const getConnectionStatus = async ( options?: RequestInit): Promise<getConnectionStatusResponse> => {
-
-  const res = await fetch(getGetConnectionStatusUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getConnectionStatusResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getConnectionStatusResponse
-}
-
-
-
-
+	const data: getConnectionStatusResponse["data"] = body
+		? JSON.parse(body)
+		: {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as getConnectionStatusResponse;
+};
 
 export const getGetConnectionStatusQueryKey = () => {
-    return [
-    `/api/v1/connect`
-    ] as const;
-    }
+	return [`/api/v1/connect`] as const;
+};
 
+export const getGetConnectionStatusQueryOptions = <
+	TData = Awaited<ReturnType<typeof getConnectionStatus>>,
+	TError = unknown,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<
+			Awaited<ReturnType<typeof getConnectionStatus>>,
+			TError,
+			TData
+		>
+	>;
+	fetch?: RequestInit;
+}) => {
+	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-export const getGetConnectionStatusQueryOptions = <TData = Awaited<ReturnType<typeof getConnectionStatus>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData>>, fetch?: RequestInit}
-) => {
+	const queryKey = queryOptions?.queryKey ?? getGetConnectionStatusQueryKey();
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof getConnectionStatus>>
+	> = ({ signal }) => getConnectionStatus({ signal, ...fetchOptions });
 
-  const queryKey =  queryOptions?.queryKey ?? getGetConnectionStatusQueryKey();
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getConnectionStatus>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type GetConnectionStatusQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getConnectionStatus>>
+>;
+export type GetConnectionStatusQueryError = unknown;
 
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectionStatus>>> = ({ signal }) => getConnectionStatus({ signal, ...fetchOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetConnectionStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getConnectionStatus>>>
-export type GetConnectionStatusQueryError = unknown
-
-
-export function useGetConnectionStatus<TData = Awaited<ReturnType<typeof getConnectionStatus>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getConnectionStatus>>,
-          TError,
-          Awaited<ReturnType<typeof getConnectionStatus>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetConnectionStatus<TData = Awaited<ReturnType<typeof getConnectionStatus>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getConnectionStatus>>,
-          TError,
-          Awaited<ReturnType<typeof getConnectionStatus>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetConnectionStatus<TData = Awaited<ReturnType<typeof getConnectionStatus>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetConnectionStatus<
+	TData = Awaited<ReturnType<typeof getConnectionStatus>>,
+	TError = unknown,
+>(
+	options: {
+		query: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getConnectionStatus>>,
+				TError,
+				TData
+			>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getConnectionStatus>>,
+					TError,
+					Awaited<ReturnType<typeof getConnectionStatus>>
+				>,
+				"initialData"
+			>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetConnectionStatus<
+	TData = Awaited<ReturnType<typeof getConnectionStatus>>,
+	TError = unknown,
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getConnectionStatus>>,
+				TError,
+				TData
+			>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getConnectionStatus>>,
+					TError,
+					Awaited<ReturnType<typeof getConnectionStatus>>
+				>,
+				"initialData"
+			>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetConnectionStatus<
+	TData = Awaited<ReturnType<typeof getConnectionStatus>>,
+	TError = unknown,
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getConnectionStatus>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Connection Status
  */
 
-export function useGetConnectionStatus<TData = Awaited<ReturnType<typeof getConnectionStatus>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectionStatus>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetConnectionStatus<
+	TData = Awaited<ReturnType<typeof getConnectionStatus>>,
+	TError = unknown,
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getConnectionStatus>>,
+				TError,
+				TData
+			>
+		>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getGetConnectionStatusQueryOptions(options);
 
-  const queryOptions = getGetConnectionStatusQueryOptions(options)
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+	return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Connect
  */
 export type connectResponse200 = {
-  data: unknown
-  status: 200
-}
+	data: unknown;
+	status: 200;
+};
 
 export type connectResponse422 = {
-  data: HTTPValidationError
-  status: 422
-}
-
-export type connectResponseSuccess = (connectResponse200) & {
-  headers: Headers;
-};
-export type connectResponseError = (connectResponse422) & {
-  headers: Headers;
+	data: HTTPValidationError;
+	status: 422;
 };
 
-export type connectResponse = (connectResponseSuccess | connectResponseError)
+export type connectResponseSuccess = connectResponse200 & {
+	headers: Headers;
+};
+export type connectResponseError = connectResponse422 & {
+	headers: Headers;
+};
+
+export type connectResponse = connectResponseSuccess | connectResponseError;
 
 export const getConnectUrl = () => {
+	return `/api/v1/connect`;
+};
 
+export const connect = async (
+	connection: Connection,
+	options?: RequestInit,
+): Promise<connectResponse> => {
+	const res = await fetch(getConnectUrl(), {
+		...options,
+		method: "POST",
+		headers: { "Content-Type": "application/json", ...options?.headers },
+		body: JSON.stringify(connection),
+	});
 
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
+	const data: connectResponse["data"] = body ? JSON.parse(body) : {};
+	return { data, status: res.status, headers: res.headers } as connectResponse;
+};
 
-  return `/api/v1/connect`
-}
+export const getConnectMutationOptions = <
+	TError = HTTPValidationError,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof connect>>,
+		TError,
+		{ data: Connection },
+		TContext
+	>;
+	fetch?: RequestInit;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof connect>>,
+	TError,
+	{ data: Connection },
+	TContext
+> => {
+	const mutationKey = ["connect"];
+	const { mutation: mutationOptions, fetch: fetchOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined };
 
-export const connect = async (connection: Connection, options?: RequestInit): Promise<connectResponse> => {
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof connect>>,
+		{ data: Connection }
+	> = (props) => {
+		const { data } = props ?? {};
 
-  const res = await fetch(getConnectUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      connection,)
-  }
-)
+		return connect(data, fetchOptions);
+	};
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+	return { mutationFn, ...mutationOptions };
+};
 
-  const data: connectResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as connectResponse
-}
+export type ConnectMutationResult = NonNullable<
+	Awaited<ReturnType<typeof connect>>
+>;
+export type ConnectMutationBody = Connection;
+export type ConnectMutationError = HTTPValidationError;
 
-
-
-
-export const getConnectMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof connect>>, TError,{data: Connection}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof connect>>, TError,{data: Connection}, TContext> => {
-
-const mutationKey = ['connect'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof connect>>, {data: Connection}> = (props) => {
-          const {data} = props ?? {};
-
-          return  connect(data,fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ConnectMutationResult = NonNullable<Awaited<ReturnType<typeof connect>>>
-    export type ConnectMutationBody = Connection
-    export type ConnectMutationError = HTTPValidationError
-
-    /**
+/**
  * @summary Connect
  */
-export const useConnect = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof connect>>, TError,{data: Connection}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof connect>>,
-        TError,
-        {data: Connection},
-        TContext
-      > => {
-      return useMutation(getConnectMutationOptions(options), queryClient);
-    }
-    /**
+export const useConnect = <TError = HTTPValidationError, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof connect>>,
+			TError,
+			{ data: Connection },
+			TContext
+		>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof connect>>,
+	TError,
+	{ data: Connection },
+	TContext
+> => {
+	return useMutation(getConnectMutationOptions(options), queryClient);
+};
+/**
  * @summary Disconnect Route
  */
 export type disconnectResponse200 = {
-  data: string[]
-  status: 200
-}
-
-export type disconnectResponseSuccess = (disconnectResponse200) & {
-  headers: Headers;
+	data: string[];
+	status: 200;
 };
-;
 
-export type disconnectResponse = (disconnectResponseSuccess)
+export type disconnectResponseSuccess = disconnectResponse200 & {
+	headers: Headers;
+};
+
+export type disconnectResponse = disconnectResponseSuccess;
 
 export const getDisconnectUrl = () => {
+	return `/api/v1/connect`;
+};
 
+export const disconnect = async (
+	options?: RequestInit,
+): Promise<disconnectResponse> => {
+	const res = await fetch(getDisconnectUrl(), {
+		...options,
+		method: "DELETE",
+	});
 
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
+	const data: disconnectResponse["data"] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as disconnectResponse;
+};
 
-  return `/api/v1/connect`
-}
+export const getDisconnectMutationOptions = <
+	TError = unknown,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof disconnect>>,
+		TError,
+		void,
+		TContext
+	>;
+	fetch?: RequestInit;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof disconnect>>,
+	TError,
+	void,
+	TContext
+> => {
+	const mutationKey = ["disconnect"];
+	const { mutation: mutationOptions, fetch: fetchOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined };
 
-export const disconnect = async ( options?: RequestInit): Promise<disconnectResponse> => {
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof disconnect>>,
+		void
+	> = () => {
+		return disconnect(fetchOptions);
+	};
 
-  const res = await fetch(getDisconnectUrl(),
-  {
-    ...options,
-    method: 'DELETE'
+	return { mutationFn, ...mutationOptions };
+};
 
+export type DisconnectMutationResult = NonNullable<
+	Awaited<ReturnType<typeof disconnect>>
+>;
 
-  }
-)
+export type DisconnectMutationError = unknown;
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: disconnectResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as disconnectResponse
-}
-
-
-
-
-export const getDisconnectMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnect>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof disconnect>>, TError,void, TContext> => {
-
-const mutationKey = ['disconnect'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof disconnect>>, void> = () => {
-
-
-          return  disconnect(fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DisconnectMutationResult = NonNullable<Awaited<ReturnType<typeof disconnect>>>
-
-    export type DisconnectMutationError = unknown
-
-    /**
+/**
  * @summary Disconnect Route
  */
-export const useDisconnect = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnect>>, TError,void, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof disconnect>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getDisconnectMutationOptions(options), queryClient);
-    }
+export const useDisconnect = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof disconnect>>,
+			TError,
+			void,
+			TContext
+		>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof disconnect>>,
+	TError,
+	void,
+	TContext
+> => {
+	return useMutation(getDisconnectMutationOptions(options), queryClient);
+};

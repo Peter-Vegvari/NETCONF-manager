@@ -4,59 +4,88 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
-import {
-  faker
-} from '@faker-js/faker';
+import { faker } from "@faker-js/faker";
+import type { RequestHandlerOptions } from "msw";
+import { HttpResponse, http } from "msw";
 
-import {
-  HttpResponse,
-  http
-} from 'msw';
-import type {
-  RequestHandlerOptions
-} from 'msw';
+export const getGetConnectionStatusResponseMock = (): boolean =>
+	faker.datatype.boolean();
 
+export const getDisconnectResponseMock = (): string[] =>
+	Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, () =>
+		faker.word.sample(),
+	);
 
-export const getGetConnectionStatusResponseMock = (): boolean => (faker.datatype.boolean())
+export const getGetConnectionStatusMockHandler = (
+	overrideResponse?:
+		| boolean
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<boolean> | boolean),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		"*/api/v1/connect",
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getGetConnectionStatusResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
 
-export const getDisconnectResponseMock = (): string[] => (Array.from({length: faker.number.int({min: 1, max: 10})}, () => faker.word.sample()))
+export const getConnectMockHandler = (
+	overrideResponse?:
+		| unknown
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<unknown> | unknown),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		"*/api/v1/connect",
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
 
+			return new HttpResponse(null, { status: 200 });
+		},
+		options,
+	);
+};
 
-export const getGetConnectionStatusMockHandler = (overrideResponse?: boolean | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<boolean> | boolean), options?: RequestHandlerOptions) => {
-  return http.get('*/api/v1/connect', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-
-
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetConnectionStatusResponseMock(),
-      { status: 200
-      })
-  }, options)
-}
-
-export const getConnectMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.post('*/api/v1/connect', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-
-    return new HttpResponse(null,
-      { status: 200
-      })
-  }, options)
-}
-
-export const getDisconnectMockHandler = (overrideResponse?: string[] | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<string[]> | string[]), options?: RequestHandlerOptions) => {
-  return http.delete('*/api/v1/connect', async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
-
-
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getDisconnectResponseMock(),
-      { status: 200
-      })
-  }, options)
-}
+export const getDisconnectMockHandler = (
+	overrideResponse?:
+		| string[]
+		| ((
+				info: Parameters<Parameters<typeof http.delete>[1]>[0],
+		  ) => Promise<string[]> | string[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.delete(
+		"*/api/v1/connect",
+		async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getDisconnectResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
 export const getConnectionMock = () => [
-  getGetConnectionStatusMockHandler(),
-  getConnectMockHandler(),
-  getDisconnectMockHandler()
-]
+	getGetConnectionStatusMockHandler(),
+	getConnectMockHandler(),
+	getDisconnectMockHandler(),
+];

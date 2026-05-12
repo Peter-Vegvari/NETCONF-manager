@@ -103,7 +103,6 @@ class Module(BaseModel):
 
     @staticmethod
     def _xml_to_json(data_ele: Element, module_name: str) -> dict[str, Any]:
-        """Convert NETCONF <data> element to RFC 7951-style JSON."""
         result: dict[str, Any] = {}
         for child in data_ele:
             tag = etree.QName(child).localname
@@ -124,7 +123,6 @@ class Module(BaseModel):
         children = list(el)
         if not children:
             return el.text or ""
-        # Check if children are a list (same tag repeated)
         result: dict[str, Any] = {}
         for child in children:
             tag = etree.QName(child).localname

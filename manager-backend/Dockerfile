@@ -42,8 +42,7 @@ ENV PATH="/app/.venv/bin:$PATH"
 ENTRYPOINT []
 
 # Ensure the shared volume mount point is writable by nonroot
-RUN mkdir -p /shared && chmod 755 /shared && chown nonroot:nonroot /shared 
+RUN mkdir -p /shared && chmod 755 /shared && chown nonroot:nonroot /shared
 
 # Use the non-root user to run our application
 USER nonroot
-

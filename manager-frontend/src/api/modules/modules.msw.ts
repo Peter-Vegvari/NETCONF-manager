@@ -4,134 +4,285 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
-import {
-  faker
-} from '@faker-js/faker';
-
-import {
-  HttpResponse,
-  http
-} from 'msw';
+import { faker } from "@faker-js/faker";
+import type { RequestHandlerOptions } from "msw";
+import { HttpResponse, http } from "msw";
 import type {
-  RequestHandlerOptions
-} from 'msw';
+	GetData200,
+	GetModuleData200,
+	ModuleSummary,
+	SchemaNode,
+} from "../model";
+import { ModuleStatus } from "../model";
 
-import {
-  ModuleStatus
-} from '../model';
-import type {
-  GetData200,
-  GetModuleData200,
-  ModuleSummary,
-  SchemaNode
-} from '../model';
+export const getGetModulesResponseMock = (): ModuleSummary[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		status: faker.helpers.arrayElement(Object.values(ModuleStatus)),
+		revision: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	}));
 
+export const getGetSchemaResponseMock = (
+	overrideResponse: Partial<Extract<SchemaNode, object>> = {},
+): SchemaNode => ({
+	kind: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	config: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([faker.datatype.boolean(), null]),
+		undefined,
+	]),
+	description: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		undefined,
+	]),
+	mandatory: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([faker.datatype.boolean(), null]),
+		undefined,
+	]),
+	default: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([null]),
+		undefined,
+	]),
+	type: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([null]),
+		undefined,
+	]),
+	children: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([
+			{
+				[faker.string.alphanumeric(5)]: {
+					kind: faker.string.alpha({ length: { min: 10, max: 20 } }),
+					config: faker.helpers.arrayElement([
+						faker.helpers.arrayElement([faker.datatype.boolean(), null]),
+						undefined,
+					]),
+					description: faker.helpers.arrayElement([
+						faker.helpers.arrayElement([
+							faker.string.alpha({ length: { min: 10, max: 20 } }),
+							null,
+						]),
+						undefined,
+					]),
+					mandatory: faker.helpers.arrayElement([
+						faker.helpers.arrayElement([faker.datatype.boolean(), null]),
+						undefined,
+					]),
+					default: faker.helpers.arrayElement([
+						faker.helpers.arrayElement([null]),
+						undefined,
+					]),
+					type: faker.helpers.arrayElement([
+						faker.helpers.arrayElement([null]),
+						undefined,
+					]),
+					children: faker.helpers.arrayElement([
+						faker.helpers.arrayElement([null]),
+						undefined,
+					]),
+				},
+			},
+			null,
+		]),
+		undefined,
+	]),
+	...overrideResponse,
+});
 
-export const getGetModulesResponseMock = (): ModuleSummary[] => (Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({name: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(Object.values(ModuleStatus)), revision: faker.string.alpha({length: {min: 10, max: 20}})})))
+export const getGetModuleDataResponseMock = (): GetModuleData200 => ({});
 
-export const getGetSchemaResponseMock = (overrideResponse: Partial<Extract<SchemaNode, object>> = {}): SchemaNode => ({kind: faker.string.alpha({length: {min: 10, max: 20}}), config: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([{
-        [faker.string.alphanumeric(5)]: {kind: faker.string.alpha({length: {min: 10, max: 20}}), config: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), description: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}),null,]), undefined]), mandatory: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.datatype.boolean(),null,]), undefined]), default: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined]), children: faker.helpers.arrayElement([faker.helpers.arrayElement([null,]), undefined])}
-      },null,]), undefined]), ...overrideResponse})
+export const getGetDataResponseMock = (): GetData200 => ({});
 
-export const getGetModuleDataResponseMock = (): GetModuleData200 => ({})
+export const getGetModulesMockHandler = (
+	overrideResponse?:
+		| ModuleSummary[]
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<ModuleSummary[]> | ModuleSummary[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		"*/api/v1/modules/",
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getGetModulesResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
 
-export const getGetDataResponseMock = (): GetData200 => ({})
+export const getDeleteAllModulesMockHandler = (
+	overrideResponse?:
+		| unknown
+		| ((
+				info: Parameters<Parameters<typeof http.delete>[1]>[0],
+		  ) => Promise<unknown> | unknown),
+	options?: RequestHandlerOptions,
+) => {
+	return http.delete(
+		"*/api/v1/modules/",
+		async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
 
+			return new HttpResponse(null, { status: 200 });
+		},
+		options,
+	);
+};
 
-export const getGetModulesMockHandler = (overrideResponse?: ModuleSummary[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ModuleSummary[]> | ModuleSummary[]), options?: RequestHandlerOptions) => {
-  return http.get('*/api/v1/modules/', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+export const getDownloadAllModulesMockHandler = (
+	overrideResponse?:
+		| unknown
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<unknown> | unknown),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		"*/api/v1/modules/download-all",
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
 
+			return new HttpResponse(null, { status: 200 });
+		},
+		options,
+	);
+};
 
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetModulesResponseMock(),
-      { status: 200
-      })
-  }, options)
-}
+export const getDownloadModuleMockHandler = (
+	overrideResponse?:
+		| unknown
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<unknown> | unknown),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		"*/api/v1/modules/:moduleName/download",
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
 
-export const getDeleteAllModulesMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.delete('*/api/v1/modules/', async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+			return new HttpResponse(null, { status: 200 });
+		},
+		options,
+	);
+};
 
-    return new HttpResponse(null,
-      { status: 200
-      })
-  }, options)
-}
+export const getDeleteModuleMockHandler = (
+	overrideResponse?:
+		| unknown
+		| ((
+				info: Parameters<Parameters<typeof http.delete>[1]>[0],
+		  ) => Promise<unknown> | unknown),
+	options?: RequestHandlerOptions,
+) => {
+	return http.delete(
+		"*/api/v1/modules/:moduleName",
+		async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
 
-export const getDownloadAllModulesMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.post('*/api/v1/modules/download-all', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+			return new HttpResponse(null, { status: 200 });
+		},
+		options,
+	);
+};
 
-    return new HttpResponse(null,
-      { status: 200
-      })
-  }, options)
-}
+export const getGetSchemaMockHandler = (
+	overrideResponse?:
+		| SchemaNode
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<SchemaNode> | SchemaNode),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		"*/api/v1/modules/:moduleName/schema",
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getGetSchemaResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
 
-export const getDownloadModuleMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.post('*/api/v1/modules/:moduleName/download', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+export const getGetModuleDataMockHandler = (
+	overrideResponse?:
+		| GetModuleData200
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<GetModuleData200> | GetModuleData200),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		"*/api/v1/modules/:moduleName/data",
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getGetModuleDataResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
 
-    return new HttpResponse(null,
-      { status: 200
-      })
-  }, options)
-}
-
-export const getDeleteModuleMockHandler = (overrideResponse?: unknown | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<unknown> | unknown), options?: RequestHandlerOptions) => {
-  return http.delete('*/api/v1/modules/:moduleName', async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-
-    return new HttpResponse(null,
-      { status: 200
-      })
-  }, options)
-}
-
-export const getGetSchemaMockHandler = (overrideResponse?: SchemaNode | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<SchemaNode> | SchemaNode), options?: RequestHandlerOptions) => {
-  return http.get('*/api/v1/modules/:moduleName/schema', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-
-
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetSchemaResponseMock(),
-      { status: 200
-      })
-  }, options)
-}
-
-export const getGetModuleDataMockHandler = (overrideResponse?: GetModuleData200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetModuleData200> | GetModuleData200), options?: RequestHandlerOptions) => {
-  return http.get('*/api/v1/modules/:moduleName/data', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-
-
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetModuleDataResponseMock(),
-      { status: 200
-      })
-  }, options)
-}
-
-export const getGetDataMockHandler = (overrideResponse?: GetData200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetData200> | GetData200), options?: RequestHandlerOptions) => {
-  return http.get('*/api/v1/modules/:moduleName/data/:path', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-
-
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetDataResponseMock(),
-      { status: 200
-      })
-  }, options)
-}
+export const getGetDataMockHandler = (
+	overrideResponse?:
+		| GetData200
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<GetData200> | GetData200),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		"*/api/v1/modules/:moduleName/data/:path",
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getGetDataResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
 export const getModulesMock = () => [
-  getGetModulesMockHandler(),
-  getDeleteAllModulesMockHandler(),
-  getDownloadAllModulesMockHandler(),
-  getDownloadModuleMockHandler(),
-  getDeleteModuleMockHandler(),
-  getGetSchemaMockHandler(),
-  getGetModuleDataMockHandler(),
-  getGetDataMockHandler()
-]
+	getGetModulesMockHandler(),
+	getDeleteAllModulesMockHandler(),
+	getDownloadAllModulesMockHandler(),
+	getDownloadModuleMockHandler(),
+	getDeleteModuleMockHandler(),
+	getGetSchemaMockHandler(),
+	getGetModuleDataMockHandler(),
+	getGetDataMockHandler(),
+];

@@ -6,8 +6,8 @@
  */
 
 export interface Connection {
-  host: string;
-  port: number;
-  user_name: string;
-  password: string;
+	host: string;
+	port: number;
+	user_name: string;
+	password: string;
 }

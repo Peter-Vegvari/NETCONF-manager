@@ -1,7 +1,13 @@
 FROM node:22-alpine
+
 WORKDIR /app
-COPY package.json package-lock.json ./
+RUN chown node:node /app
+COPY --chown=node:node package.json package-lock.json ./
+
+USER node
 RUN npm ci
-COPY . .
+
+COPY --chown=node:node . .
+
 EXPOSE 5173
 CMD ["npm", "run", "dev-api", "--", "--host"]

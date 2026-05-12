@@ -5,10 +5,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type ModuleStatus = typeof ModuleStatus[keyof typeof ModuleStatus];
-
+export type ModuleStatus = (typeof ModuleStatus)[keyof typeof ModuleStatus];
 
 export const ModuleStatus = {
-  remote: 'remote',
-  local: 'local',
+	remote: "remote",
+	local: "local",
 } as const;

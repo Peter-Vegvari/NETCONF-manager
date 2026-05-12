@@ -62,12 +62,10 @@ async def get_module_data(module_name: str) -> dict[str, Any]:
     if app.dependencies.connection_manager.session is None:
         raise HTTPException(400, "Not connected")
     module = Module(name=module_name)
-    schema = module.schema_node
-    if not schema.children:
+    if not module.schema_node.children:
         raise HTTPException(404, "No schema available")
-    first_key = next(iter(schema.children))
-    top_container = first_key.split(":")[1] if ":" in first_key else first_key
-    return module.get_data(top_container)
+    first_key = next(iter(module.schema_node.children))
+    return module.get_data(first_key.rpartition(":")[2] or first_key)
 
 
 @module_router.get("/{module_name}/data/{path:path}", operation_id="getData")
