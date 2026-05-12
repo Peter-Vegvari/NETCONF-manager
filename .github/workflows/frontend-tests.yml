@@ -4,11 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - 'manager-frontend/**'
+      - "manager-frontend/**"
   pull_request:
     branches: [main]
     paths:
-      - 'manager-frontend/**'
+      - "manager-frontend/**"
 
 jobs:
   static-analysis:
@@ -25,5 +25,4 @@ jobs:
           cache: npm
           cache-dependency-path: manager-frontend/package-lock.json
       - run: npm ci
-      - run: npx eslint .
-      - run: npx tsc -p tsconfig.app.json --noEmit
+      - run: npx @biomejs/biome ci .
