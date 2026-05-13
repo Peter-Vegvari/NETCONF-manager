@@ -1,6 +1,6 @@
 import { Collapse } from "antd";
 import { useMemo, useState } from "react";
-import type { ModuleSummary } from "../../api/model";
+import type { DataStore, ModuleSummary } from "../../api/model";
 import { ModuleContent } from "./ModuleContent";
 import { ModuleItemActions, ModuleItemLabel } from "./ModuleItem";
 import { ModulesToolbar } from "./ModulesToolbar";
@@ -11,6 +11,7 @@ interface Props {
 	onDelete: (name: string) => void;
 	downloadPending: boolean;
 	downloadingName?: string;
+	dataStore: DataStore;
 }
 
 export function ModuleList({
@@ -19,6 +20,7 @@ export function ModuleList({
 	onDelete,
 	downloadPending,
 	downloadingName,
+	dataStore,
 }: Props) {
 	const [search, setSearch] = useState("");
 	const [statusFilter, setStatusFilter] = useState<string | undefined>();
@@ -46,7 +48,7 @@ export function ModuleList({
 				downloadingName={downloadingName}
 			/>
 		),
-		children: <ModuleContent module={m} />,
+		children: <ModuleContent module={m} dataStore={dataStore} />,
 	}));
 
 	return (

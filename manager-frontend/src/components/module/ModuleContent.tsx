@@ -1,8 +1,14 @@
-import type { ModuleSummary } from "../../api/model";
+import type { DataStore, ModuleSummary } from "../../api/model";
 import { useGetModuleData, useGetSchema } from "../../api/modules/modules";
 import { SchemaTree } from "../schema/SchemaTree";
 
-export function ModuleContent({ module }: { module: ModuleSummary }) {
+export function ModuleContent({
+	module,
+	dataStore,
+}: {
+	module: ModuleSummary;
+	dataStore: DataStore;
+}) {
 	const isLocal = module.status === "local";
 	const { data: schemaRes, isLoading: schemaLoading } = useGetSchema(
 		module.name,
@@ -10,6 +16,7 @@ export function ModuleContent({ module }: { module: ModuleSummary }) {
 	);
 	const { data: dataRes, isLoading: dataLoading } = useGetModuleData(
 		module.name,
+		dataStore,
 		{ query: { enabled: isLocal } },
 	);
 

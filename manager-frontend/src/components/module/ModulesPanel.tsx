@@ -1,6 +1,7 @@
 import { CloudDownloadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Button, Card, message, Popconfirm } from "antd";
 import { useMemo } from "react";
+import type { DataStore } from "../../api/model";
 import {
 	useDeleteAllModules,
 	useDeleteModule,
@@ -11,7 +12,7 @@ import {
 import { useMutationOptions } from "../../hooks/useMutationOptions";
 import { ModuleList } from "./ModuleList";
 
-export function ModulesPanel() {
+export function ModulesPanel({ dataStore }: { dataStore: DataStore }) {
 	const [msg, contextHolder] = message.useMessage();
 	const opts = useMutationOptions(msg);
 
@@ -62,6 +63,7 @@ export function ModulesPanel() {
 					onDelete={(name) => remove.mutate({ moduleName: name })}
 					downloadPending={download.isPending}
 					downloadingName={download.variables?.moduleName}
+					dataStore={dataStore}
 				/>
 			</Card>
 		</>

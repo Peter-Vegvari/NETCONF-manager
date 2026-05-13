@@ -8,7 +8,7 @@ export function useMutationOptions(
 	return (text: string) => ({
 		mutation: {
 			onSuccess: () => {
-				queryClient.invalidateQueries();
+				queryClient.invalidateQueries({ queryKey: ["/api/v1/modules/"] });
 				return msg.success(text);
 			},
 			onError: () => msg.error(`Failed: ${text}`),
