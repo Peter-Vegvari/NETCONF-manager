@@ -13,5 +13,8 @@ export default defineConfig({
 		input: {
 			target: "/shared/openapi.json",
 		},
+		hooks: {
+			afterAllFilesWrite: "npx @biomejs/biome check --write",
+		},
 	},
 });

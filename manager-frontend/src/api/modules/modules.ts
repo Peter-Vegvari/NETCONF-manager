@@ -22,6 +22,7 @@ import type {
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import type {
+	DataStore,
 	GetData200,
 	GetModuleData200,
 	HTTPValidationError,
@@ -820,15 +821,19 @@ export type getModuleDataResponse =
 	| getModuleDataResponseSuccess
 	| getModuleDataResponseError;
 
-export const getGetModuleDataUrl = (moduleName: string) => {
-	return `/api/v1/modules/${moduleName}/data`;
+export const getGetModuleDataUrl = (
+	moduleName: string,
+	dataStore: DataStore,
+) => {
+	return `/api/v1/modules/${moduleName}/${dataStore}/data`;
 };
 
 export const getModuleData = async (
 	moduleName: string,
+	dataStore: DataStore,
 	options?: RequestInit,
 ): Promise<getModuleDataResponse> => {
-	const res = await fetch(getGetModuleDataUrl(moduleName), {
+	const res = await fetch(getGetModuleDataUrl(moduleName, dataStore), {
 		...options,
 		method: "GET",
 	});
@@ -843,8 +848,11 @@ export const getModuleData = async (
 	} as getModuleDataResponse;
 };
 
-export const getGetModuleDataQueryKey = (moduleName: string) => {
-	return [`/api/v1/modules/${moduleName}/data`] as const;
+export const getGetModuleDataQueryKey = (
+	moduleName: string,
+	dataStore: DataStore,
+) => {
+	return [`/api/v1/modules/${moduleName}/${dataStore}/data`] as const;
 };
 
 export const getGetModuleDataQueryOptions = <
@@ -852,6 +860,7 @@ export const getGetModuleDataQueryOptions = <
 	TError = HTTPValidationError,
 >(
 	moduleName: string,
+	dataStore: DataStore,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getModuleData>>, TError, TData>
@@ -862,16 +871,16 @@ export const getGetModuleDataQueryOptions = <
 	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
 	const queryKey =
-		queryOptions?.queryKey ?? getGetModuleDataQueryKey(moduleName);
+		queryOptions?.queryKey ?? getGetModuleDataQueryKey(moduleName, dataStore);
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof getModuleData>>> = ({
 		signal,
-	}) => getModuleData(moduleName, { signal, ...fetchOptions });
+	}) => getModuleData(moduleName, dataStore, { signal, ...fetchOptions });
 
 	return {
 		queryKey,
 		queryFn,
-		enabled: !!moduleName,
+		enabled: !!(moduleName && dataStore),
 		...queryOptions,
 	} as UseQueryOptions<
 		Awaited<ReturnType<typeof getModuleData>>,
@@ -890,6 +899,7 @@ export function useGetModuleData<
 	TError = HTTPValidationError,
 >(
 	moduleName: string,
+	dataStore: DataStore,
 	options: {
 		query: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getModuleData>>, TError, TData>
@@ -913,6 +923,7 @@ export function useGetModuleData<
 	TError = HTTPValidationError,
 >(
 	moduleName: string,
+	dataStore: DataStore,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getModuleData>>, TError, TData>
@@ -936,6 +947,7 @@ export function useGetModuleData<
 	TError = HTTPValidationError,
 >(
 	moduleName: string,
+	dataStore: DataStore,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getModuleData>>, TError, TData>
@@ -955,6 +967,7 @@ export function useGetModuleData<
 	TError = HTTPValidationError,
 >(
 	moduleName: string,
+	dataStore: DataStore,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getModuleData>>, TError, TData>
@@ -965,7 +978,11 @@ export function useGetModuleData<
 ): UseQueryResult<TData, TError> & {
 	queryKey: DataTag<QueryKey, TData, TError>;
 } {
-	const queryOptions = getGetModuleDataQueryOptions(moduleName, options);
+	const queryOptions = getGetModuleDataQueryOptions(
+		moduleName,
+		dataStore,
+		options,
+	);
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
 		TData,
@@ -997,16 +1014,21 @@ export type getDataResponseError = getDataResponse422 & {
 
 export type getDataResponse = getDataResponseSuccess | getDataResponseError;
 
-export const getGetDataUrl = (moduleName: string, path: string) => {
-	return `/api/v1/modules/${moduleName}/data/${path}`;
+export const getGetDataUrl = (
+	moduleName: string,
+	dataStore: DataStore,
+	path: string,
+) => {
+	return `/api/v1/modules/${moduleName}/${dataStore}/data/${path}`;
 };
 
 export const getData = async (
 	moduleName: string,
+	dataStore: DataStore,
 	path: string,
 	options?: RequestInit,
 ): Promise<getDataResponse> => {
-	const res = await fetch(getGetDataUrl(moduleName, path), {
+	const res = await fetch(getGetDataUrl(moduleName, dataStore, path), {
 		...options,
 		method: "GET",
 	});
@@ -1017,8 +1039,12 @@ export const getData = async (
 	return { data, status: res.status, headers: res.headers } as getDataResponse;
 };
 
-export const getGetDataQueryKey = (moduleName: string, path: string) => {
-	return [`/api/v1/modules/${moduleName}/data/${path}`] as const;
+export const getGetDataQueryKey = (
+	moduleName: string,
+	dataStore: DataStore,
+	path: string,
+) => {
+	return [`/api/v1/modules/${moduleName}/${dataStore}/data/${path}`] as const;
 };
 
 export const getGetDataQueryOptions = <
@@ -1026,6 +1052,7 @@ export const getGetDataQueryOptions = <
 	TError = HTTPValidationError,
 >(
 	moduleName: string,
+	dataStore: DataStore,
 	path: string,
 	options?: {
 		query?: Partial<
@@ -1037,16 +1064,16 @@ export const getGetDataQueryOptions = <
 	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
 	const queryKey =
-		queryOptions?.queryKey ?? getGetDataQueryKey(moduleName, path);
+		queryOptions?.queryKey ?? getGetDataQueryKey(moduleName, dataStore, path);
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof getData>>> = ({
 		signal,
-	}) => getData(moduleName, path, { signal, ...fetchOptions });
+	}) => getData(moduleName, dataStore, path, { signal, ...fetchOptions });
 
 	return {
 		queryKey,
 		queryFn,
-		enabled: !!(moduleName && path),
+		enabled: !!(moduleName && dataStore && path),
 		...queryOptions,
 	} as UseQueryOptions<Awaited<ReturnType<typeof getData>>, TError, TData> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
@@ -1063,6 +1090,7 @@ export function useGetData<
 	TError = HTTPValidationError,
 >(
 	moduleName: string,
+	dataStore: DataStore,
 	path: string,
 	options: {
 		query: Partial<
@@ -1087,6 +1115,7 @@ export function useGetData<
 	TError = HTTPValidationError,
 >(
 	moduleName: string,
+	dataStore: DataStore,
 	path: string,
 	options?: {
 		query?: Partial<
@@ -1111,6 +1140,7 @@ export function useGetData<
 	TError = HTTPValidationError,
 >(
 	moduleName: string,
+	dataStore: DataStore,
 	path: string,
 	options?: {
 		query?: Partial<
@@ -1131,6 +1161,7 @@ export function useGetData<
 	TError = HTTPValidationError,
 >(
 	moduleName: string,
+	dataStore: DataStore,
 	path: string,
 	options?: {
 		query?: Partial<
@@ -1142,7 +1173,12 @@ export function useGetData<
 ): UseQueryResult<TData, TError> & {
 	queryKey: DataTag<QueryKey, TData, TError>;
 } {
-	const queryOptions = getGetDataQueryOptions(moduleName, path, options);
+	const queryOptions = getGetDataQueryOptions(
+		moduleName,
+		dataStore,
+		path,
+		options,
+	);
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
 		TData,

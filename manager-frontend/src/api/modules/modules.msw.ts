@@ -238,7 +238,7 @@ export const getGetModuleDataMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(
-		"*/api/v1/modules/:moduleName/data",
+		"*/api/v1/modules/:moduleName/:dataStore/data",
 		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -262,7 +262,7 @@ export const getGetDataMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(
-		"*/api/v1/modules/:moduleName/data/:path",
+		"*/api/v1/modules/:moduleName/:dataStore/data/:path",
 		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined

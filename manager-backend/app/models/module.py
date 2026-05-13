@@ -6,6 +6,8 @@ from typing import Any, cast
 
 from lxml import etree
 from lxml.etree import Element
+from pyang.context import Context
+from pyang.repository import FileRepository
 from pydantic import BaseModel
 from yangson import DataModel
 
@@ -24,6 +26,12 @@ _NETCONF_NS = {"ncm": "urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring"}
 class ModuleStatus(StrEnum):
     REMOTE = auto()
     LOCAL = auto()
+
+
+class DataStore(StrEnum):
+    STARTUP = "startup"
+    CANDIDATE = "candidate"
+    RUNNING = "running"
 
 
 class ModuleSummary(BaseModel):
@@ -59,23 +67,27 @@ class Module(BaseModel):
     def revision(self) -> str:
         if not self.path.exists():
             return ""
+        repo = FileRepository(str(self.path.parent))
+        ctx = cast(Any, Context(repo))
         with open(self.path, "r") as f:
-            for line in f:
-                stripped = line.strip()
-                if stripped.startswith("revision "):
-                    return stripped.split()[1].rstrip("{").strip('"').strip("'")
-        return ""
+            module = ctx.add_module(str(self.path), f.read())
+        if module is None:
+            return ""
+        rev = module.search_one("revision")
+        return cast(str, rev.arg) if rev else ""
 
     @property
     def namespace(self) -> str:
         if not self.path.exists():
             return ""
+        repo = FileRepository(str(self.path.parent))
+        ctx = cast(Any, Context(repo))
         with open(self.path, "r") as f:
-            for line in f:
-                stripped = line.strip()
-                if stripped.startswith("namespace "):
-                    return stripped.split('"')[1] if '"' in stripped else ""
-        return ""
+            module = ctx.add_module(str(self.path), f.read())
+        if module is None:
+            return ""
+        ns = module.search_one("namespace")
+        return cast(str, ns.arg) if ns else ""
 
     @property
     def schema_node(self) -> SchemaNode:
@@ -90,7 +102,7 @@ class Module(BaseModel):
         }
         return SchemaNode(children=filtered if filtered else None)
 
-    def get_data(self, path: str) -> dict[str, Any]:
+    def get_data(self, data_store: DataStore, path: str) -> dict[str, Any]:
         s = app.dependencies.connection_manager.session
         assert s is not None
         parts = path.strip("/").split("/")
@@ -98,7 +110,7 @@ class Module(BaseModel):
         inner = "".join(f"<{p}/>" for p in parts[1:]) if len(parts) > 1 else ""
         ns = self.namespace or f"urn:ietf:params:xml:ns:yang:{self.name}"
         subtree = f'<{root} xmlns="{ns}">{inner}</{root}>'
-        reply = cast(Any, s).get(filter=("subtree", subtree))
+        reply = cast(Any, s).get_config(data_store, filter=("subtree", subtree))
         return Module._xml_to_json(cast(Element, reply.data_ele), self.name)
 
     @staticmethod

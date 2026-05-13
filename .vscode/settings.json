@@ -30,5 +30,8 @@
     "[yaml]": {
         "editor.defaultFormatter": "redhat.vscode-yaml"
     },
-    "biome.lsp.bin": "./manager-frontend/node_modules/@biomejs/biome/bin/biome"
+    "biome.lsp.bin": "./manager-frontend/node_modules/@biomejs/biome/bin/biome",
+    "[typescript]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    }
 }

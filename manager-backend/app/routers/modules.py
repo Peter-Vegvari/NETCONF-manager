@@ -4,7 +4,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 
 import app.dependencies
-from app.models.module import Module, ModuleSummary
+from app.models.module import DataStore, Module, ModuleSummary
 from app.models.schema import SchemaNode
 
 module_router = APIRouter(prefix="/modules", tags=["modules"])
@@ -57,19 +57,24 @@ async def get_module_schema(module_name: str) -> SchemaNode:
     return module.schema_node
 
 
-@module_router.get("/{module_name}/data", operation_id="getModuleData")
-async def get_module_data(module_name: str) -> dict[str, Any]:
+@module_router.get("/{module_name}/{data_store}/data", operation_id="getModuleData")
+async def get_module_data(module_name: str, data_store: DataStore) -> dict[str, Any]:
     if app.dependencies.connection_manager.session is None:
         raise HTTPException(400, "Not connected")
+
     module = Module(name=module_name)
     if not module.schema_node.children:
         raise HTTPException(404, "No schema available")
     first_key = next(iter(module.schema_node.children))
-    return module.get_data(first_key.rpartition(":")[2] or first_key)
+    return module.get_data(data_store, first_key.rpartition(":")[2] or first_key)
 
 
-@module_router.get("/{module_name}/data/{path:path}", operation_id="getData")
-async def get_data(module_name: str, path: str) -> dict[str, Any]:
+@module_router.get(
+    "/{module_name}/{data_store}/data/{path:path}", operation_id="getData"
+)
+async def get_data(
+    module_name: str, data_store: DataStore, path: str
+) -> dict[str, Any]:
     if app.dependencies.connection_manager.session is None:
         raise HTTPException(400, "Not connected")
-    return Module(name=module_name).get_data(path)
+    return Module(name=module_name).get_data(data_store, path)

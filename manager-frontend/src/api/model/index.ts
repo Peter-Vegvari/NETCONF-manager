@@ -6,6 +6,7 @@
  */
 
 export * from "./connection";
+export * from "./dataStore";
 export * from "./getData200";
 export * from "./getModuleData200";
 export * from "./hTTPValidationError";
