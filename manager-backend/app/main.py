@@ -13,6 +13,7 @@ import app.dependencies as _dependencies
 from app.core.config import settings
 from app.dependencies import ConnectionManager
 from app.routers.connection import connection_router
+from app.routers.datastores import datastore_router
 from app.routers.modules import module_router
 
 
@@ -43,6 +44,7 @@ app.add_middleware(
 
 app.include_router(module_router, prefix=settings.API_V1_STR)
 app.include_router(connection_router, prefix=settings.API_V1_STR)
+app.include_router(datastore_router, prefix=settings.API_V1_STR)
 
 container = wireup.create_async_container(injectables=[_dependencies])
 wireup.integration.fastapi.setup(container, app)

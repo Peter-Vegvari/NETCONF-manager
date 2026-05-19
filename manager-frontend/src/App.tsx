@@ -1,11 +1,9 @@
-import { DatabaseOutlined } from "@ant-design/icons";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
 	App as AntApp,
 	ConfigProvider,
 	Layout,
-	Menu,
 	Switch,
 	Typography,
 	theme,
@@ -13,17 +11,12 @@ import {
 import { useState } from "react";
 import type { DataStore } from "./api/model";
 import { ConnectionForm } from "./components/connection/ConnectionForm";
+import { DatastoreMenu } from "./components/datastore/DatastoreMenu";
 import { ModulesPanel } from "./components/module/ModulesPanel";
 
 const queryClient = new QueryClient({
 	defaultOptions: { queries: { staleTime: 30_000 } },
 });
-
-const datastoreItems = [
-	{ key: "running", icon: <DatabaseOutlined />, label: "Running" },
-	{ key: "candidate", icon: <DatabaseOutlined />, label: "Candidate" },
-	{ key: "startup", icon: <DatabaseOutlined />, label: "Startup" },
-];
 
 function App() {
 	const [dark, setDark] = useState(
@@ -55,12 +48,9 @@ function App() {
 						</div>
 						<ConnectionForm />
 						<div style={{ display: "flex", gap: 16 }}>
-							<Menu
-								mode="vertical"
-								selectedKeys={[dataStore]}
-								items={datastoreItems}
-								onClick={({ key }) => setDataStore(key as DataStore)}
-								style={{ width: 160, flexShrink: 0 }}
+							<DatastoreMenu
+								dataStore={dataStore}
+								setDataStore={setDataStore}
 							/>
 							<div style={{ flex: 1, minWidth: 0 }}>
 								<ModulesPanel dataStore={dataStore} />

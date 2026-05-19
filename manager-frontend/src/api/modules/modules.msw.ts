@@ -7,12 +7,7 @@
 import { faker } from "@faker-js/faker";
 import type { RequestHandlerOptions } from "msw";
 import { HttpResponse, http } from "msw";
-import type {
-	GetData200,
-	GetModuleData200,
-	ModuleSummary,
-	SchemaNode,
-} from "../model";
+import type { ModuleSummary, SchemaNode } from "../model";
 import { ModuleStatus } from "../model";
 
 export const getGetModulesResponseMock = (): ModuleSummary[] =>
@@ -92,10 +87,6 @@ export const getGetSchemaResponseMock = (
 	]),
 	...overrideResponse,
 });
-
-export const getGetModuleDataResponseMock = (): GetModuleData200 => ({});
-
-export const getGetDataResponseMock = (): GetData200 => ({});
 
 export const getGetModulesMockHandler = (
 	overrideResponse?:
@@ -228,54 +219,6 @@ export const getGetSchemaMockHandler = (
 		options,
 	);
 };
-
-export const getGetModuleDataMockHandler = (
-	overrideResponse?:
-		| GetModuleData200
-		| ((
-				info: Parameters<Parameters<typeof http.get>[1]>[0],
-		  ) => Promise<GetModuleData200> | GetModuleData200),
-	options?: RequestHandlerOptions,
-) => {
-	return http.get(
-		"*/api/v1/modules/:moduleName/:dataStore/data",
-		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-			return HttpResponse.json(
-				overrideResponse !== undefined
-					? typeof overrideResponse === "function"
-						? await overrideResponse(info)
-						: overrideResponse
-					: getGetModuleDataResponseMock(),
-				{ status: 200 },
-			);
-		},
-		options,
-	);
-};
-
-export const getGetDataMockHandler = (
-	overrideResponse?:
-		| GetData200
-		| ((
-				info: Parameters<Parameters<typeof http.get>[1]>[0],
-		  ) => Promise<GetData200> | GetData200),
-	options?: RequestHandlerOptions,
-) => {
-	return http.get(
-		"*/api/v1/modules/:moduleName/:dataStore/data/:path",
-		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-			return HttpResponse.json(
-				overrideResponse !== undefined
-					? typeof overrideResponse === "function"
-						? await overrideResponse(info)
-						: overrideResponse
-					: getGetDataResponseMock(),
-				{ status: 200 },
-			);
-		},
-		options,
-	);
-};
 export const getModulesMock = () => [
 	getGetModulesMockHandler(),
 	getDeleteAllModulesMockHandler(),
@@ -283,6 +226,4 @@ export const getModulesMock = () => [
 	getDownloadModuleMockHandler(),
 	getDeleteModuleMockHandler(),
 	getGetSchemaMockHandler(),
-	getGetModuleDataMockHandler(),
-	getGetDataMockHandler(),
 ];
