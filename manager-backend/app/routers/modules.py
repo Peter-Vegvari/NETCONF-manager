@@ -43,7 +43,10 @@ async def download_all_modules():
 async def download_module(module_name: str):
     if app.dependencies.connection_manager.session is None:
         raise HTTPException(400, "Not connected")
-    module_service.download_module(module_name)
+    try:
+        module_service.download_module(module_name)
+    except Exception as e:
+        raise HTTPException(400, str(e))
 
 
 @module_router.delete("/{module_name}", operation_id="deleteModule")

@@ -1,5 +1,6 @@
+import { useGetModuleData } from "../../api/datastore/datastore";
 import type { DataStore, ModuleSummary } from "../../api/model";
-import { useGetModuleData, useGetSchema } from "../../api/modules/modules";
+import { useGetSchema } from "../../api/modules/modules";
 import { SchemaTree } from "../schema/SchemaTree";
 
 export function ModuleContent({
@@ -15,8 +16,8 @@ export function ModuleContent({
 		{ query: { enabled: isLocal } },
 	);
 	const { data: dataRes, isLoading: dataLoading } = useGetModuleData(
-		module.name,
 		dataStore,
+		module.name,
 		{ query: { enabled: isLocal } },
 	);
 

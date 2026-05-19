@@ -61,6 +61,20 @@ class TestDownloadAllModules:
         assert response.status_code == 400
 
 
+class TestDownloadModuleEdgeCases:
+    def test_download_not_connected(self, client: TestClient):
+        response = client.post(
+            f"{settings.API_V1_STR}/modules/ietf-interfaces/download"
+        )
+        assert response.status_code == 400
+
+    def test_download_nonexistent_module(self, connected_client: TestClient):
+        response = connected_client.post(
+            f"{settings.API_V1_STR}/modules/nonexistent-module-xyz/download"
+        )
+        assert response.status_code == 400
+
+
 class TestDeleteModule:
     def test_delete_downloaded_module(self, connected_client: TestClient):
         modules = connected_client.get(f"{settings.API_V1_STR}/modules/").json()
@@ -133,7 +147,7 @@ class TestGetData:
         connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
         data = self._wait_for_data(
             connected_client,
-            f"{settings.API_V1_STR}/modules/ietf-interfaces/data",
+            f"{settings.API_V1_STR}/datastore/running/ietf-interfaces/data",
             "ietf-interfaces:interfaces",
         )
         assert "ietf-interfaces:interfaces" in data
@@ -141,14 +155,16 @@ class TestGetData:
         connected_client.delete(f"{settings.API_V1_STR}/modules/")
 
     def test_get_module_data_not_connected(self, client: TestClient):
-        response = client.get(f"{settings.API_V1_STR}/modules/ietf-interfaces/data")
+        response = client.get(
+            f"{settings.API_V1_STR}/datastore/running/ietf-interfaces/data"
+        )
         assert response.status_code == 400
 
     def test_get_data_interfaces(self, connected_client: TestClient):
         connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
         data = self._wait_for_data(
             connected_client,
-            f"{settings.API_V1_STR}/modules/ietf-interfaces/data/interfaces",
+            f"{settings.API_V1_STR}/datastore/running/ietf-interfaces/data/interfaces",
             "ietf-interfaces:interfaces",
         )
         assert "ietf-interfaces:interfaces" in data
@@ -159,6 +175,6 @@ class TestGetData:
 
     def test_get_data_not_connected(self, client: TestClient):
         response = client.get(
-            f"{settings.API_V1_STR}/modules/ietf-interfaces/data/interfaces"
+            f"{settings.API_V1_STR}/datastore/running/ietf-interfaces/data/interfaces"
         )
         assert response.status_code == 400
