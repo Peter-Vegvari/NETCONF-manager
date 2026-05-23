@@ -116,3 +116,45 @@ class TestDeleteConfig:
     def test_delete_not_connected(self, client: TestClient):
         response = client.delete(f"{settings.API_V1_STR}/datastore/candidate")
         assert response.status_code == 400
+
+
+class TestEditConfig:
+    def test_edit_config_candidate(self, connected_client: TestClient):
+        connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
+        response = connected_client.post(
+            f"{settings.API_V1_STR}/datastore/candidate/edit-config",
+            json={
+                "module_name": "ietf-interfaces",
+                "path": "interfaces/interface/description",
+                "value": "Test description",
+            },
+        )
+        assert response.status_code == 200
+        assert "ok" in response.json().lower()
+        # Cleanup
+        connected_client.post(
+            f"{settings.API_V1_STR}/datastore/running/copy-config/candidate"
+        )
+        connected_client.delete(f"{settings.API_V1_STR}/modules/")
+
+    def test_edit_config_not_connected(self, client: TestClient):
+        response = client.post(
+            f"{settings.API_V1_STR}/datastore/candidate/edit-config",
+            json={
+                "module_name": "ietf-interfaces",
+                "path": "interfaces/interface/name",
+                "value": "eth0",
+            },
+        )
+        assert response.status_code == 400
+
+    def test_edit_config_invalid_datastore(self, connected_client: TestClient):
+        response = connected_client.post(
+            f"{settings.API_V1_STR}/datastore/nonexistent/edit-config",
+            json={
+                "module_name": "ietf-interfaces",
+                "path": "interfaces/interface/name",
+                "value": "eth0",
+            },
+        )
+        assert response.status_code == 422

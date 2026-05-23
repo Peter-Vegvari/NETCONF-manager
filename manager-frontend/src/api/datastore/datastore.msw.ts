@@ -24,6 +24,8 @@ export const getGetModuleDataResponseMock = (): GetModuleData200 => ({});
 
 export const getGetDataResponseMock = (): GetData200 => ({});
 
+export const getEditConfigResponseMock = (): string => faker.word.sample();
+
 export const getCopyConfigToMockHandler = (
 	overrideResponse?:
 		| string
@@ -191,6 +193,30 @@ export const getGetDataMockHandler = (
 		options,
 	);
 };
+
+export const getEditConfigMockHandler = (
+	overrideResponse?:
+		| string
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<string> | string),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		"*/api/v1/datastore/:dataStore/edit-config",
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getEditConfigResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
 export const getDatastoreMock = () => [
 	getCopyConfigToMockHandler(),
 	getDeleteConfigMockHandler(),
@@ -199,4 +225,5 @@ export const getDatastoreMock = () => [
 	getGetLockMockHandler(),
 	getGetModuleDataMockHandler(),
 	getGetDataMockHandler(),
+	getEditConfigMockHandler(),
 ];

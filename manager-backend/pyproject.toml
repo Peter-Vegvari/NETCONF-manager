@@ -23,6 +23,7 @@ dependencies = [
     "yangson",
     "pyang",
     "wireup>=2.9.0",
+    "xmltodict>=0.14.1",
 ]
 
 [project.scripts]

@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 
 import app.dependencies
-from app.models.datastore import DataStore
+from app.models.datastore import DataStore, EditConfigRequest
 from app.services import datastore_service, module_service
 
 datastore_router = APIRouter(prefix="/datastore", tags=["datastore"])
@@ -76,3 +76,14 @@ async def get_data(
 ) -> dict[str, Any]:
     _check_connected()
     return module_service.get_data(module_name, data_store, path)
+
+
+@datastore_router.post("/{data_store}/edit-config", operation_id="editConfig")
+async def edit_config(data_store: DataStore, body: EditConfigRequest) -> str:
+    _check_connected()
+    try:
+        return datastore_service.edit_config(
+            data_store, body.module_name, body.path, body.value
+        )
+    except Exception as e:
+        raise HTTPException(400, str(e))

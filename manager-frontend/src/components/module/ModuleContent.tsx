@@ -30,6 +30,8 @@ export function ModuleContent({
 		<SchemaTree
 			node={schemaRes.data}
 			data={dataRes?.status === 200 ? dataRes.data : undefined}
+			dataStore={dataStore}
+			moduleName={module.name}
 		/>
 	);
 }

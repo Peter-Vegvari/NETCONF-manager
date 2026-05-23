@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from typing import Any, cast
 
+import xmltodict
 from lxml import etree
 from lxml.etree import Element
 from pyang.context import Context
@@ -133,10 +134,7 @@ def get_data(module_name: str, data_store: Any, path: str) -> dict[str, Any]:
     ns = get_namespace(module_name) or f"urn:ietf:params:xml:ns:yang:{module_name}"
     subtree = f'<{root} xmlns="{ns}">{inner}</{root}>'
     reply = cast(Any, s).get_config(data_store, filter=("subtree", subtree))
-    return _xml_to_json(cast(Element, reply.data_ele), module_name)
-
-
-# --- private helpers ---
+    return _parse_xml_element(cast(Element, reply.data_ele), module_name)
 
 
 def _build_data_model() -> DataModel:
@@ -160,37 +158,26 @@ def _build_data_model() -> DataModel:
     )
 
 
-def _xml_to_json(data_ele: Element, module_name: str) -> dict[str, Any]:
-    result: dict[str, Any] = {}
-    for child in data_ele:
-        tag = etree.QName(child).localname
-        key = f"{module_name}:{tag}"
-        value = _element_to_value(child)
-        if key in result:
-            existing = result[key]
-            if isinstance(existing, list):
-                cast(list[Any], existing).append(value)
-            else:
-                result[key] = [existing, value]
-        else:
-            result[key] = value
-    return result
+def _parse_xml_element(data_ele: Element, module_name: str) -> dict[str, Any]:
+    xml_str = etree.tostring(data_ele, encoding="unicode")
+    parsed = xmltodict.parse(
+        xml_input=xml_str, process_namespaces=False, attr_prefix="", cdata_key="#text"
+    )
+    root_value = next(iter(parsed.values()))
+    if not isinstance(root_value, dict):
+        return {}
+
+    stripped = _strip_ns(root_value)
+    return {f"{module_name}:{k}": v for k, v in stripped.items()}
 
 
-def _element_to_value(el: Element) -> Any:
-    children = list(el)
-    if not children:
-        return el.text or ""
-    result: dict[str, Any] = {}
-    for child in children:
-        tag = etree.QName(child).localname
-        value = _element_to_value(child)
-        if tag in result:
-            existing = result[tag]
-            if isinstance(existing, list):
-                cast(list[Any], existing).append(value)
-            else:
-                result[tag] = [existing, value]
-        else:
-            result[tag] = value
-    return result
+def _strip_ns(d: Any) -> Any:
+    if isinstance(d, dict):
+        return {
+            k.split(":")[-1]: _strip_ns(v)
+            for k, v in cast(dict[str, Any], d).items()
+            if k != "@xmlns"
+        }
+    if isinstance(d, list):
+        return [_strip_ns(i) for i in cast(list[Any], d)]
+    return d if d is not None else ""

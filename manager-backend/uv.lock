@@ -639,6 +639,7 @@ dependencies = [
     { name = "types-lxml" },
     { name = "uvicorn" },
     { name = "wireup" },
+    { name = "xmltodict" },
     { name = "yangson" },
 ]
 
@@ -658,6 +659,7 @@ requires-dist = [
     { name = "types-lxml" },
     { name = "uvicorn" },
     { name = "wireup", specifier = ">=2.9.0" },
+    { name = "xmltodict", specifier = ">=0.14.1" },
     { name = "yangson" },
 ]
 
@@ -1489,6 +1491,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/96/83/45068502e16557c2298c7a0452595c6e0aeaf293a62684dcf26f0bceb7aa/wireup-2.9.0.tar.gz", hash = "sha256:d26e320d0a2def0de8dee7aff610443f9ad02ef998ed7ddaa5c9137c17304ae4", size = 760527, upload-time = "2026-03-22T16:53:32.816Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/09/b6/7f41b3fe7fac2dae08934b8aaa146cab179f3517c5c45c2849074e94847b/wireup-2.9.0-py3-none-any.whl", hash = "sha256:d85e5711ee5f0fb4ac84a2a36bad83b5748372e89a99105d6aac1e2df4a4cfae", size = 57583, upload-time = "2026-03-22T16:53:31.07Z" },
+]
+
+[[package]]
+name = "xmltodict"
+version = "1.0.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/19/70/80f3b7c10d2630aa66414bf23d210386700aa390547278c789afa994fd7e/xmltodict-1.0.4.tar.gz", hash = "sha256:6d94c9f834dd9e44514162799d344d815a3a4faec913717a9ecbfa5be1bb8e61", size = 26124, upload-time = "2026-02-22T02:21:22.074Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/38/34/98a2f52245f4d47be93b580dae5f9861ef58977d73a79eb47c58f1ad1f3a/xmltodict-1.0.4-py3-none-any.whl", hash = "sha256:a4a00d300b0e1c59fc2bfccb53d7b2e88c32f200df138a0dd2229f842497026a", size = 13580, upload-time = "2026-02-22T02:21:21.039Z" },
 ]
 
 [[package]]

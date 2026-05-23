@@ -26,7 +26,7 @@ export function ConnectionForm() {
 				form={form}
 				layout="inline"
 				initialValues={{
-					host: "10.41.103.8",
+					host: "10.41.102.39",
 					port: 830,
 					user_name: "admin_user",
 					password: "Ericsson1234",
