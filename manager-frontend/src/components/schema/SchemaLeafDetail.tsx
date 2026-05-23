@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { App, Button, Descriptions, Input, Space } from "antd";
 import { useState } from "react";
-import { editConfig } from "../../api/datastore/datastore";
+import {
+	editConfig,
+	getGetDataQueryKey,
+	getGetModuleDataQueryKey,
+} from "../../api/datastore/datastore";
 import type { DataStore, SchemaNode } from "../../api/model";
 
 interface Props {
@@ -40,8 +44,13 @@ export function SchemaLeafDetail({
 		onSuccess: () => {
 			message.success("Configuration updated");
 			setEditing(false);
-			queryClient.invalidateQueries({ queryKey: ["getModuleData"] });
-			queryClient.invalidateQueries({ queryKey: ["getData"] });
+			if (!dataStore || !moduleName || !path) return;
+			queryClient.invalidateQueries({
+				queryKey: getGetModuleDataQueryKey(dataStore, moduleName),
+			});
+			queryClient.invalidateQueries({
+				queryKey: getGetDataQueryKey(dataStore, moduleName, path),
+			});
 		},
 		onError: (err) => {
 			message.error(`Edit failed: ${err}`);
