@@ -1,5 +1,6 @@
 from typing import Any, cast, final
 
+from fastapi import HTTPException
 from ncclient.manager import Manager
 from wireup import injectable
 
@@ -13,17 +14,22 @@ class ConnectionManager:
         self.connection: Connection | None = None
         self._session: Manager | None = None
 
-    def _is_connected(self, session: Manager) -> bool:
-        return cast(bool, session.connected)
+    @property
+    def is_connected(self) -> bool:
+        return cast(bool, self._session.connected) if self._session else False
 
     @property
     def session(self) -> Manager | None:
-        if self._session and self._is_connected(self._session):
+        if self.is_connected:
             return self._session
         if self.connection:
             self._session = self.connection.connect()
             return self._session
         return None
+
+    def check_connected(self) -> None:
+        if not self.is_connected:
+            raise HTTPException(400, "Not connected")
 
     def connect(self, connection: Connection) -> Manager:
         self.disconnect()
@@ -32,7 +38,7 @@ class ConnectionManager:
         return self._session
 
     def disconnect(self) -> None:
-        if self._session and self._is_connected(self._session):
+        if self.is_connected:
             cast(Any, self._session).close_session()
         self._session = None
         self.connection = None

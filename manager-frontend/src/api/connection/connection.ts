@@ -204,9 +204,9 @@ export function useGetConnectionStatus<
 /**
  * @summary Connect
  */
-export type connectResponse200 = {
-	data: unknown;
-	status: 200;
+export type connectResponse204 = {
+	data: void;
+	status: 204;
 };
 
 export type connectResponse422 = {
@@ -214,7 +214,7 @@ export type connectResponse422 = {
 	status: 422;
 };
 
-export type connectResponseSuccess = connectResponse200 & {
+export type connectResponseSuccess = connectResponse204 & {
 	headers: Headers;
 };
 export type connectResponseError = connectResponse422 & {

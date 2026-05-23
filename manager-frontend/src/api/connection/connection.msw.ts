@@ -42,10 +42,10 @@ export const getGetConnectionStatusMockHandler = (
 
 export const getConnectMockHandler = (
 	overrideResponse?:
-		| unknown
+		| void
 		| ((
 				info: Parameters<Parameters<typeof http.post>[1]>[0],
-		  ) => Promise<unknown> | unknown),
+		  ) => Promise<void> | void),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post(
@@ -55,7 +55,7 @@ export const getConnectMockHandler = (
 				await overrideResponse(info);
 			}
 
-			return new HttpResponse(null, { status: 200 });
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);

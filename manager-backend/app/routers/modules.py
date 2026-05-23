@@ -1,6 +1,6 @@
 import asyncio
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Response, status
 
 import app.dependencies
 from app.models.module import ModuleStatus, ModuleSummary
@@ -19,47 +19,65 @@ async def get_modules() -> list[ModuleSummary]:
     for name in [*local, *remote]:
         if name not in seen:
             seen.add(name)
-            status = (
+            status_ = (
                 ModuleStatus.LOCAL
                 if module_service.is_local(name)
                 else ModuleStatus.REMOTE
             )
             result.append(
                 ModuleSummary(
-                    name=name, status=status, revision=module_service.get_revision(name)
+                    name=name,
+                    status=status_,
+                    revision=module_service.get_revision(name),
                 )
             )
     return result
 
 
-@module_router.post("/download-all", operation_id="downloadAllModules")
-async def download_all_modules():
-    if app.dependencies.connection_manager.session is None:
-        raise HTTPException(400, "Not connected")
+@module_router.post(
+    "/download-all",
+    operation_id="downloadAllModules",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def download_all_modules() -> Response:
+    app.dependencies.connection_manager.check_connected()
     module_service.download_all()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@module_router.post("/{module_name}/download", operation_id="downloadModule")
-async def download_module(module_name: str):
-    if app.dependencies.connection_manager.session is None:
-        raise HTTPException(400, "Not connected")
+@module_router.post(
+    "/{module_name}/download",
+    operation_id="downloadModule",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def download_module(module_name: str) -> Response:
+    app.dependencies.connection_manager.check_connected()
     try:
         module_service.download_module(module_name)
     except Exception as e:
         raise HTTPException(400, str(e))
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@module_router.delete("/{module_name}", operation_id="deleteModule")
-async def delete_module(module_name: str):
+@module_router.delete(
+    "/{module_name}",
+    operation_id="deleteModule",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_module(module_name: str) -> Response:
     if not module_service.is_local(module_name):
         raise HTTPException(404, "Module not found")
     module_service.delete_module(module_name)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@module_router.delete("/", operation_id="deleteAllModules")
-async def delete_all_modules():
+@module_router.delete(
+    "/", operation_id="deleteAllModules", status_code=status.HTTP_204_NO_CONTENT
+)
+async def delete_all_modules() -> Response:
     for name in module_service.get_local_modules():
         module_service.delete_module(name)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @module_router.get("/{module_name}/schema", operation_id="getSchema")

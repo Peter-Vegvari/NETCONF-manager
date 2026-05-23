@@ -114,10 +114,10 @@ export const getGetModulesMockHandler = (
 
 export const getDeleteAllModulesMockHandler = (
 	overrideResponse?:
-		| unknown
+		| void
 		| ((
 				info: Parameters<Parameters<typeof http.delete>[1]>[0],
-		  ) => Promise<unknown> | unknown),
+		  ) => Promise<void> | void),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete(
@@ -127,7 +127,7 @@ export const getDeleteAllModulesMockHandler = (
 				await overrideResponse(info);
 			}
 
-			return new HttpResponse(null, { status: 200 });
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
@@ -135,10 +135,10 @@ export const getDeleteAllModulesMockHandler = (
 
 export const getDownloadAllModulesMockHandler = (
 	overrideResponse?:
-		| unknown
+		| void
 		| ((
 				info: Parameters<Parameters<typeof http.post>[1]>[0],
-		  ) => Promise<unknown> | unknown),
+		  ) => Promise<void> | void),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post(
@@ -148,7 +148,7 @@ export const getDownloadAllModulesMockHandler = (
 				await overrideResponse(info);
 			}
 
-			return new HttpResponse(null, { status: 200 });
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
@@ -156,10 +156,10 @@ export const getDownloadAllModulesMockHandler = (
 
 export const getDownloadModuleMockHandler = (
 	overrideResponse?:
-		| unknown
+		| void
 		| ((
 				info: Parameters<Parameters<typeof http.post>[1]>[0],
-		  ) => Promise<unknown> | unknown),
+		  ) => Promise<void> | void),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post(
@@ -169,7 +169,7 @@ export const getDownloadModuleMockHandler = (
 				await overrideResponse(info);
 			}
 
-			return new HttpResponse(null, { status: 200 });
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
@@ -177,10 +177,10 @@ export const getDownloadModuleMockHandler = (
 
 export const getDeleteModuleMockHandler = (
 	overrideResponse?:
-		| unknown
+		| void
 		| ((
 				info: Parameters<Parameters<typeof http.delete>[1]>[0],
-		  ) => Promise<unknown> | unknown),
+		  ) => Promise<void> | void),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete(
@@ -190,7 +190,7 @@ export const getDeleteModuleMockHandler = (
 				await overrideResponse(info);
 			}
 
-			return new HttpResponse(null, { status: 200 });
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);

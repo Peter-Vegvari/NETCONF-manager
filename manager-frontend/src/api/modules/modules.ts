@@ -181,12 +181,12 @@ export function useGetModules<
 /**
  * @summary Delete All Modules
  */
-export type deleteAllModulesResponse200 = {
-	data: unknown;
-	status: 200;
+export type deleteAllModulesResponse204 = {
+	data: void;
+	status: 204;
 };
 
-export type deleteAllModulesResponseSuccess = deleteAllModulesResponse200 & {
+export type deleteAllModulesResponseSuccess = deleteAllModulesResponse204 & {
 	headers: Headers;
 };
 
@@ -281,13 +281,13 @@ export const useDeleteAllModules = <TError = unknown, TContext = unknown>(
 /**
  * @summary Download All Modules
  */
-export type downloadAllModulesResponse200 = {
-	data: unknown;
-	status: 200;
+export type downloadAllModulesResponse204 = {
+	data: void;
+	status: 204;
 };
 
 export type downloadAllModulesResponseSuccess =
-	downloadAllModulesResponse200 & {
+	downloadAllModulesResponse204 & {
 		headers: Headers;
 	};
 
@@ -385,9 +385,9 @@ export const useDownloadAllModules = <TError = unknown, TContext = unknown>(
 /**
  * @summary Download Module
  */
-export type downloadModuleResponse200 = {
-	data: unknown;
-	status: 200;
+export type downloadModuleResponse204 = {
+	data: void;
+	status: 204;
 };
 
 export type downloadModuleResponse422 = {
@@ -395,7 +395,7 @@ export type downloadModuleResponse422 = {
 	status: 422;
 };
 
-export type downloadModuleResponseSuccess = downloadModuleResponse200 & {
+export type downloadModuleResponseSuccess = downloadModuleResponse204 & {
 	headers: Headers;
 };
 export type downloadModuleResponseError = downloadModuleResponse422 & {
@@ -501,9 +501,9 @@ export const useDownloadModule = <
 /**
  * @summary Delete Module
  */
-export type deleteModuleResponse200 = {
-	data: unknown;
-	status: 200;
+export type deleteModuleResponse204 = {
+	data: void;
+	status: 204;
 };
 
 export type deleteModuleResponse422 = {
@@ -511,7 +511,7 @@ export type deleteModuleResponse422 = {
 	status: 422;
 };
 
-export type deleteModuleResponseSuccess = deleteModuleResponse200 & {
+export type deleteModuleResponseSuccess = deleteModuleResponse204 & {
 	headers: Headers;
 };
 export type deleteModuleResponseError = deleteModuleResponse422 & {
