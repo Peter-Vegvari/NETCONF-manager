@@ -1,11 +1,5 @@
 <a id="readme-top"></a>
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-
 <br />
 <div align="center">
   <h3 align="center">NETCONF/YANG Browser</h3>
@@ -69,8 +63,8 @@ This application connects to any network device supporting NETCONF/YANG manageme
 ## Roadmap
 - [x] NETCONF connection management
 - [x] Multi-device support
-- [x] YANG datastore displa
-- [ ] Editing writable datastore elements
+- [x] YANG datastore display
+- [x] Editing writable datastore elements
 
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
