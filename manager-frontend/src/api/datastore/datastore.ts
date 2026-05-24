@@ -265,6 +265,122 @@ export const useDeleteConfig = <
 	return useMutation(getDeleteConfigMutationOptions(options), queryClient);
 };
 /**
+ * @summary Edit Config
+ */
+export type editConfigResponse200 = {
+	data: string;
+	status: 200;
+};
+
+export type editConfigResponse422 = {
+	data: HTTPValidationError;
+	status: 422;
+};
+
+export type editConfigResponseSuccess = editConfigResponse200 & {
+	headers: Headers;
+};
+export type editConfigResponseError = editConfigResponse422 & {
+	headers: Headers;
+};
+
+export type editConfigResponse =
+	| editConfigResponseSuccess
+	| editConfigResponseError;
+
+export const getEditConfigUrl = (dataStore: DataStore) => {
+	return `/api/v1/datastore/${dataStore}`;
+};
+
+export const editConfig = async (
+	dataStore: DataStore,
+	editConfigRequest: EditConfigRequest,
+	options?: RequestInit,
+): Promise<editConfigResponse> => {
+	const res = await fetch(getEditConfigUrl(dataStore), {
+		...options,
+		method: "PATCH",
+		headers: { "Content-Type": "application/json", ...options?.headers },
+		body: JSON.stringify(editConfigRequest),
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: editConfigResponse["data"] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as editConfigResponse;
+};
+
+export const getEditConfigMutationOptions = <
+	TError = HTTPValidationError,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof editConfig>>,
+		TError,
+		{ dataStore: DataStore; data: EditConfigRequest },
+		TContext
+	>;
+	fetch?: RequestInit;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof editConfig>>,
+	TError,
+	{ dataStore: DataStore; data: EditConfigRequest },
+	TContext
+> => {
+	const mutationKey = ["editConfig"];
+	const { mutation: mutationOptions, fetch: fetchOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof editConfig>>,
+		{ dataStore: DataStore; data: EditConfigRequest }
+	> = (props) => {
+		const { dataStore, data } = props ?? {};
+
+		return editConfig(dataStore, data, fetchOptions);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type EditConfigMutationResult = NonNullable<
+	Awaited<ReturnType<typeof editConfig>>
+>;
+export type EditConfigMutationBody = EditConfigRequest;
+export type EditConfigMutationError = HTTPValidationError;
+
+/**
+ * @summary Edit Config
+ */
+export const useEditConfig = <TError = HTTPValidationError, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof editConfig>>,
+			TError,
+			{ dataStore: DataStore; data: EditConfigRequest },
+			TContext
+		>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof editConfig>>,
+	TError,
+	{ dataStore: DataStore; data: EditConfigRequest },
+	TContext
+> => {
+	return useMutation(getEditConfigMutationOptions(options), queryClient);
+};
+/**
  * @summary Lock
  */
 export type lockDatastoreResponse200 = {
@@ -1522,120 +1638,3 @@ export function useGetData<
 
 	return { ...query, queryKey: queryOptions.queryKey };
 }
-
-/**
- * @summary Edit Config
- */
-export type editConfigResponse200 = {
-	data: string;
-	status: 200;
-};
-
-export type editConfigResponse422 = {
-	data: HTTPValidationError;
-	status: 422;
-};
-
-export type editConfigResponseSuccess = editConfigResponse200 & {
-	headers: Headers;
-};
-export type editConfigResponseError = editConfigResponse422 & {
-	headers: Headers;
-};
-
-export type editConfigResponse =
-	| editConfigResponseSuccess
-	| editConfigResponseError;
-
-export const getEditConfigUrl = (dataStore: DataStore) => {
-	return `/api/v1/datastore/${dataStore}/edit-config`;
-};
-
-export const editConfig = async (
-	dataStore: DataStore,
-	editConfigRequest: EditConfigRequest,
-	options?: RequestInit,
-): Promise<editConfigResponse> => {
-	const res = await fetch(getEditConfigUrl(dataStore), {
-		...options,
-		method: "POST",
-		headers: { "Content-Type": "application/json", ...options?.headers },
-		body: JSON.stringify(editConfigRequest),
-	});
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-	const data: editConfigResponse["data"] = body ? JSON.parse(body) : {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as editConfigResponse;
-};
-
-export const getEditConfigMutationOptions = <
-	TError = HTTPValidationError,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof editConfig>>,
-		TError,
-		{ dataStore: DataStore; data: EditConfigRequest },
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof editConfig>>,
-	TError,
-	{ dataStore: DataStore; data: EditConfigRequest },
-	TContext
-> => {
-	const mutationKey = ["editConfig"];
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof editConfig>>,
-		{ dataStore: DataStore; data: EditConfigRequest }
-	> = (props) => {
-		const { dataStore, data } = props ?? {};
-
-		return editConfig(dataStore, data, fetchOptions);
-	};
-
-	return { mutationFn, ...mutationOptions };
-};
-
-export type EditConfigMutationResult = NonNullable<
-	Awaited<ReturnType<typeof editConfig>>
->;
-export type EditConfigMutationBody = EditConfigRequest;
-export type EditConfigMutationError = HTTPValidationError;
-
-/**
- * @summary Edit Config
- */
-export const useEditConfig = <TError = HTTPValidationError, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof editConfig>>,
-			TError,
-			{ dataStore: DataStore; data: EditConfigRequest },
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof editConfig>>,
-	TError,
-	{ dataStore: DataStore; data: EditConfigRequest },
-	TContext
-> => {
-	return useMutation(getEditConfigMutationOptions(options), queryClient);
-};

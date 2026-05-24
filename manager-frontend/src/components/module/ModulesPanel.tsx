@@ -1,6 +1,6 @@
 import { CloudDownloadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Button, Card, message, Popconfirm } from "antd";
-import { useMemo } from "react";
+import { Button, Card, message, Popconfirm, Space } from "antd";
+import { useMemo, useState } from "react";
 import type { DataStore } from "../../api/model";
 import {
 	useDeleteAllModules,
@@ -10,11 +10,13 @@ import {
 	useGetModules,
 } from "../../api/modules/modules";
 import { useMutationOptions } from "../../hooks/useMutationOptions";
+import { DatastoreMenu } from "../datastore/DatastoreMenu";
 import { ModuleList } from "./ModuleList";
 
-export function ModulesPanel({ dataStore }: { dataStore: DataStore }) {
+export function ModulesPanel() {
 	const [msg, contextHolder] = message.useMessage();
 	const opts = useMutationOptions(msg);
+	const [dataStore, setDataStore] = useState<DataStore>("running");
 
 	const { data } = useGetModules();
 	const download = useDownloadModule(opts("Module downloaded"));
@@ -31,7 +33,12 @@ export function ModulesPanel({ dataStore }: { dataStore: DataStore }) {
 		<>
 			{contextHolder}
 			<Card
-				title={`Modules (${modules.length})`}
+				title={
+					<Space>
+						{`Modules (${modules.length})`}
+						<DatastoreMenu dataStore={dataStore} setDataStore={setDataStore} />
+					</Space>
+				}
 				extra={
 					<>
 						<Button

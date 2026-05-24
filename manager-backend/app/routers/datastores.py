@@ -110,7 +110,7 @@ async def get_data(
     return module_service.get_data(module_name, data_store, path)
 
 
-@datastore_router.post("/{data_store}/edit-config", operation_id="editConfig")
+@datastore_router.patch("/{data_store}", operation_id="editConfig")
 async def edit_config(data_store: DataStore, body: EditConfigRequest) -> str:
     app.dependencies.connection_manager.check_connected()
     try:

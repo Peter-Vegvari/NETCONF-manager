@@ -9,10 +9,8 @@ import {
 	theme,
 } from "antd";
 import { useState } from "react";
-import type { DataStore } from "./api/model";
 import { ConnectionForm } from "./components/connection/ConnectionForm";
-import { DatastoreMenu } from "./components/datastore/DatastoreMenu";
-import { ModulesPanel } from "./components/module/ModulesPanel";
+import { DatastoresPanel } from "./components/datastore/DatastoresPanel";
 
 const queryClient = new QueryClient({
 	defaultOptions: { queries: { staleTime: 30_000 } },
@@ -22,7 +20,6 @@ function App() {
 	const [dark, setDark] = useState(
 		window.matchMedia("(prefers-color-scheme: dark)").matches,
 	);
-	const [dataStore, setDataStore] = useState<DataStore>("running");
 
 	return (
 		<ConfigProvider
@@ -47,15 +44,7 @@ function App() {
 							/>
 						</div>
 						<ConnectionForm />
-						<div style={{ display: "flex", gap: 16 }}>
-							<DatastoreMenu
-								dataStore={dataStore}
-								setDataStore={setDataStore}
-							/>
-							<div style={{ flex: 1, minWidth: 0 }}>
-								<ModulesPanel dataStore={dataStore} />
-							</div>
-						</div>
+						<DatastoresPanel />
 					</Layout>
 					<ReactQueryDevtools />
 				</QueryClientProvider>
