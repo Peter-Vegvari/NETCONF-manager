@@ -1,7 +1,7 @@
 services:
   manager-backend:
     build: .
-    container_name: test-manager-backend
+    container_name: test-manager-backend-test
     command: pytest -v
     environment:
       - ENVIRONMENT=testing
@@ -14,13 +14,13 @@ services:
 
   notconf:
     image: ghcr.io/notconf/notconf:latest
-    container_name: notconf
+    container_name: notconf-test
     volumes:
       - ./tests/resources/yang-modules/startup:/yang-modules/startup
     networks:
       - test-shared
     healthcheck:
-      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/830"]
+      test: [ "CMD", "bash", "-c", "echo > /dev/tcp/localhost/830" ]
       interval: 2s
       timeout: 5s
       retries: 10

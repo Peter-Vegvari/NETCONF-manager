@@ -23,6 +23,6 @@ def connected_client(client: TestClient):
             "password": settings.NOTCONF_PASSWORD,
         },
     )
-    assert response.status_code == 200, f"Failed to connect: {response.text}"
+    assert response.status_code == 204, f"Failed to connect: {response.text}"
     yield client
     client.delete(f"{settings.API_V1_STR}/connect")

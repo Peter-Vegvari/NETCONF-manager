@@ -39,7 +39,7 @@ class TestDownloadModule:
         response = connected_client.post(
             f"{settings.API_V1_STR}/modules/{module_name}/download"
         )
-        assert response.status_code == 200
+        assert response.status_code == 204
 
         modules_after = connected_client.get(f"{settings.API_V1_STR}/modules/").json()
         downloaded = next(m for m in modules_after if m["name"] == module_name)
@@ -52,7 +52,7 @@ class TestDownloadModule:
 class TestDownloadAllModules:
     def test_download_all(self, connected_client: TestClient):
         response = connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
-        assert response.status_code == 200
+        assert response.status_code == 204
         # Cleanup
         connected_client.delete(f"{settings.API_V1_STR}/modules/")
 
@@ -84,7 +84,7 @@ class TestDeleteModule:
         response = connected_client.delete(
             f"{settings.API_V1_STR}/modules/{module_name}"
         )
-        assert response.status_code == 200
+        assert response.status_code == 204
 
     def test_delete_nonexistent_module(self, client: TestClient):
         response = client.delete(f"{settings.API_V1_STR}/modules/nonexistent-module")
@@ -98,7 +98,7 @@ class TestDeleteAllModules:
         connected_client.post(f"{settings.API_V1_STR}/modules/{module_name}/download")
 
         response = connected_client.delete(f"{settings.API_V1_STR}/modules/")
-        assert response.status_code == 200
+        assert response.status_code == 204
 
         modules_after = connected_client.get(f"{settings.API_V1_STR}/modules/").json()
         local = [m for m in modules_after if m["status"] == "local"]

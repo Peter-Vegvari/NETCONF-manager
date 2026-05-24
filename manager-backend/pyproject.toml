@@ -24,6 +24,7 @@ dependencies = [
     "pyang",
     "wireup>=2.9.0",
     "xmltodict>=0.14.1",
+    "deepdiff>=9.1.0",
 ]
 
 [project.scripts]

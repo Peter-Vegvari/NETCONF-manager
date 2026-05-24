@@ -17,7 +17,7 @@ class TestConnect:
             f"{settings.API_V1_STR}/connect",
             json=_connection.model_dump(),
         )
-        assert response.status_code == 200
+        assert response.status_code == 204
 
     def test_connect_invalid_host(self, client: TestClient):
         response = client.post(
@@ -64,7 +64,7 @@ class TestConnectIdempotency:
                 f"{settings.API_V1_STR}/connect",
                 json=_connection.model_dump(),
             )
-            assert response.status_code == 200
+            assert response.status_code == 204
 
     def test_connect_twice_different_credentials(self, client: TestClient):
         """Connecting with different credentials after already connected."""
@@ -88,7 +88,7 @@ class TestConnectIdempotency:
             f"{settings.API_V1_STR}/connect",
             json=_connection.model_dump(),
         )
-        assert response.status_code == 200
+        assert response.status_code == 204
 
     def test_connect_then_disconnect_then_disconnect(self, client: TestClient):
         """Disconnecting twice should be safe (idempotent)."""
@@ -104,7 +104,7 @@ class TestConnectIdempotency:
                 f"{settings.API_V1_STR}/connect",
                 json=_connection.model_dump(),
             )
-            assert response.status_code == 200
+            assert response.status_code == 204
 
 
 class TestDisconnect:
