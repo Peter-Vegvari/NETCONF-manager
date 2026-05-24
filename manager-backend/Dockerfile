@@ -1,6 +1,7 @@
 FROM ghcr.io/astral-sh/uv:python3.14-bookworm-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    libyang2-tools \
     git \
     && rm -rf /var/lib/apt/lists/*
 

@@ -173,10 +173,12 @@ def _parse_xml_element(data_ele: Element, module_name: str) -> dict[str, Any]:
 
 def _strip_ns(d: Any) -> Any:
     if isinstance(d, dict):
+        if "#text" in d:
+            return d["#text"]
         return {
             k.split(":")[-1]: _strip_ns(v)
             for k, v in cast(dict[str, Any], d).items()
-            if k != "@xmlns"
+            if not k.startswith("@")
         }
     if isinstance(d, list):
         return [_strip_ns(i) for i in cast(list[Any], d)]

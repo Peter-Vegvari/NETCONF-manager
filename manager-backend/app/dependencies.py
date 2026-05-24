@@ -23,7 +23,10 @@ class ConnectionManager:
         if self.is_connected:
             return self._session
         if self.connection:
-            self._session = self.connection.connect()
+            try:
+                self._session = self.connection.connect()
+            except Exception:
+                self._session = None
             return self._session
         return None
 
@@ -34,7 +37,11 @@ class ConnectionManager:
     def connect(self, connection: Connection) -> Manager:
         self.disconnect()
         self.connection = connection
-        self._session = connection.connect()
+        try:
+            self._session = connection.connect()
+        except Exception:
+            self.connection = None
+            raise
         return self._session
 
     def disconnect(self) -> None:

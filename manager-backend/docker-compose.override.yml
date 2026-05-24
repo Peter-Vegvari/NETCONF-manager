@@ -12,6 +12,22 @@ services:
       - shared
     command: fastapi dev --host 0.0.0.0 app/main.py
 
+  notconf:
+    image: ghcr.io/notconf/notconf:latest
+    container_name: notconf
+    ports:
+      - "810:810"
+    volumes:
+      - ./tests/resources/yang-modules/startup:/yang-modules/startup
+    networks:
+      - shared
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "echo > /dev/tcp/localhost/830" ]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
 networks:
   shared:
     name: shared
