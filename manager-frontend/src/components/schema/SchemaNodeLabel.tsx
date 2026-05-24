@@ -1,5 +1,5 @@
 import { Tag } from "antd";
-import type { SchemaNode } from "../../api/model";
+import type { SchemaNode } from "@/api/model";
 
 interface Props {
 	name: string;

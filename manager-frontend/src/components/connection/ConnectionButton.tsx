@@ -1,8 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { Button, type FormInstance, message } from "antd";
-import { useConnect, useDisconnect } from "../../api/connection/connection";
-import type { Connection } from "../../api/model";
-import { useConnected } from "../../hooks/connected";
+import { useConnect, useDisconnect } from "@/api/connection/connection";
+import type { Connection } from "@/api/model";
+import { useConnected } from "@/hooks/connected";
 
 export function ConnectionButton({ form }: { form: FormInstance<Connection> }) {
 	const queryClient = useQueryClient();

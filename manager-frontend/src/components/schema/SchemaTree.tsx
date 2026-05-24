@@ -1,7 +1,7 @@
 import { Collapse } from "antd";
 import type { ReactNode } from "react";
-import type { DataStore, SchemaNode } from "../../api/model";
-import { getNestedValue } from "../../utils/schema";
+import type { DataStore, SchemaNode } from "@/api/model";
+import { getNestedValue } from "@/utils/schema";
 import { SchemaLeafDetail } from "./SchemaLeafDetail";
 import { SchemaNodeLabel } from "./SchemaNodeLabel";
 

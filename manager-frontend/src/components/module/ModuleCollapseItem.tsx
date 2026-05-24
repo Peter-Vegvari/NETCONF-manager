@@ -1,5 +1,5 @@
 import { Collapse } from "antd";
-import type { ModuleSummary } from "../../api/model";
+import type { ModuleSummary } from "@/api/model";
 import { ModuleContent } from "./ModuleContent";
 import { ModuleItemActions, ModuleItemLabel } from "./ModuleItem";
 

@@ -5,8 +5,8 @@ import {
 	editConfig,
 	getGetDataQueryKey,
 	getGetModuleDataQueryKey,
-} from "../../api/datastore/datastore";
-import type { DataStore, SchemaNode } from "../../api/model";
+} from "@/api/datastore/datastore";
+import type { DataStore, SchemaNode } from "@/api/model";
 
 interface Props {
 	node: SchemaNode;

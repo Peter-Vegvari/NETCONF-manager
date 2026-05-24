@@ -1,12 +1,12 @@
 import { Collapse, message } from "antd";
 import { useMemo, useRef, useState } from "react";
-import type { DataStore } from "../../api/model";
+import type { DataStore } from "@/api/model";
 import {
 	useDeleteModule,
 	useDownloadModule,
 	useGetModules,
-} from "../../api/modules/modules";
-import { useMutationOptions } from "../../hooks/useMutationOptions";
+} from "@/api/modules/modules";
+import { useMutationOptions } from "@/hooks/useMutationOptions";
 import { ModuleContent } from "./ModuleContent";
 import { ModuleItemActions, ModuleItemLabel } from "./ModuleItem";
 import { ModulesToolbar, type ToolbarFilters } from "./ModulesToolbar";

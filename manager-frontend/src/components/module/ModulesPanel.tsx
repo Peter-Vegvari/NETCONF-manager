@@ -1,16 +1,16 @@
 import { CloudDownloadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Button, Card, message, Popconfirm, Space } from "antd";
 import { useMemo, useState } from "react";
-import type { DataStore } from "../../api/model";
+import type { DataStore } from "@/api/model";
 import {
 	useDeleteAllModules,
 	useDeleteModule,
 	useDownloadAllModules,
 	useDownloadModule,
 	useGetModules,
-} from "../../api/modules/modules";
-import { useMutationOptions } from "../../hooks/useMutationOptions";
-import { DatastoreMenu } from "../datastore/DatastoreMenu";
+} from "@/api/modules/modules";
+import { DatastoreMenu } from "@/components/datastore/DatastoreMenu";
+import { useMutationOptions } from "@/hooks/useMutationOptions";
 import { ModuleList } from "./ModuleList";
 
 export function ModulesPanel() {

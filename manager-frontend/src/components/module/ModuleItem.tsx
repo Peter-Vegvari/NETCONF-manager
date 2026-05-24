@@ -1,7 +1,7 @@
 import { DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tag } from "antd";
-import type { ModuleSummary } from "../../api/model";
-import { statusColor } from "../../utils/constants";
+import type { ModuleSummary } from "@/api/model";
+import { statusColor } from "@/utils/constants";
 
 interface Props {
 	module: ModuleSummary;

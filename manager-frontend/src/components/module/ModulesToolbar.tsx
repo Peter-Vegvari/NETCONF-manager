@@ -4,8 +4,8 @@ import { useRef } from "react";
 import {
 	useDeleteAllModules,
 	useDownloadAllModules,
-} from "../../api/modules/modules";
-import { useMutationOptions } from "../../hooks/useMutationOptions";
+} from "@/api/modules/modules";
+import { useMutationOptions } from "@/hooks/useMutationOptions";
 
 export interface ToolbarFilters {
 	search: string;

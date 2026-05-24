@@ -1,7 +1,7 @@
-import { useGetModuleData } from "../../api/datastore/datastore";
-import type { DataStore, ModuleSummary } from "../../api/model";
-import { useGetSchema } from "../../api/modules/modules";
-import { SchemaTree } from "../schema/SchemaTree";
+import { useGetModuleData } from "@/api/datastore/datastore";
+import type { DataStore, ModuleSummary } from "@/api/model";
+import { useGetSchema } from "@/api/modules/modules";
+import { SchemaTree } from "@/components/schema/SchemaTree";
 
 export function ModuleContent({
 	module,

@@ -1,7 +1,7 @@
 import { Card } from "antd";
 import { useState } from "react";
-import type { DataStore } from "../../api/model";
-import { ModuleList } from "../module/ModuleList";
+import type { DataStore } from "@/api/model";
+import { ModuleList } from "@/components/module/ModuleList";
 import { DatastoreMenu } from "./DatastoreMenu";
 
 export function DatastoresPanel() {
