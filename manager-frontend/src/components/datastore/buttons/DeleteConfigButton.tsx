@@ -1,12 +1,27 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, message } from "antd";
+import { useDeleteConfig } from "@/api/datastore/datastore";
+import type { DataStore } from "@/api/model";
+import { useMutationOptions } from "@/hooks/useMutationOptions";
 
 interface Props {
-	onClick: () => void;
+	ds: DataStore;
 }
 
-export function DeleteConfigButton({ onClick }: Props) {
+export function DeleteConfigButton({ ds }: Props) {
+	const [msg, contextHolder] = message.useMessage();
+	const opts = useMutationOptions(msg);
+	const deleteConfig = useDeleteConfig(opts("delete-config"));
+
 	return (
-		<Button icon={<DeleteOutlined />} onClick={onClick} title="Delete config" />
+		<>
+			{contextHolder}
+			<Button
+				icon={<DeleteOutlined />}
+				onClick={() => deleteConfig.mutate({ dataStore: ds })}
+				loading={deleteConfig.isPending}
+				title="Delete config"
+			/>
+		</>
 	);
 }

@@ -1,9 +1,12 @@
+import { GithubOutlined } from "@ant-design/icons";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
 	App as AntApp,
+	Button,
 	ConfigProvider,
 	Layout,
+	Space,
 	Switch,
 	Typography,
 	theme,
@@ -36,12 +39,20 @@ function App() {
 							}}
 						>
 							<Typography.Title level={2}>NETCONF Manager</Typography.Title>
-							<Switch
-								checkedChildren="Dark"
-								unCheckedChildren="Light"
-								checked={dark}
-								onChange={setDark}
-							/>
+							<Space>
+								<Switch
+									checkedChildren="Dark"
+									unCheckedChildren="Light"
+									checked={dark}
+									onChange={setDark}
+								/>
+								<Button
+									type="text"
+									icon={<GithubOutlined style={{ fontSize: 24 }} />}
+									href="https://github.com/Peter-Vegvari/NETCONF-manager"
+									target="_blank"
+								/>
+							</Space>
 						</div>
 						<ConnectionForm />
 						<DatastoresPanel />

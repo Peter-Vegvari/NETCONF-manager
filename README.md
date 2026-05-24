@@ -35,13 +35,13 @@ This application connects to any network device supporting NETCONF/YANG manageme
 3. **Allows editing** of writable datastore elements
 
 ### Built With
-* [![Python][Python]][Python-url]
-* [![FastAPI][FastAPI]][FastAPI-url]
-* [![Ant Design][AntDesign]][AntDesign-url]
-* [![React][React.js]][React-url]
-* [![TypeScript][TypeScript]][TypeScript-url]
-* [![Vite][Vite]][Vite-url]
-* [![Docker][Docker]][Docker-url]
+[![Python][Python]][Python-url]
+[![FastAPI][FastAPI]][FastAPI-url]
+[![Ant Design][AntDesign]][AntDesign-url]
+[![React][React.js]][React-url]
+[![TypeScript][TypeScript]][TypeScript-url]
+[![Vite][Vite]][Vite-url]
+[![Docker][Docker]][Docker-url]
 
 ## Getting Started
 

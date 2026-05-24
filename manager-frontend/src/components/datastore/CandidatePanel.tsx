@@ -1,14 +1,8 @@
-import { message } from "antd";
-import {
-	useCopyConfigTo,
-	useDeleteConfig,
-	useLockDatastore,
-	useUnlockDatastore,
-} from "@/api/datastore/datastore";
-import { useMutationOptions } from "@/hooks/useMutationOptions";
+import { Space } from "antd";
+import { BrowseButton } from "./buttons/BrowseButton";
 import { CopyButton } from "./buttons/CopyButton";
 import { DeleteConfigButton } from "./buttons/DeleteConfigButton";
-import { DatastorePanelBase } from "./DatastorePanelBase";
+import { LockButton } from "./buttons/LockButton";
 
 interface Props {
 	active: boolean;
@@ -16,34 +10,12 @@ interface Props {
 }
 
 export function CandidatePanel({ active, onBrowse }: Props) {
-	const [msg, contextHolder] = message.useMessage();
-	const mutOpts = useMutationOptions(msg);
-
-	const copyConfig = useCopyConfigTo(mutOpts("copy-config"));
-	const deleteConfig = useDeleteConfig(mutOpts("delete-config"));
-	const lock = useLockDatastore(mutOpts("lock"));
-	const unlock = useUnlockDatastore(mutOpts("unlock"));
-
 	return (
-		<>
-			{contextHolder}
-			<DatastorePanelBase
-				ds="candidate"
-				active={active}
-				onBrowse={onBrowse}
-				onToggleLock={(locked) =>
-					(locked ? unlock : lock).mutate({ dataStore: "candidate" })
-				}
-			>
-				<CopyButton
-					onClick={() =>
-						copyConfig.mutate({ source: "candidate", target: "running" })
-					}
-				/>
-				<DeleteConfigButton
-					onClick={() => deleteConfig.mutate({ dataStore: "candidate" })}
-				/>
-			</DatastorePanelBase>
-		</>
+		<Space.Compact>
+			<BrowseButton ds="candidate" active={active} onClick={onBrowse} />
+			<CopyButton ds="candidate" />
+			<DeleteConfigButton ds="candidate" />
+			<LockButton ds="candidate" />
+		</Space.Compact>
 	);
 }

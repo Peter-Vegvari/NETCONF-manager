@@ -1,12 +1,7 @@
-import { message } from "antd";
-import {
-	useCopyConfigTo,
-	useLockDatastore,
-	useUnlockDatastore,
-} from "@/api/datastore/datastore";
-import { useMutationOptions } from "@/hooks/useMutationOptions";
+import { Space } from "antd";
+import { BrowseButton } from "./buttons/BrowseButton";
 import { CopyButton } from "./buttons/CopyButton";
-import { DatastorePanelBase } from "./DatastorePanelBase";
+import { LockButton } from "./buttons/LockButton";
 
 interface Props {
 	active: boolean;
@@ -14,30 +9,11 @@ interface Props {
 }
 
 export function RunningPanel({ active, onBrowse }: Props) {
-	const [msg, contextHolder] = message.useMessage();
-	const mutOpts = useMutationOptions(msg);
-
-	const copyConfig = useCopyConfigTo(mutOpts("copy-config"));
-	const lock = useLockDatastore(mutOpts("lock"));
-	const unlock = useUnlockDatastore(mutOpts("unlock"));
-
 	return (
-		<>
-			{contextHolder}
-			<DatastorePanelBase
-				ds="running"
-				active={active}
-				onBrowse={onBrowse}
-				onToggleLock={(locked) =>
-					(locked ? unlock : lock).mutate({ dataStore: "running" })
-				}
-			>
-				<CopyButton
-					onClick={() =>
-						copyConfig.mutate({ source: "running", target: "startup" })
-					}
-				/>
-			</DatastorePanelBase>
-		</>
+		<Space.Compact>
+			<BrowseButton ds="running" active={active} onClick={onBrowse} />
+			<CopyButton ds="running" />
+			<LockButton ds="running" />
+		</Space.Compact>
 	);
 }
