@@ -26,10 +26,10 @@ export function ConnectionForm() {
 				form={form}
 				layout="inline"
 				initialValues={{
-					host: "10.41.102.39",
+					host: "notconf",
 					port: 830,
-					user_name: "admin_user",
-					password: "Ericsson1234",
+					user_name: "admin",
+					password: "admin",
 				}}
 			>
 				<Form.Item name="host" label="Host">

@@ -1,9 +1,10 @@
 import json
 import os
+import subprocess
+import tempfile
 from pathlib import Path
 from typing import Any, cast
 
-import xmltodict
 from lxml import etree
 from lxml.etree import Element
 from pyang.context import Context
@@ -75,12 +76,20 @@ def get_remote_modules() -> list[str]:
         return []
 
 
-def get_local_modules() -> list[str]:
+def get_local_modules_filenames() -> list[str]:
+    return os.listdir(settings.DOWNLOADED_MODULES_PATH)
+
+
+def get_local_modules_paths() -> list[str]:
     return [
-        f.removesuffix(".yang")
-        for f in os.listdir(settings.DOWNLOADED_MODULES_PATH)
+        str(settings.DOWNLOADED_MODULES_PATH / f)
+        for f in get_local_modules_filenames()
         if f.endswith(".yang")
     ]
+
+
+def get_local_modules() -> list[str]:
+    return [f.removesuffix(".yang") for f in get_local_modules_filenames()]
 
 
 def download_module(name: str) -> None:
@@ -158,28 +167,60 @@ def _build_data_model() -> DataModel:
     )
 
 
+def _find_needed_modules(data_ele: Element, module_name: str):
+    yang_files = get_local_modules_paths()
+
+    ns_uris: set[str] = set()
+    for elem in data_ele.iter():
+        ns_uris.update(elem.nsmap.values())
+
+    needed = {
+        yf for yf in yang_files if any(uri in open(yf).read(2048) for uri in ns_uris)
+    }
+
+    target = str(settings.DOWNLOADED_MODULES_PATH / f"{module_name}.yang")
+    if target in yang_files:
+        needed.add(target)
+
+    return needed
+
+
 def _parse_xml_element(data_ele: Element, module_name: str) -> dict[str, Any]:
-    xml_str = etree.tostring(data_ele, encoding="unicode")
-    parsed = xmltodict.parse(
-        xml_input=xml_str, process_namespaces=False, attr_prefix="", cdata_key="#text"
-    )
-    root_value = next(iter(parsed.values()))
-    if not isinstance(root_value, dict):
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as tmp:
+        inner_xml = "".join(
+            etree.tostring(child, encoding="unicode") for child in data_ele
+        )
+        if not inner_xml:
+            return {}
+        tmp.write(inner_xml)
+        tmp_path = tmp.name
+
+    needed_modules = _find_needed_modules(data_ele, module_name)
+    json = _xml_to_json(tmp_path, needed_modules)
+    os.unlink(tmp_path)
+    return json
+
+
+def _xml_to_json(xml_path: str, yang_modules: set[str]) -> dict[str, Any]:
+    try:
+        result = subprocess.run(
+            [
+                "yanglint",
+                "-f",
+                "json",
+                "-t",
+                "config",
+                "-p",
+                str(settings.DOWNLOADED_MODULES_PATH),
+                xml_path,
+                *yang_modules,
+            ],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if result.returncode != 0:
+            return {}
+        return json.loads(result.stdout)
+    except subprocess.TimeoutExpired, json.JSONDecodeError:
         return {}
-
-    stripped = _strip_ns(root_value)
-    return {f"{module_name}:{k}": v for k, v in stripped.items()}
-
-
-def _strip_ns(d: Any) -> Any:
-    if isinstance(d, dict):
-        if "#text" in d:
-            return d["#text"]
-        return {
-            k.split(":")[-1]: _strip_ns(v)
-            for k, v in cast(dict[str, Any], d).items()
-            if not k.startswith("@")
-        }
-    if isinstance(d, list):
-        return [_strip_ns(i) for i in cast(list[Any], d)]
-    return d if d is not None else ""
