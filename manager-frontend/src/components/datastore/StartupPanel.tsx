@@ -14,8 +14,8 @@ export function StartupPanel({ active, onBrowse }: Props) {
 		<Space.Compact>
 			<BrowseButton ds="startup" active={active} onClick={onBrowse} />
 			<CopyButton ds="startup" />
-			<DeleteConfigButton ds="startup" />
 			<LockButton ds="startup" />
+			<DeleteConfigButton ds="startup" />
 		</Space.Compact>
 	);
 }

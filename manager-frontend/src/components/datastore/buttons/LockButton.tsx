@@ -6,7 +6,7 @@ import {
 	useUnlockDatastore,
 } from "@/api/datastore/datastore";
 import type { DataStore } from "@/api/model";
-import { DisabledTooltip, useDisabled } from "@/components/DisabledTooltip";
+import { useDisabled } from "@/components/DisabledTooltip";
 import { useConnected } from "@/hooks/connected";
 import { useMutationOptions } from "@/hooks/useMutationOptions";
 
@@ -28,15 +28,13 @@ export function LockButton({ ds }: Props) {
 	return (
 		<>
 			{contextHolder}
-			<DisabledTooltip>
-				<Button
-					icon={locked ? <UnlockOutlined /> : <LockOutlined />}
-					onClick={() => (locked ? unlock : lock).mutate({ dataStore: ds })}
-					loading={lock.isPending || unlock.isPending}
-					disabled={disabled}
-					title={locked ? "Unlock" : "Lock"}
-				/>
-			</DisabledTooltip>
+			<Button
+				icon={locked ? <UnlockOutlined /> : <LockOutlined />}
+				onClick={() => (locked ? unlock : lock).mutate({ dataStore: ds })}
+				loading={lock.isPending || unlock.isPending}
+				disabled={disabled}
+				title={locked ? "Unlock" : "Lock"}
+			/>
 		</>
 	);
 }

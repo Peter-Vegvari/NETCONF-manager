@@ -14,8 +14,8 @@ export function CandidatePanel({ active, onBrowse }: Props) {
 		<Space.Compact>
 			<BrowseButton ds="candidate" active={active} onClick={onBrowse} />
 			<CopyButton ds="candidate" />
-			<DeleteConfigButton ds="candidate" />
 			<LockButton ds="candidate" />
+			<DeleteConfigButton ds="candidate" />
 		</Space.Compact>
 	);
 }

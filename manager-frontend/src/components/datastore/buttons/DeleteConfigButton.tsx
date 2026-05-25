@@ -2,7 +2,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
 import { useDeleteConfig } from "@/api/datastore/datastore";
 import type { DataStore } from "@/api/model";
-import { DisabledTooltip, useDisabled } from "@/components/DisabledTooltip";
+import { useDisabled } from "@/components/DisabledTooltip";
 import { useMutationOptions } from "@/hooks/useMutationOptions";
 
 interface Props {
@@ -18,15 +18,14 @@ export function DeleteConfigButton({ ds }: Props) {
 	return (
 		<>
 			{contextHolder}
-			<DisabledTooltip>
-				<Button
-					icon={<DeleteOutlined />}
-					onClick={() => deleteConfig.mutate({ dataStore: ds })}
-					loading={deleteConfig.isPending}
-					disabled={disabled}
-					title="Delete config"
-				/>
-			</DisabledTooltip>
+			<Button
+				icon={<DeleteOutlined />}
+				onClick={() => deleteConfig.mutate({ dataStore: ds })}
+				loading={deleteConfig.isPending}
+				disabled={disabled}
+				danger
+				title="Delete config"
+			/>
 		</>
 	);
 }

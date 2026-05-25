@@ -1,8 +1,8 @@
 import { CopyOutlined } from "@ant-design/icons";
-import { Button, message } from "antd";
+import { Button, Dropdown, message } from "antd";
 import { useCopyConfigTo } from "@/api/datastore/datastore";
-import type { DataStore } from "@/api/model";
-import { DisabledTooltip, useDisabled } from "@/components/DisabledTooltip";
+import { DataStore } from "@/api/model";
+import { useDisabled } from "@/components/DisabledTooltip";
 import { useMutationOptions } from "@/hooks/useMutationOptions";
 
 interface Props {
@@ -15,20 +15,29 @@ export function CopyButton({ ds }: Props) {
 	const disabled = useDisabled();
 	const copyConfig = useCopyConfigTo(opts("copy-config"));
 
-	const target: DataStore = ds === "running" ? "startup" : "running";
+	const items = Object.values(DataStore)
+		.filter((d) => d !== ds)
+		.map((d) => ({ key: d, label: d }));
 
 	return (
 		<>
 			{contextHolder}
-			<DisabledTooltip>
+			<Dropdown
+				menu={{
+					items,
+					onClick: ({ key }) =>
+						copyConfig.mutate({ source: ds, target: key as DataStore }),
+				}}
+				trigger={["click"]}
+				disabled={disabled}
+			>
 				<Button
 					icon={<CopyOutlined />}
-					onClick={() => copyConfig.mutate({ source: ds, target })}
 					loading={copyConfig.isPending}
 					disabled={disabled}
 					title="Copy config"
 				/>
-			</DisabledTooltip>
+			</Dropdown>
 		</>
 	);
 }
