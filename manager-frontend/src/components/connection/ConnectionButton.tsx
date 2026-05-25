@@ -18,22 +18,22 @@ export function ConnectionButton({ form }: { form: FormInstance<Connection> }) {
 		connect.mutate(
 			{ data: values },
 			{
-				onSuccess: () => {
+				onSuccess: (response) => {
+					if (response.status >= 400) return msg.error("Connection failed");
 					msg.success("Connected");
 					queryClient.refetchQueries();
 				},
-				onError: () => msg.error("Connection failed"),
 			},
 		);
 	};
 
 	const handleDisconnect = () => {
 		disconnect.mutate(undefined, {
-			onSuccess: () => {
+			onSuccess: (response) => {
+				if (response.status >= 400) return msg.error("Disconnect failed");
 				msg.success("Disconnected");
 				queryClient.refetchQueries();
 			},
-			onError: () => msg.error("Disconnect failed"),
 		});
 	};
 

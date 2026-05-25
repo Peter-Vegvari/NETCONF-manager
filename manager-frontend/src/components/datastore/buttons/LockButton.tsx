@@ -6,6 +6,7 @@ import {
 	useUnlockDatastore,
 } from "@/api/datastore/datastore";
 import type { DataStore } from "@/api/model";
+import { DisabledTooltip, useDisabled } from "@/components/DisabledTooltip";
 import { useConnected } from "@/hooks/connected";
 import { useMutationOptions } from "@/hooks/useMutationOptions";
 
@@ -17,6 +18,7 @@ export function LockButton({ ds }: Props) {
 	const [msg, contextHolder] = message.useMessage();
 	const opts = useMutationOptions(msg);
 	const connected = useConnected();
+	const disabled = useDisabled();
 	const { data } = useGetLock(ds, { query: { enabled: connected } });
 	const locked = data?.status === 200 ? data.data : false;
 
@@ -26,12 +28,15 @@ export function LockButton({ ds }: Props) {
 	return (
 		<>
 			{contextHolder}
-			<Button
-				icon={locked ? <UnlockOutlined /> : <LockOutlined />}
-				onClick={() => (locked ? unlock : lock).mutate({ dataStore: ds })}
-				loading={lock.isPending || unlock.isPending}
-				title={locked ? "Unlock" : "Lock"}
-			/>
+			<DisabledTooltip>
+				<Button
+					icon={locked ? <UnlockOutlined /> : <LockOutlined />}
+					onClick={() => (locked ? unlock : lock).mutate({ dataStore: ds })}
+					loading={lock.isPending || unlock.isPending}
+					disabled={disabled}
+					title={locked ? "Unlock" : "Lock"}
+				/>
+			</DisabledTooltip>
 		</>
 	);
 }

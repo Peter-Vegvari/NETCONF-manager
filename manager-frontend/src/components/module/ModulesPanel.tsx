@@ -9,6 +9,7 @@ import {
 	useDownloadModule,
 	useGetModules,
 } from "@/api/modules/modules";
+import { DisabledTooltip, useDisabled } from "@/components/DisabledTooltip";
 import { DatastoreMenu } from "@/components/datastore/DatastoreMenu";
 import { useMutationOptions } from "@/hooks/useMutationOptions";
 import { ModuleList } from "./ModuleList";
@@ -16,6 +17,7 @@ import { ModuleList } from "./ModuleList";
 export function ModulesPanel() {
 	const [msg, contextHolder] = message.useMessage();
 	const opts = useMutationOptions(msg);
+	const disabled = useDisabled();
 	const [dataStore, setDataStore] = useState<DataStore>("running");
 
 	const { data } = useGetModules();
@@ -41,25 +43,31 @@ export function ModulesPanel() {
 				}
 				extra={
 					<>
-						<Button
-							icon={<CloudDownloadOutlined />}
-							loading={downloadAll.isPending}
-							onClick={() => downloadAll.mutate()}
-						>
-							Download All
-						</Button>
+						<DisabledTooltip>
+							<Button
+								icon={<CloudDownloadOutlined />}
+								loading={downloadAll.isPending}
+								onClick={() => downloadAll.mutate()}
+								disabled={disabled}
+							>
+								Download All
+							</Button>
+						</DisabledTooltip>
 						<Popconfirm
 							title="Delete all downloaded modules?"
 							onConfirm={() => deleteAll.mutate()}
 						>
-							<Button
-								danger
-								icon={<DeleteOutlined />}
-								loading={deleteAll.isPending}
-								style={{ marginLeft: 8 }}
-							>
-								Delete All
-							</Button>
+							<DisabledTooltip>
+								<Button
+									danger
+									icon={<DeleteOutlined />}
+									loading={deleteAll.isPending}
+									disabled={disabled}
+									style={{ marginLeft: 8 }}
+								>
+									Delete All
+								</Button>
+							</DisabledTooltip>
 						</Popconfirm>
 					</>
 				}

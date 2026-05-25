@@ -1,6 +1,7 @@
 import { DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tag } from "antd";
 import type { ModuleSummary } from "@/api/model";
+import { DisabledTooltip, useDisabled } from "@/components/DisabledTooltip";
 import { statusColor } from "@/utils/constants";
 
 interface Props {
@@ -26,33 +27,41 @@ export function ModuleItemActions({
 	downloadPending,
 	downloadingName,
 }: Props) {
+	const disabled = useDisabled();
+
 	if (m.status === "remote") {
 		return (
-			<Button
-				type="text"
-				size="small"
-				icon={<DownloadOutlined />}
-				loading={downloadPending && downloadingName === m.name}
-				onClick={(e) => {
-					e.stopPropagation();
-					onDownload(m.name);
-				}}
-			/>
+			<DisabledTooltip>
+				<Button
+					type="text"
+					size="small"
+					icon={<DownloadOutlined />}
+					loading={downloadPending && downloadingName === m.name}
+					disabled={disabled}
+					onClick={(e) => {
+						e.stopPropagation();
+						onDownload(m.name);
+					}}
+				/>
+			</DisabledTooltip>
 		);
 	}
 	return (
-		<Popconfirm
-			title="Delete this module?"
-			onConfirm={() => onDelete(m.name)}
-			onPopupClick={(e) => e.stopPropagation()}
-		>
-			<Button
-				danger
-				type="text"
-				size="small"
-				icon={<DeleteOutlined />}
-				onClick={(e) => e.stopPropagation()}
-			/>
-		</Popconfirm>
+		<DisabledTooltip>
+			<Popconfirm
+				title="Delete this module?"
+				onConfirm={() => onDelete(m.name)}
+				onPopupClick={(e) => e.stopPropagation()}
+			>
+				<Button
+					danger
+					type="text"
+					size="small"
+					icon={<DeleteOutlined />}
+					disabled={disabled}
+					onClick={(e) => e.stopPropagation()}
+				/>
+			</Popconfirm>
+		</DisabledTooltip>
 	);
 }

@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { Badge, Button, Card, Form, Input, InputNumber, Space } from "antd";
 import type { Connection } from "@/api/model";
+import { DisabledTooltip, useDisabled } from "@/components/DisabledTooltip";
 import { useConnected } from "@/hooks/connected";
 import { ConnectionButton } from "./ConnectionButton";
 
@@ -46,7 +47,14 @@ export function ConnectionForm() {
 				</Form.Item>
 				<Space>
 					<ConnectionButton form={form} />
-					<Button onClick={() => queryClient.refetchQueries()}>Refresh</Button>
+					<DisabledTooltip>
+						<Button
+							onClick={() => queryClient.refetchQueries()}
+							disabled={!connected}
+						>
+							Refresh
+						</Button>
+					</DisabledTooltip>
 				</Space>
 			</Form>
 		</Card>

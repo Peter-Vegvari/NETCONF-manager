@@ -5,6 +5,7 @@ import {
 	useDeleteAllModules,
 	useDownloadAllModules,
 } from "@/api/modules/modules";
+import { DisabledTooltip, useDisabled } from "@/components/DisabledTooltip";
 import { useMutationOptions } from "@/hooks/useMutationOptions";
 
 export interface ToolbarFilters {
@@ -20,6 +21,7 @@ interface Props {
 export function ModulesToolbar({ onChange }: Props) {
 	const [msg, contextHolder] = message.useMessage();
 	const opts = useMutationOptions(msg);
+	const disabled = useDisabled();
 	const downloadAll = useDownloadAllModules(opts("All modules downloaded"));
 	const deleteAll = useDeleteAllModules(opts("All modules deleted"));
 
@@ -63,24 +65,30 @@ export function ModulesToolbar({ onChange }: Props) {
 						{ value: "status", label: "Sort: Status" },
 					]}
 				/>
-				<Button
-					icon={<CloudDownloadOutlined />}
-					loading={downloadAll.isPending}
-					onClick={() => downloadAll.mutate()}
-				>
-					Download All
-				</Button>
+				<DisabledTooltip>
+					<Button
+						icon={<CloudDownloadOutlined />}
+						loading={downloadAll.isPending}
+						onClick={() => downloadAll.mutate()}
+						disabled={disabled}
+					>
+						Download All
+					</Button>
+				</DisabledTooltip>
 				<Popconfirm
 					title="Delete all downloaded modules?"
 					onConfirm={() => deleteAll.mutate()}
 				>
-					<Button
-						danger
-						icon={<DeleteOutlined />}
-						loading={deleteAll.isPending}
-					>
-						Delete All
-					</Button>
+					<DisabledTooltip>
+						<Button
+							danger
+							icon={<DeleteOutlined />}
+							loading={deleteAll.isPending}
+							disabled={disabled}
+						>
+							Delete All
+						</Button>
+					</DisabledTooltip>
 				</Popconfirm>
 			</Space>
 		</>
