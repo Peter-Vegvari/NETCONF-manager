@@ -1,10 +1,11 @@
 import { Collapse } from "antd";
-import type { ModuleSummary } from "@/api/model";
+import type { DataStore, ModuleSummary } from "@/api/model";
 import { ModuleContent } from "./ModuleContent";
 import { ModuleItemActions, ModuleItemLabel } from "./ModuleItem";
 
 interface Props {
 	module: ModuleSummary;
+	dataStore: DataStore;
 	onDownload: (name: string) => void;
 	onDelete: (name: string) => void;
 	downloadPending: boolean;
@@ -13,6 +14,7 @@ interface Props {
 
 export function ModuleCollapseItem({
 	module: m,
+	dataStore,
 	onDownload,
 	onDelete,
 	downloadPending,
@@ -32,7 +34,7 @@ export function ModuleCollapseItem({
 				/>
 			}
 		>
-			<ModuleContent module={m} />
+			<ModuleContent module={m} dataStore={dataStore} />
 		</Collapse.Panel>
 	);
 }

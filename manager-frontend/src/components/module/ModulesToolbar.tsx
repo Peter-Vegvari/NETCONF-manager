@@ -1,5 +1,13 @@
 import { CloudDownloadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Button, Input, message, Popconfirm, Select, Space } from "antd";
+import {
+	Button,
+	Input,
+	message,
+	Popconfirm,
+	Select,
+	Space,
+	Typography,
+} from "antd";
 import { useRef } from "react";
 import {
 	useDeleteAllModules,
@@ -15,10 +23,11 @@ export interface ToolbarFilters {
 }
 
 interface Props {
+	moduleCount: number;
 	onChange: (filters: ToolbarFilters) => void;
 }
 
-export function ModulesToolbar({ onChange }: Props) {
+export function ModulesToolbar({ moduleCount, onChange }: Props) {
 	const [msg, contextHolder] = message.useMessage();
 	const opts = useMutationOptions(msg);
 	const disabled = useDisabled();
@@ -40,6 +49,10 @@ export function ModulesToolbar({ onChange }: Props) {
 		<>
 			{contextHolder}
 			<Space style={{ marginBottom: 16, width: "100%" }}>
+				<Typography.Title
+					level={5}
+					style={{ margin: 0 }}
+				>{`Modules (${moduleCount})`}</Typography.Title>
 				<Input.Search
 					placeholder="Filter by name"
 					allowClear

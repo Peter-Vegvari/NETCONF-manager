@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { Badge, Button, Card, Form, Input, InputNumber, Space } from "antd";
 import type { Connection } from "@/api/model";
-import { DisabledTooltip, useDisabled } from "@/components/DisabledTooltip";
+import { DisabledTooltip } from "@/components/DisabledTooltip";
 import { useConnected } from "@/hooks/connected";
 import { ConnectionButton } from "./ConnectionButton";
 

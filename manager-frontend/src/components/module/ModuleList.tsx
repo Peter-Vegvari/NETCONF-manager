@@ -1,5 +1,5 @@
 import { Collapse, message } from "antd";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import type { DataStore } from "@/api/model";
 import {
 	useDeleteModule,
@@ -61,8 +61,7 @@ export function ModuleList({ dataStore }: Props) {
 	return (
 		<>
 			{contextHolder}
-			{`Modules (${modules.length})`}
-			<ModulesToolbar onChange={setFilters} />
+			<ModulesToolbar moduleCount={modules.length} onChange={setFilters} />
 			{filtered.length === 0 ? "No modules found." : <Collapse items={items} />}
 		</>
 	);
