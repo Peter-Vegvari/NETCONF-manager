@@ -25,9 +25,8 @@ import type {
 	DataStore,
 	EditConfigRequest,
 	GetData200,
-	GetDataDiff200,
 	GetModuleData200,
-	GetModuleDataDiff200,
+	GetStaged200,
 	HTTPValidationError,
 } from "../model";
 
@@ -783,472 +782,6 @@ export function useGetLock<
 }
 
 /**
- * @summary Get Module Data Diff
- */
-export type getModuleDataDiffResponse200 = {
-	data: GetModuleDataDiff200;
-	status: 200;
-};
-
-export type getModuleDataDiffResponse422 = {
-	data: HTTPValidationError;
-	status: 422;
-};
-
-export type getModuleDataDiffResponseSuccess = getModuleDataDiffResponse200 & {
-	headers: Headers;
-};
-export type getModuleDataDiffResponseError = getModuleDataDiffResponse422 & {
-	headers: Headers;
-};
-
-export type getModuleDataDiffResponse =
-	| getModuleDataDiffResponseSuccess
-	| getModuleDataDiffResponseError;
-
-export const getGetModuleDataDiffUrl = (
-	sourceDataStore: DataStore,
-	moduleName: string,
-	destinationDataStore: DataStore,
-) => {
-	return `/api/v1/datastore/${sourceDataStore}/${moduleName}/data/diff/${destinationDataStore}`;
-};
-
-export const getModuleDataDiff = async (
-	sourceDataStore: DataStore,
-	moduleName: string,
-	destinationDataStore: DataStore,
-	options?: RequestInit,
-): Promise<getModuleDataDiffResponse> => {
-	const res = await fetch(
-		getGetModuleDataDiffUrl(sourceDataStore, moduleName, destinationDataStore),
-		{
-			...options,
-			method: "GET",
-		},
-	);
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-	const data: getModuleDataDiffResponse["data"] = body ? JSON.parse(body) : {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as getModuleDataDiffResponse;
-};
-
-export const getGetModuleDataDiffQueryKey = (
-	sourceDataStore: DataStore,
-	moduleName: string,
-	destinationDataStore: DataStore,
-) => {
-	return [
-		`/api/v1/datastore/${sourceDataStore}/${moduleName}/data/diff/${destinationDataStore}`,
-	] as const;
-};
-
-export const getGetModuleDataDiffQueryOptions = <
-	TData = Awaited<ReturnType<typeof getModuleDataDiff>>,
-	TError = HTTPValidationError,
->(
-	sourceDataStore: DataStore,
-	moduleName: string,
-	destinationDataStore: DataStore,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getModuleDataDiff>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
-
-	const queryKey =
-		queryOptions?.queryKey ??
-		getGetModuleDataDiffQueryKey(
-			sourceDataStore,
-			moduleName,
-			destinationDataStore,
-		);
-
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof getModuleDataDiff>>
-	> = ({ signal }) =>
-		getModuleDataDiff(sourceDataStore, moduleName, destinationDataStore, {
-			signal,
-			...fetchOptions,
-		});
-
-	return {
-		queryKey,
-		queryFn,
-		enabled: !!(sourceDataStore && moduleName && destinationDataStore),
-		...queryOptions,
-	} as UseQueryOptions<
-		Awaited<ReturnType<typeof getModuleDataDiff>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetModuleDataDiffQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getModuleDataDiff>>
->;
-export type GetModuleDataDiffQueryError = HTTPValidationError;
-
-export function useGetModuleDataDiff<
-	TData = Awaited<ReturnType<typeof getModuleDataDiff>>,
-	TError = HTTPValidationError,
->(
-	sourceDataStore: DataStore,
-	moduleName: string,
-	destinationDataStore: DataStore,
-	options: {
-		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getModuleDataDiff>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getModuleDataDiff>>,
-					TError,
-					Awaited<ReturnType<typeof getModuleDataDiff>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetModuleDataDiff<
-	TData = Awaited<ReturnType<typeof getModuleDataDiff>>,
-	TError = HTTPValidationError,
->(
-	sourceDataStore: DataStore,
-	moduleName: string,
-	destinationDataStore: DataStore,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getModuleDataDiff>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getModuleDataDiff>>,
-					TError,
-					Awaited<ReturnType<typeof getModuleDataDiff>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetModuleDataDiff<
-	TData = Awaited<ReturnType<typeof getModuleDataDiff>>,
-	TError = HTTPValidationError,
->(
-	sourceDataStore: DataStore,
-	moduleName: string,
-	destinationDataStore: DataStore,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getModuleDataDiff>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get Module Data Diff
- */
-
-export function useGetModuleDataDiff<
-	TData = Awaited<ReturnType<typeof getModuleDataDiff>>,
-	TError = HTTPValidationError,
->(
-	sourceDataStore: DataStore,
-	moduleName: string,
-	destinationDataStore: DataStore,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getModuleDataDiff>>,
-				TError,
-				TData
-			>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getGetModuleDataDiffQueryOptions(
-		sourceDataStore,
-		moduleName,
-		destinationDataStore,
-		options,
-	);
-
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-	return { ...query, queryKey: queryOptions.queryKey };
-}
-
-/**
- * @summary Get Data Diff
- */
-export type getDataDiffResponse200 = {
-	data: GetDataDiff200;
-	status: 200;
-};
-
-export type getDataDiffResponse422 = {
-	data: HTTPValidationError;
-	status: 422;
-};
-
-export type getDataDiffResponseSuccess = getDataDiffResponse200 & {
-	headers: Headers;
-};
-export type getDataDiffResponseError = getDataDiffResponse422 & {
-	headers: Headers;
-};
-
-export type getDataDiffResponse =
-	| getDataDiffResponseSuccess
-	| getDataDiffResponseError;
-
-export const getGetDataDiffUrl = (
-	sourceDataStore: DataStore,
-	moduleName: string,
-	path: string,
-	destinationDataStore: DataStore,
-) => {
-	return `/api/v1/datastore/${sourceDataStore}/${moduleName}/data/${path}/diff/${destinationDataStore}`;
-};
-
-export const getDataDiff = async (
-	sourceDataStore: DataStore,
-	moduleName: string,
-	path: string,
-	destinationDataStore: DataStore,
-	options?: RequestInit,
-): Promise<getDataDiffResponse> => {
-	const res = await fetch(
-		getGetDataDiffUrl(sourceDataStore, moduleName, path, destinationDataStore),
-		{
-			...options,
-			method: "GET",
-		},
-	);
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-	const data: getDataDiffResponse["data"] = body ? JSON.parse(body) : {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as getDataDiffResponse;
-};
-
-export const getGetDataDiffQueryKey = (
-	sourceDataStore: DataStore,
-	moduleName: string,
-	path: string,
-	destinationDataStore: DataStore,
-) => {
-	return [
-		`/api/v1/datastore/${sourceDataStore}/${moduleName}/data/${path}/diff/${destinationDataStore}`,
-	] as const;
-};
-
-export const getGetDataDiffQueryOptions = <
-	TData = Awaited<ReturnType<typeof getDataDiff>>,
-	TError = HTTPValidationError,
->(
-	sourceDataStore: DataStore,
-	moduleName: string,
-	path: string,
-	destinationDataStore: DataStore,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getDataDiff>>, TError, TData>
-		>;
-		fetch?: RequestInit;
-	},
-) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
-
-	const queryKey =
-		queryOptions?.queryKey ??
-		getGetDataDiffQueryKey(
-			sourceDataStore,
-			moduleName,
-			path,
-			destinationDataStore,
-		);
-
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getDataDiff>>> = ({
-		signal,
-	}) =>
-		getDataDiff(sourceDataStore, moduleName, path, destinationDataStore, {
-			signal,
-			...fetchOptions,
-		});
-
-	return {
-		queryKey,
-		queryFn,
-		enabled: !!(sourceDataStore && moduleName && path && destinationDataStore),
-		...queryOptions,
-	} as UseQueryOptions<
-		Awaited<ReturnType<typeof getDataDiff>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetDataDiffQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getDataDiff>>
->;
-export type GetDataDiffQueryError = HTTPValidationError;
-
-export function useGetDataDiff<
-	TData = Awaited<ReturnType<typeof getDataDiff>>,
-	TError = HTTPValidationError,
->(
-	sourceDataStore: DataStore,
-	moduleName: string,
-	path: string,
-	destinationDataStore: DataStore,
-	options: {
-		query: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getDataDiff>>, TError, TData>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getDataDiff>>,
-					TError,
-					Awaited<ReturnType<typeof getDataDiff>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetDataDiff<
-	TData = Awaited<ReturnType<typeof getDataDiff>>,
-	TError = HTTPValidationError,
->(
-	sourceDataStore: DataStore,
-	moduleName: string,
-	path: string,
-	destinationDataStore: DataStore,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getDataDiff>>, TError, TData>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getDataDiff>>,
-					TError,
-					Awaited<ReturnType<typeof getDataDiff>>
-				>,
-				"initialData"
-			>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetDataDiff<
-	TData = Awaited<ReturnType<typeof getDataDiff>>,
-	TError = HTTPValidationError,
->(
-	sourceDataStore: DataStore,
-	moduleName: string,
-	path: string,
-	destinationDataStore: DataStore,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getDataDiff>>, TError, TData>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get Data Diff
- */
-
-export function useGetDataDiff<
-	TData = Awaited<ReturnType<typeof getDataDiff>>,
-	TError = HTTPValidationError,
->(
-	sourceDataStore: DataStore,
-	moduleName: string,
-	path: string,
-	destinationDataStore: DataStore,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getDataDiff>>, TError, TData>
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getGetDataDiffQueryOptions(
-		sourceDataStore,
-		moduleName,
-		path,
-		destinationDataStore,
-		options,
-	);
-
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-	return { ...query, queryKey: queryOptions.queryKey };
-}
-
-/**
  * @summary Get Module Data
  */
 export type getModuleDataResponse200 = {
@@ -1630,6 +1163,182 @@ export function useGetData<
 		path,
 		options,
 	);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get Staged
+ */
+export type getStagedResponse200 = {
+	data: GetStaged200;
+	status: 200;
+};
+
+export type getStagedResponse422 = {
+	data: HTTPValidationError;
+	status: 422;
+};
+
+export type getStagedResponseSuccess = getStagedResponse200 & {
+	headers: Headers;
+};
+export type getStagedResponseError = getStagedResponse422 & {
+	headers: Headers;
+};
+
+export type getStagedResponse =
+	| getStagedResponseSuccess
+	| getStagedResponseError;
+
+export const getGetStagedUrl = (moduleName: string) => {
+	return `/api/v1/datastore/staged/${moduleName}`;
+};
+
+export const getStaged = async (
+	moduleName: string,
+	options?: RequestInit,
+): Promise<getStagedResponse> => {
+	const res = await fetch(getGetStagedUrl(moduleName), {
+		...options,
+		method: "GET",
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: getStagedResponse["data"] = body ? JSON.parse(body) : {};
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as getStagedResponse;
+};
+
+export const getGetStagedQueryKey = (moduleName: string) => {
+	return [`/api/v1/datastore/staged/${moduleName}`] as const;
+};
+
+export const getGetStagedQueryOptions = <
+	TData = Awaited<ReturnType<typeof getStaged>>,
+	TError = HTTPValidationError,
+>(
+	moduleName: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getStaged>>, TError, TData>
+		>;
+		fetch?: RequestInit;
+	},
+) => {
+	const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getGetStagedQueryKey(moduleName);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getStaged>>> = ({
+		signal,
+	}) => getStaged(moduleName, { signal, ...fetchOptions });
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!moduleName,
+		...queryOptions,
+	} as UseQueryOptions<Awaited<ReturnType<typeof getStaged>>, TError, TData> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+};
+
+export type GetStagedQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getStaged>>
+>;
+export type GetStagedQueryError = HTTPValidationError;
+
+export function useGetStaged<
+	TData = Awaited<ReturnType<typeof getStaged>>,
+	TError = HTTPValidationError,
+>(
+	moduleName: string,
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getStaged>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getStaged>>,
+					TError,
+					Awaited<ReturnType<typeof getStaged>>
+				>,
+				"initialData"
+			>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetStaged<
+	TData = Awaited<ReturnType<typeof getStaged>>,
+	TError = HTTPValidationError,
+>(
+	moduleName: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getStaged>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getStaged>>,
+					TError,
+					Awaited<ReturnType<typeof getStaged>>
+				>,
+				"initialData"
+			>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetStaged<
+	TData = Awaited<ReturnType<typeof getStaged>>,
+	TError = HTTPValidationError,
+>(
+	moduleName: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getStaged>>, TError, TData>
+		>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Get Staged
+ */
+
+export function useGetStaged<
+	TData = Awaited<ReturnType<typeof getStaged>>,
+	TError = HTTPValidationError,
+>(
+	moduleName: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getStaged>>, TError, TData>
+		>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getGetStagedQueryOptions(moduleName, options);
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
 		TData,

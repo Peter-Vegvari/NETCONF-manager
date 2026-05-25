@@ -80,3 +80,11 @@ def is_locked(data_store: DataStore) -> bool:
         if ds.findtext(f"{{{_MON_NS}}}name") == data_store.value:
             return ds.find(f"{{{_MON_NS}}}locks") is not None
     return False
+
+
+def commit():
+    reply = cast(
+        Any,
+        app.dependencies.connection_manager.session.commit(),
+    )
+    return reply

@@ -1,6 +1,6 @@
 from typing import Any, cast
 
-from deepdiff import DeepDiff
+import jsondiff
 from fastapi import APIRouter, HTTPException
 
 import app.dependencies
@@ -56,40 +56,6 @@ async def get_lock_info(data_store: DataStore) -> bool:
     return datastore_service.is_locked(data_store)
 
 
-@datastore_router.get(
-    "/{source_data_store}/{module_name}/data/diff/{destination_data_store}",
-    operation_id="getModuleDataDiff",
-)
-async def get_module_data_diff(
-    module_name: str, source_data_store: DataStore, destination_data_store: DataStore
-) -> dict[str, Any]:
-    app.dependencies.connection_manager.check_connected()
-    schema = module_service.get_module_schema(module_name)
-    if not schema.children:
-        raise HTTPException(404, "No schema available")
-    first_key = next(iter(schema.children))
-    path = _strip_namespace(first_key)
-    source = module_service.get_data(module_name, source_data_store, path)
-    destination = module_service.get_data(module_name, destination_data_store, path)
-    return cast(dict[str, Any], dict(DeepDiff(source, destination, ignore_order=True)))
-
-
-@datastore_router.get(
-    "/{source_data_store}/{module_name}/data/{path:path}/diff/{destination_data_store}",
-    operation_id="getDataDiff",
-)
-async def get_data_diff(
-    module_name: str,
-    source_data_store: DataStore,
-    destination_data_store: DataStore,
-    path: str,
-) -> dict[str, Any]:
-    app.dependencies.connection_manager.check_connected()
-    source = module_service.get_data(module_name, source_data_store, path)
-    destination = module_service.get_data(module_name, destination_data_store, path)
-    return cast(dict[str, Any], dict(DeepDiff(source, destination, ignore_order=True)))
-
-
 @datastore_router.get("/{data_store}/{module_name}/data", operation_id="getModuleData")
 async def get_module_data(module_name: str, data_store: DataStore) -> dict[str, Any]:
     app.dependencies.connection_manager.check_connected()
@@ -119,3 +85,21 @@ async def edit_config(data_store: DataStore, body: EditConfigRequest) -> str:
         )
     except Exception as e:
         raise HTTPException(400, str(e))
+
+
+@datastore_router.get(
+    "/staged/{module_name}",
+    operation_id="get_staged",
+)
+async def get_staged(module_name: str) -> dict[str, Any]:
+    app.dependencies.connection_manager.check_connected()
+    schema = module_service.get_module_schema(module_name)
+    if not schema.children:
+        raise HTTPException(404, "No schema available")
+    first_key = next(iter(schema.children))
+    path = _strip_namespace(first_key)
+
+    source = module_service.get_data(module_name, DataStore.RUNNING, path)
+    destination = module_service.get_data(module_name, DataStore.CANDIDATE, path)
+
+    return jsondiff.diff(source, destination, marshal=True)

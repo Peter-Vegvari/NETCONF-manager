@@ -8,12 +8,7 @@ import { faker } from "@faker-js/faker";
 import type { RequestHandlerOptions } from "msw";
 import { HttpResponse, http } from "msw";
 
-import type {
-	GetData200,
-	GetDataDiff200,
-	GetModuleData200,
-	GetModuleDataDiff200,
-} from "../model";
+import type { GetData200, GetModuleData200, GetStaged200 } from "../model";
 
 export const getCopyConfigToResponseMock = (): string => faker.word.sample();
 
@@ -27,14 +22,11 @@ export const getUnlockDatastoreResponseMock = (): string => faker.word.sample();
 
 export const getGetLockResponseMock = (): boolean => faker.datatype.boolean();
 
-export const getGetModuleDataDiffResponseMock =
-	(): GetModuleDataDiff200 => ({});
-
-export const getGetDataDiffResponseMock = (): GetDataDiff200 => ({});
-
 export const getGetModuleDataResponseMock = (): GetModuleData200 => ({});
 
 export const getGetDataResponseMock = (): GetData200 => ({});
+
+export const getGetStagedResponseMock = (): GetStaged200 => ({});
 
 export const getCopyConfigToMockHandler = (
 	overrideResponse?:
@@ -180,54 +172,6 @@ export const getGetLockMockHandler = (
 	);
 };
 
-export const getGetModuleDataDiffMockHandler = (
-	overrideResponse?:
-		| GetModuleDataDiff200
-		| ((
-				info: Parameters<Parameters<typeof http.get>[1]>[0],
-		  ) => Promise<GetModuleDataDiff200> | GetModuleDataDiff200),
-	options?: RequestHandlerOptions,
-) => {
-	return http.get(
-		"*/api/v1/datastore/:sourceDataStore/:moduleName/data/diff/:destinationDataStore",
-		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-			return HttpResponse.json(
-				overrideResponse !== undefined
-					? typeof overrideResponse === "function"
-						? await overrideResponse(info)
-						: overrideResponse
-					: getGetModuleDataDiffResponseMock(),
-				{ status: 200 },
-			);
-		},
-		options,
-	);
-};
-
-export const getGetDataDiffMockHandler = (
-	overrideResponse?:
-		| GetDataDiff200
-		| ((
-				info: Parameters<Parameters<typeof http.get>[1]>[0],
-		  ) => Promise<GetDataDiff200> | GetDataDiff200),
-	options?: RequestHandlerOptions,
-) => {
-	return http.get(
-		"*/api/v1/datastore/:sourceDataStore/:moduleName/data/:path/diff/:destinationDataStore",
-		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-			return HttpResponse.json(
-				overrideResponse !== undefined
-					? typeof overrideResponse === "function"
-						? await overrideResponse(info)
-						: overrideResponse
-					: getGetDataDiffResponseMock(),
-				{ status: 200 },
-			);
-		},
-		options,
-	);
-};
-
 export const getGetModuleDataMockHandler = (
 	overrideResponse?:
 		| GetModuleData200
@@ -275,6 +219,30 @@ export const getGetDataMockHandler = (
 		options,
 	);
 };
+
+export const getGetStagedMockHandler = (
+	overrideResponse?:
+		| GetStaged200
+		| ((
+				info: Parameters<Parameters<typeof http.get>[1]>[0],
+		  ) => Promise<GetStaged200> | GetStaged200),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get(
+		"*/api/v1/datastore/staged/:moduleName",
+		async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getGetStagedResponseMock(),
+				{ status: 200 },
+			);
+		},
+		options,
+	);
+};
 export const getDatastoreMock = () => [
 	getCopyConfigToMockHandler(),
 	getDeleteConfigMockHandler(),
@@ -282,8 +250,7 @@ export const getDatastoreMock = () => [
 	getLockDatastoreMockHandler(),
 	getUnlockDatastoreMockHandler(),
 	getGetLockMockHandler(),
-	getGetModuleDataDiffMockHandler(),
-	getGetDataDiffMockHandler(),
 	getGetModuleDataMockHandler(),
 	getGetDataMockHandler(),
+	getGetStagedMockHandler(),
 ];
