@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from app.models.connection import Connection
+from app.models import Connection
 from tests.config import settings
 
 _connection = Connection(

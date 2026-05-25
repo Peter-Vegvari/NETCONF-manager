@@ -13,7 +13,7 @@ from yangson import DataModel
 
 import app.dependencies
 from app.core.config import settings
-from app.models.schema import SchemaNode
+from app.models import SchemaNode
 
 _NETCONF_SCHEMAS_FILTER = """
     <netconf-state xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring">

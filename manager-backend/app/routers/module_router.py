@@ -3,8 +3,7 @@ import asyncio
 from fastapi import APIRouter, HTTPException, Response, status
 
 import app.dependencies
-from app.models.module import ModuleStatus, ModuleSummary
-from app.models.schema import SchemaNode
+from app.models import ModuleStatus, ModuleSummary, SchemaNode
 from app.services import module_service
 
 module_router = APIRouter(prefix="/modules", tags=["modules"])

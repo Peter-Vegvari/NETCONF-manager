@@ -1,7 +1,7 @@
 from typing import Any, cast
 
 import app.dependencies
-from app.models.datastore import DataStore
+from app.models import DataStore
 from app.services import module_service
 
 _LOCK_INFO_FILTER = """

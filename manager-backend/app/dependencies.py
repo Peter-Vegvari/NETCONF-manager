@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from ncclient.manager import Manager
 from wireup import injectable
 
-from app.models.connection import Connection
+from app.models import Connection
 
 
 @injectable

@@ -12,9 +12,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import app.dependencies as _dependencies
 from app.core.config import settings
 from app.dependencies import ConnectionManager
-from app.routers.connection import connection_router
-from app.routers.datastores import datastore_router
-from app.routers.modules import module_router
+from app.routers.connection_router import connection_router
+from app.routers.datastore_router import datastore_router
+from app.routers.module_router import module_router
 
 
 @asynccontextmanager

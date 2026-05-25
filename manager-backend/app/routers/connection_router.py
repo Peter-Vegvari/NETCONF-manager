@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Response, status
 
 import app.dependencies
-from app.models.connection import Connection
+from app.models import Connection
 
 connection_router = APIRouter(tags=["connection"])
 

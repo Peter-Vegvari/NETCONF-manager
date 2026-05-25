@@ -4,7 +4,7 @@ from deepdiff import DeepDiff
 from fastapi import APIRouter, HTTPException
 
 import app.dependencies
-from app.models.datastore import DataStore, EditConfigRequest
+from app.models import DataStore, EditConfigRequest
 from app.services import datastore_service, module_service
 
 datastore_router = APIRouter(prefix="/datastore", tags=["datastore"])
