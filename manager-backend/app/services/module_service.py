@@ -60,11 +60,11 @@ def get_namespace(name: str) -> str:
 
 
 def get_remote_modules() -> list[str]:
-    m = app.dependencies.connection_manager.session
-    if m is None:
+    if not app.dependencies.connection_manager.is_connected:
         return []
+    m = app.dependencies.connection_manager.session
     try:
-        reply = cast(Any, m).get(filter=("subtree", _NETCONF_SCHEMAS_FILTER))
+        reply = cast(Any, m.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER)))
         xml = cast(str, reply.xml)
         tree = etree.fromstring(xml.encode("utf-8"))
         schemas = tree.xpath("//ncm:schema", namespaces=_NETCONF_NS)
@@ -94,20 +94,18 @@ def get_local_modules() -> list[str]:
 
 def download_module(name: str) -> None:
     m = app.dependencies.connection_manager.session
-    assert m is not None
-    content = cast(str, cast(Any, m).get_schema(identifier=name).data)
+    content = cast(str, cast(Any, m.get_schema(identifier=name)).data)
     with open(module_path(name), "w", encoding="utf-8") as f:
         _ = f.write(content)
 
 
 def download_all() -> None:
     m = app.dependencies.connection_manager.session
-    assert m is not None
     for name in get_remote_modules():
         if module_path(name).exists():
             continue
         try:
-            content = cast(str, cast(Any, m).get_schema(identifier=name).data)
+            content = cast(str, cast(Any, m.get_schema(identifier=name)).data)
             with open(module_path(name), "w", encoding="utf-8") as f:
                 _ = f.write(content)
         except Exception:
@@ -136,13 +134,12 @@ def get_module_schema(name: str) -> SchemaNode:
 
 def get_data(module_name: str, data_store: Any, path: str) -> dict[str, Any]:
     s = app.dependencies.connection_manager.session
-    assert s is not None
     parts = path.strip("/").split("/")
     root = parts[0]
     inner = "".join(f"<{p}/>" for p in parts[1:]) if len(parts) > 1 else ""
     ns = get_namespace(module_name) or f"urn:ietf:params:xml:ns:yang:{module_name}"
     subtree = f'<{root} xmlns="{ns}">{inner}</{root}>'
-    reply = cast(Any, s).get_config(data_store, filter=("subtree", subtree))
+    reply = cast(Any, s.get_config(data_store, filter=("subtree", subtree)))
     return _parse_xml_element(cast(Element, reply.data_ele), module_name)
 
 

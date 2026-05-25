@@ -51,6 +51,7 @@ reportAny = false
 reportExplicitAny = false
 reportUnusedCallResult = false
 reportUnusedParameter = false
+reportUnknownMemberType = false
 allowedUntypedLibraries = ["ncclient", "app", "yangson", "pyang"]
 
 [tool.pytest.ini_options]

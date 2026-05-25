@@ -12,12 +12,6 @@ _LOCK_INFO_FILTER = """
 _MON_NS = "urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring"
 
 
-def _session() -> Any:
-    s = app.dependencies.connection_manager.session
-    assert s is not None
-    return cast(Any, s)
-
-
 def edit_config(data_store: DataStore, module_name: str, path: str, value: str) -> str:
     ns = module_service.get_namespace(module_name)
     if not ns:
@@ -32,32 +26,56 @@ def edit_config(data_store: DataStore, module_name: str, path: str, value: str) 
         f'<{root_tag} xmlns="{ns}">{inner_content}</{root_tag}>'
         f"</config>"
     )
-    reply = _session().edit_config(target=data_store.value, config=config_xml)
+    reply = cast(
+        Any,
+        app.dependencies.connection_manager.session.edit_config(
+            target=data_store.value, config=config_xml
+        ),
+    )
     return cast(str, reply.xml)
 
 
 def copy_config(source: DataStore, target: DataStore) -> str:
-    reply = _session().copy_config(source=source.value, target=target.value)
+    reply = cast(
+        Any,
+        app.dependencies.connection_manager.session.copy_config(
+            source=source.value, target=target.value
+        ),
+    )
     return cast(str, reply.xml)
 
 
 def delete_config(data_store: DataStore) -> str:
-    reply = _session().delete_config(target=data_store.value)
+    reply = cast(
+        Any,
+        app.dependencies.connection_manager.session.delete_config(
+            target=data_store.value
+        ),
+    )
     return cast(str, reply.xml)
 
 
 def lock(data_store: DataStore) -> str:
-    reply = _session().lock(target=data_store.value)
+    reply = cast(
+        Any, app.dependencies.connection_manager.session.lock(target=data_store.value)
+    )
     return cast(str, reply.xml)
 
 
 def unlock(data_store: DataStore) -> str:
-    reply = _session().unlock(target=data_store.value)
+    reply = cast(
+        Any, app.dependencies.connection_manager.session.unlock(target=data_store.value)
+    )
     return cast(str, reply.xml)
 
 
 def is_locked(data_store: DataStore) -> bool:
-    reply = _session().get(filter=("subtree", _LOCK_INFO_FILTER))
+    reply = cast(
+        Any,
+        app.dependencies.connection_manager.session.get(
+            filter=("subtree", _LOCK_INFO_FILTER)
+        ),
+    )
     for ds in reply.data_ele.iter(f"{{{_MON_NS}}}datastore"):
         if ds.findtext(f"{{{_MON_NS}}}name") == data_store.value:
             return ds.find(f"{{{_MON_NS}}}locks") is not None

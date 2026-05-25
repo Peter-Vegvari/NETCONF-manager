@@ -19,16 +19,17 @@ class ConnectionManager:
         return cast(bool, self._session.connected) if self._session else False
 
     @property
-    def session(self) -> Manager | None:
+    def session(self) -> Manager:
         if self.is_connected:
+            assert self._session is not None
             return self._session
         if self.connection:
             try:
                 self._session = self.connection.connect()
             except Exception:
                 self._session = None
-            return self._session
-        return None
+        assert self._session is not None
+        return self._session
 
     def check_connected(self) -> None:
         if not self.is_connected:
