@@ -19,6 +19,7 @@ class TestGetModules:
             assert "status" in module
 
     def test_not_connected_returns_empty(self, client: TestClient):
+        client.delete(f"{settings.API_V1_STR}/modules/")
         response = client.get(f"{settings.API_V1_STR}/modules/")
         assert response.status_code == 200
         assert response.json() == []

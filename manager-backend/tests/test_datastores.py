@@ -121,8 +121,8 @@ class TestDeleteConfig:
 class TestEditConfig:
     def test_edit_config_candidate(self, connected_client: TestClient):
         connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
-        response = connected_client.post(
-            f"{settings.API_V1_STR}/datastore/candidate/edit-config",
+        response = connected_client.patch(
+            f"{settings.API_V1_STR}/datastore/candidate",
             json={
                 "module_name": "ietf-interfaces",
                 "path": "interfaces/interface/description",
@@ -138,8 +138,8 @@ class TestEditConfig:
         connected_client.delete(f"{settings.API_V1_STR}/modules/")
 
     def test_edit_config_not_connected(self, client: TestClient):
-        response = client.post(
-            f"{settings.API_V1_STR}/datastore/candidate/edit-config",
+        response = client.patch(
+            f"{settings.API_V1_STR}/datastore/candidate",
             json={
                 "module_name": "ietf-interfaces",
                 "path": "interfaces/interface/name",
@@ -149,8 +149,8 @@ class TestEditConfig:
         assert response.status_code == 400
 
     def test_edit_config_invalid_datastore(self, connected_client: TestClient):
-        response = connected_client.post(
-            f"{settings.API_V1_STR}/datastore/nonexistent/edit-config",
+        response = connected_client.patch(
+            f"{settings.API_V1_STR}/datastore/nonexistent",
             json={
                 "module_name": "ietf-interfaces",
                 "path": "interfaces/interface/name",

@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Button, type FormInstance, message } from "antd";
+import { Button, type FormInstance, message, Popconfirm } from "antd";
 import { useConnect, useDisconnect } from "@/api/connection/connection";
 import type { Connection } from "@/api/model";
 import { useConnected } from "@/hooks/connected";
@@ -41,14 +41,14 @@ export function ConnectionButton({ form }: { form: FormInstance<Connection> }) {
 		return (
 			<>
 				{contextHolder}
-				<Button
-					type="primary"
-					danger
-					onClick={handleDisconnect}
-					loading={disconnect.isPending}
+				<Popconfirm
+					title="Disconnect from device?"
+					onConfirm={handleDisconnect}
 				>
-					Disconnect
-				</Button>
+					<Button type="primary" danger loading={disconnect.isPending}>
+						Disconnect
+					</Button>
+				</Popconfirm>
 			</>
 		);
 

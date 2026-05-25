@@ -1,5 +1,5 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Button, message } from "antd";
+import { Button, message, Popconfirm } from "antd";
 import { useDeleteConfig } from "@/api/datastore/datastore";
 import type { DataStore } from "@/api/model";
 import { useDisabled } from "@/components/DisabledTooltip";
@@ -18,14 +18,18 @@ export function DeleteConfigButton({ ds }: Props) {
 	return (
 		<>
 			{contextHolder}
-			<Button
-				icon={<DeleteOutlined />}
-				onClick={() => deleteConfig.mutate({ dataStore: ds })}
-				loading={deleteConfig.isPending}
-				disabled={disabled}
-				danger
-				title="Delete config"
-			/>
+			<Popconfirm
+				title="Delete this config?"
+				onConfirm={() => deleteConfig.mutate({ dataStore: ds })}
+			>
+				<Button
+					icon={<DeleteOutlined />}
+					loading={deleteConfig.isPending}
+					disabled={disabled}
+					danger
+					title="Delete config"
+				/>
+			</Popconfirm>
 		</>
 	);
 }

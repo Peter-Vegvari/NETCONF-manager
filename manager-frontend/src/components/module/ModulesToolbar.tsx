@@ -88,11 +88,11 @@ export function ModulesToolbar({ moduleCount, onChange }: Props) {
 						Download All
 					</Button>
 				</DisabledTooltip>
-				<Popconfirm
-					title="Delete all downloaded modules?"
-					onConfirm={() => deleteAll.mutate()}
-				>
-					<DisabledTooltip>
+				<DisabledTooltip>
+					<Popconfirm
+						title="Delete all downloaded modules?"
+						onConfirm={() => deleteAll.mutate()}
+					>
 						<Button
 							danger
 							icon={<DeleteOutlined />}
@@ -101,8 +101,8 @@ export function ModulesToolbar({ moduleCount, onChange }: Props) {
 						>
 							Delete All
 						</Button>
-					</DisabledTooltip>
-				</Popconfirm>
+					</Popconfirm>
+				</DisabledTooltip>
 			</Space>
 		</>
 	);
