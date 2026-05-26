@@ -83,8 +83,7 @@ def is_locked(data_store: DataStore) -> bool:
 
 
 def commit():
-    reply = cast(
+    cast(
         Any,
         app.dependencies.connection_manager.session.commit(),
     )
-    return reply

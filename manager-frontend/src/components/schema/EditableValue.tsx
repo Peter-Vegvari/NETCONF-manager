@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { App, Button, Input, Space } from "antd";
+import { App, Button, Input, Space, Typography } from "antd";
 import { useState } from "react";
 import {
 	editConfig,
@@ -45,9 +45,16 @@ export function EditableValue({ value, dataStore, moduleName, path }: Props) {
 
 	if (!editing) {
 		return (
-			<Button size="small" onClick={() => setEditing(true)}>
-				Edit
-			</Button>
+			<Typography.Text
+				code
+				style={{ cursor: "pointer" }}
+				onClick={() => {
+					setInputValue(value);
+					setEditing(true);
+				}}
+			>
+				{value || <em>empty</em>}
+			</Typography.Text>
 		);
 	}
 
@@ -58,6 +65,7 @@ export function EditableValue({ value, dataStore, moduleName, path }: Props) {
 				value={inputValue}
 				onChange={(e) => setInputValue(e.target.value)}
 				onPressEnter={() => mutation.mutate()}
+				autoFocus
 				style={{ width: 200 }}
 			/>
 			<Button

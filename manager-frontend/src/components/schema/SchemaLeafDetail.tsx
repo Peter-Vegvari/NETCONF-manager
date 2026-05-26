@@ -1,7 +1,6 @@
-import { Descriptions } from "antd";
+import { Typography } from "antd";
 import type { DataStore, SchemaNode } from "@/api/model";
 import { EditableValue } from "@/components/schema/EditableValue";
-import { LeafMetadata } from "@/components/schema/LeafMetadata";
 
 interface Props {
 	node: SchemaNode;
@@ -20,25 +19,20 @@ export function SchemaLeafDetail({
 }: Props) {
 	const canEdit = node.config !== false && dataStore && moduleName && path;
 
-	return (
-		<Descriptions size="small" column={1}>
-			<LeafMetadata
-				description={node.description}
-				defaultValue={node.default}
+	if (canEdit) {
+		return (
+			<EditableValue
+				value={value != null ? String(value) : ""}
+				dataStore={dataStore}
+				moduleName={moduleName}
+				path={path}
 			/>
-			{value !== undefined && (
-				<Descriptions.Item label="Value">{String(value)}</Descriptions.Item>
-			)}
-			{canEdit && (
-				<Descriptions.Item label="Edit">
-					<EditableValue
-						value={value != null ? String(value) : ""}
-						dataStore={dataStore}
-						moduleName={moduleName}
-						path={path}
-					/>
-				</Descriptions.Item>
-			)}
-		</Descriptions>
-	);
+		);
+	}
+
+	if (value !== undefined) {
+		return <Typography.Text code>{String(value)}</Typography.Text>;
+	}
+
+	return null;
 }

@@ -1,4 +1,4 @@
-import { Collapse } from "antd";
+import { Collapse, Typography } from "antd";
 import type { ReactNode } from "react";
 import type { DataStore, SchemaNode } from "@/api/model";
 import { SchemaLeafDetail } from "@/components/schema/SchemaLeafDetail";
@@ -7,6 +7,19 @@ import { getNestedValue } from "@/utils/schema";
 
 function localName(name: string): string {
 	return name.includes(":") ? name.split(":")[1] : name;
+}
+
+function Description({ text }: { text?: string | null }) {
+	if (!text) return null;
+	return (
+		<Typography.Text
+			type="secondary"
+			italic
+			style={{ display: "block", marginBottom: 8 }}
+		>
+			{text}
+		</Typography.Text>
+	);
 }
 
 function renderChildren(
@@ -22,53 +35,62 @@ function renderChildren(
 
 	if (isLeaf) {
 		return (
-			<SchemaLeafDetail
-				node={child}
-				value={childData}
-				dataStore={dataStore}
-				moduleName={moduleName}
-				path={childPath}
-			/>
+			<>
+				<Description text={child.description} />
+				<SchemaLeafDetail
+					node={child}
+					value={childData}
+					dataStore={dataStore}
+					moduleName={moduleName}
+					path={childPath}
+				/>
+			</>
 		);
 	}
 
 	if (Array.isArray(childData)) {
 		return (
-			<Collapse
-				size="small"
-				items={childData.map((item: unknown, i: number) => {
-					const record = item as Record<string, unknown>;
-					const firstValue = Object.values(record)[0];
-					return {
-						key: i,
-						label: (
-							<span>
-								{firstValue != null ? String(firstValue) : `${name}[${i}]`}
-							</span>
-						),
-						children: (
-							<SchemaTree
-								node={child}
-								data={record}
-								dataStore={dataStore}
-								moduleName={moduleName}
-								path={childPath}
-							/>
-						),
-					};
-				})}
-			/>
+			<>
+				<Description text={child.description} />
+				<Collapse
+					size="small"
+					items={childData.map((item: unknown, i: number) => {
+						const record = item as Record<string, unknown>;
+						const firstValue = Object.values(record)[0];
+						return {
+							key: i,
+							label: (
+								<span>
+									{firstValue != null ? String(firstValue) : `${name}[${i}]`}
+								</span>
+							),
+							children: (
+								<SchemaTree
+									node={child}
+									data={record}
+									dataStore={dataStore}
+									moduleName={moduleName}
+									path={childPath}
+								/>
+							),
+						};
+					})}
+				/>
+			</>
 		);
 	}
 
 	return (
-		<SchemaTree
-			node={child}
-			data={(childData ?? undefined) as Record<string, unknown>}
-			dataStore={dataStore}
-			moduleName={moduleName}
-			path={childPath}
-		/>
+		<>
+			<Description text={child.description} />
+			<SchemaTree
+				node={child}
+				data={(childData ?? undefined) as Record<string, unknown>}
+				dataStore={dataStore}
+				moduleName={moduleName}
+				path={childPath}
+			/>
+		</>
 	);
 }
 

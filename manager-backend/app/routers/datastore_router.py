@@ -109,6 +109,7 @@ async def get_staged(module_name: str) -> dict[str, Any]:
 async def commit():
     app.dependencies.connection_manager.check_connected()
     try:
-        return datastore_service.commit()
+        datastore_service.commit()
+        return {"ok": True}
     except Exception as e:
         raise HTTPException(400, str(e))
