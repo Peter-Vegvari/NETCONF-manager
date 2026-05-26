@@ -12,6 +12,7 @@ import {
 	theme,
 } from "antd";
 import { useState } from "react";
+import { useCookies } from "react-cookie";
 import { ConnectionForm } from "@/components/connection/ConnectionForm";
 import { DatastoresPanel } from "@/components/datastore/panels/DatastoresPanel";
 
@@ -20,9 +21,20 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+	const [cookies, setCookie] = useCookies(["theme"]);
 	const [dark, setDark] = useState(
-		window.matchMedia("(prefers-color-scheme: dark)").matches,
+		cookies.theme != null
+			? cookies.theme === "dark"
+			: window.matchMedia("(prefers-color-scheme: dark)").matches,
 	);
+
+	const handleThemeChange = (value: boolean) => {
+		setDark(value);
+		setCookie("theme", value ? "dark" : "light", {
+			path: "/",
+			maxAge: 31536000,
+		});
+	};
 
 	return (
 		<ConfigProvider
@@ -44,7 +56,7 @@ function App() {
 									checkedChildren="Dark"
 									unCheckedChildren="Light"
 									checked={dark}
-									onChange={setDark}
+									onChange={handleThemeChange}
 								/>
 								<Button
 									type="text"
