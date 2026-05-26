@@ -103,3 +103,12 @@ async def get_staged(module_name: str) -> dict[str, Any]:
     destination = module_service.get_data(module_name, DataStore.CANDIDATE, path)
 
     return jsondiff.diff(source, destination, marshal=True)
+
+
+@datastore_router.post("/commit", operation_id="commit")
+async def commit():
+    app.dependencies.connection_manager.check_connected()
+    try:
+        return datastore_service.commit()
+    except Exception as e:
+        raise HTTPException(400, str(e))

@@ -6,14 +6,28 @@ import { DatastoreMenu } from "./DatastoreMenu";
 
 export function DatastoresPanel() {
 	const [dataStore, setDataStore] = useState<DataStore>("running");
+	const [showStaged, setShowStaged] = useState(false);
+
+	const handleSetDataStore = (ds: DataStore) => {
+		setShowStaged(false);
+		setDataStore(ds);
+	};
 
 	return (
 		<Card
 			title={
-				<DatastoreMenu dataStore={dataStore} setDataStore={setDataStore} />
+				<DatastoreMenu
+					dataStore={dataStore}
+					setDataStore={handleSetDataStore}
+					showStaged={showStaged}
+					onStaged={() => setShowStaged((v) => !v)}
+				/>
 			}
 		>
-			<ModuleList dataStore={dataStore} />
+			<ModuleList
+				dataStore={dataStore}
+				view={showStaged ? "staged" : "browse"}
+			/>
 		</Card>
 	);
 }

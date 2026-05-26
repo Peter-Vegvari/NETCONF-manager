@@ -243,6 +243,27 @@ export const getGetStagedMockHandler = (
 		options,
 	);
 };
+
+export const getCommitMockHandler = (
+	overrideResponse?:
+		| unknown
+		| ((
+				info: Parameters<Parameters<typeof http.post>[1]>[0],
+		  ) => Promise<unknown> | unknown),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post(
+		"*/api/v1/datastore/commit",
+		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 200 });
+		},
+		options,
+	);
+};
 export const getDatastoreMock = () => [
 	getCopyConfigToMockHandler(),
 	getDeleteConfigMockHandler(),
@@ -253,4 +274,5 @@ export const getDatastoreMock = () => [
 	getGetModuleDataMockHandler(),
 	getGetDataMockHandler(),
 	getGetStagedMockHandler(),
+	getCommitMockHandler(),
 ];

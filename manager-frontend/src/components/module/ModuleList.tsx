@@ -10,12 +10,14 @@ import { useMutationOptions } from "@/hooks/useMutationOptions";
 import { ModuleContent } from "./ModuleContent";
 import { ModuleItemActions, ModuleItemLabel } from "./ModuleItem";
 import { ModulesToolbar, type ToolbarFilters } from "./ModulesToolbar";
+import { StagedContent } from "./StagedContent";
 
 interface Props {
 	dataStore: DataStore;
+	view?: "browse" | "staged";
 }
 
-export function ModuleList({ dataStore }: Props) {
+export function ModuleList({ dataStore, view = "browse" }: Props) {
 	const [msg, contextHolder] = message.useMessage();
 	const opts = useMutationOptions(msg);
 	const [filters, setFilters] = useState<ToolbarFilters>({
@@ -55,7 +57,12 @@ export function ModuleList({ dataStore }: Props) {
 				downloadingName={download.variables?.moduleName}
 			/>
 		),
-		children: <ModuleContent module={m} dataStore={dataStore} />,
+		children:
+			view === "staged" ? (
+				<StagedContent module={m} />
+			) : (
+				<ModuleContent module={m} dataStore={dataStore} />
+			),
 	}));
 
 	return (

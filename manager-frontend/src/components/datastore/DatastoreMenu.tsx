@@ -7,9 +7,13 @@ import { StartupPanel } from "./StartupPanel";
 export function DatastoreMenu({
 	dataStore,
 	setDataStore,
+	showStaged,
+	onStaged,
 }: {
 	dataStore: DataStore;
 	setDataStore: (ds: DataStore) => void;
+	showStaged: boolean;
+	onStaged: () => void;
 }) {
 	return (
 		<Space style={{ flexShrink: 0 }}>
@@ -23,6 +27,8 @@ export function DatastoreMenu({
 			<CandidatePanel
 				active={dataStore === "candidate"}
 				onBrowse={() => setDataStore("candidate")}
+				showStaged={showStaged}
+				onStaged={onStaged}
 			/>
 			<StartupPanel
 				active={dataStore === "startup"}

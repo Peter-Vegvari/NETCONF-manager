@@ -1347,3 +1347,100 @@ export function useGetStaged<
 
 	return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary Commit
+ */
+export type commitResponse200 = {
+	data: unknown;
+	status: 200;
+};
+
+export type commitResponseSuccess = commitResponse200 & {
+	headers: Headers;
+};
+
+export type commitResponse = commitResponseSuccess;
+
+export const getCommitUrl = () => {
+	return `/api/v1/datastore/commit`;
+};
+
+export const commit = async (
+	options?: RequestInit,
+): Promise<commitResponse> => {
+	const res = await fetch(getCommitUrl(), {
+		...options,
+		method: "POST",
+	});
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+	const data: commitResponse["data"] = body ? JSON.parse(body) : {};
+	return { data, status: res.status, headers: res.headers } as commitResponse;
+};
+
+export const getCommitMutationOptions = <
+	TError = unknown,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof commit>>,
+		TError,
+		void,
+		TContext
+	>;
+	fetch?: RequestInit;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof commit>>,
+	TError,
+	void,
+	TContext
+> => {
+	const mutationKey = ["commit"];
+	const { mutation: mutationOptions, fetch: fetchOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof commit>>,
+		void
+	> = () => {
+		return commit(fetchOptions);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type CommitMutationResult = NonNullable<
+	Awaited<ReturnType<typeof commit>>
+>;
+
+export type CommitMutationError = unknown;
+
+/**
+ * @summary Commit
+ */
+export const useCommit = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof commit>>,
+			TError,
+			void,
+			TContext
+		>;
+		fetch?: RequestInit;
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof commit>>,
+	TError,
+	void,
+	TContext
+> => {
+	return useMutation(getCommitMutationOptions(options), queryClient);
+};
