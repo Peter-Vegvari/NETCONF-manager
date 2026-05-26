@@ -102,7 +102,7 @@ async def get_staged(module_name: str) -> dict[str, Any]:
     source = module_service.get_data(module_name, DataStore.RUNNING, path)
     destination = module_service.get_data(module_name, DataStore.CANDIDATE, path)
 
-    return jsondiff.diff(source, destination, marshal=True)
+    return cast(dict[str, Any], jsondiff.diff(source, destination, marshal=True))
 
 
 @datastore_router.post("/commit", operation_id="commit")

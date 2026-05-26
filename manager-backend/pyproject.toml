@@ -52,7 +52,7 @@ reportExplicitAny = false
 reportUnusedCallResult = false
 reportUnusedParameter = false
 reportUnknownMemberType = false
-allowedUntypedLibraries = ["ncclient", "app", "yangson", "pyang"]
+allowedUntypedLibraries = ["ncclient", "app", "yangson", "pyang", "jsondiff"]
 
 [tool.pytest.ini_options]
 minversion = "8.4.1"

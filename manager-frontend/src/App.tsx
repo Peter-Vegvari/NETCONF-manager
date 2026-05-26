@@ -32,7 +32,6 @@ function App() {
 		setDark(value);
 		setCookie("theme", value ? "dark" : "light", {
 			path: "/",
-			maxAge: 31536000,
 		});
 	};
 
