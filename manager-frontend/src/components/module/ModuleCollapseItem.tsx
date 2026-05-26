@@ -1,7 +1,10 @@
 import { Collapse } from "antd";
 import type { DataStore, ModuleSummary } from "@/api/model";
-import { ModuleContent } from "./ModuleContent";
-import { ModuleItemActions, ModuleItemLabel } from "./ModuleItem";
+import { ModuleContent } from "@/components/module/ModuleContent";
+import {
+	ModuleItemActions,
+	ModuleItemLabel,
+} from "@/components/module/ModuleItem";
 
 interface Props {
 	module: ModuleSummary;

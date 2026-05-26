@@ -1,8 +1,8 @@
 import { Card } from "antd";
 import { useState } from "react";
 import type { DataStore } from "@/api/model";
+import { DatastoreMenu } from "@/components/datastore/DatastoreMenu";
 import { ModuleList } from "@/components/module/ModuleList";
-import { DatastoreMenu } from "./DatastoreMenu";
 
 export function DatastoresPanel() {
 	const [dataStore, setDataStore] = useState<DataStore>("running");

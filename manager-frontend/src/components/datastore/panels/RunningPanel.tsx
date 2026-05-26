@@ -1,7 +1,7 @@
 import { Space } from "antd";
-import { BrowseButton } from "./buttons/BrowseButton";
-import { CopyButton } from "./buttons/CopyButton";
-import { LockButton } from "./buttons/LockButton";
+import { BrowseButton } from "@/components/datastore/buttons/BrowseButton";
+import { CopyButton } from "@/components/datastore/buttons/CopyButton";
+import { LockButton } from "@/components/datastore/buttons/LockButton";
 
 interface Props {
 	active: boolean;

@@ -1,8 +1,8 @@
 import { Space, Typography } from "antd";
 import type { DataStore } from "@/api/model";
-import { CandidatePanel } from "./CandidatePanel";
-import { RunningPanel } from "./RunningPanel";
-import { StartupPanel } from "./StartupPanel";
+import { CandidatePanel } from "@/components/datastore/panels/CandidatePanel";
+import { RunningPanel } from "@/components/datastore/panels/RunningPanel";
+import { StartupPanel } from "@/components/datastore/panels/StartupPanel";
 
 export function DatastoreMenu({
 	dataStore,

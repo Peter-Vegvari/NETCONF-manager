@@ -6,11 +6,17 @@ import {
 	useDownloadModule,
 	useGetModules,
 } from "@/api/modules/modules";
+import { ModuleContent } from "@/components/module/ModuleContent";
+import {
+	ModuleItemActions,
+	ModuleItemLabel,
+} from "@/components/module/ModuleItem";
+import {
+	ModulesToolbar,
+	type ToolbarFilters,
+} from "@/components/module/ModulesToolbar";
+import { StagedContent } from "@/components/module/StagedContent";
 import { useMutationOptions } from "@/hooks/useMutationOptions";
-import { ModuleContent } from "./ModuleContent";
-import { ModuleItemActions, ModuleItemLabel } from "./ModuleItem";
-import { ModulesToolbar, type ToolbarFilters } from "./ModulesToolbar";
-import { StagedContent } from "./StagedContent";
 
 interface Props {
 	dataStore: DataStore;

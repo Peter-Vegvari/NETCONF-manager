@@ -3,7 +3,6 @@
 <br />
 <div align="center">
   <h3 align="center">NETCONF/YANG Browser</h3>
-
 </div>
 
 <details>
@@ -27,21 +26,25 @@
   </ol>
 </details>
 
-## About The Project
-This application connects to any network device supporting NETCONF/YANG management and:
+## Introduction
+This application was developed as part of my project lab assignment at the Budapest University of Technology and Economics.
 
-1. **Reads** the device's complete YANG datastore via the NETCONF protocol
+The goal was to make a full-stack web application, capable of managing a NETCONF capable server/network device.
+
+
+1. **Reading** a netconf server's YANG datastores via the NETCONF protocol
 2. **Displays** the datastore in an easily navigable format
 3. **Allows editing** of writable datastore elements
 
 ### Built With
 [![Python][Python]][Python-url]
 [![FastAPI][FastAPI]][FastAPI-url]
+[![Docker][Docker]][Docker-url]
+[![Vite][Vite]][Vite-url]
+[![TypeScript][TypeScript]][TypeScript-url]
 [![Ant Design][AntDesign]][AntDesign-url]
 [![React][React.js]][React-url]
-[![TypeScript][TypeScript]][TypeScript-url]
-[![Vite][Vite]][Vite-url]
-[![Docker][Docker]][Docker-url]
+[![Orval][Orval]][Orval-url]
 
 ## Getting Started
 
@@ -65,19 +68,12 @@ This application connects to any network device supporting NETCONF/YANG manageme
 - [x] Multi-device support
 - [x] YANG datastore display
 - [x] Editing writable datastore elements
+- [ ] Support multiple users at once
 
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/Peter-Vegvari/NETCONF-manager.svg?style=for-the-badge
-[contributors-url]: https://github.com/Peter-Vegvari/NETCONF-manager/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Peter-Vegvari/NETCONF-manager.svg?style=for-the-badge
-[forks-url]: https://github.com/Peter-Vegvari/NETCONF-manager/network/members
-[stars-shield]: https://img.shields.io/github/stars/Peter-Vegvari/NETCONF-manager.svg?style=for-the-badge
-[stars-url]: https://github.com/Peter-Vegvari/NETCONF-manager/stargazers
-[issues-shield]: https://img.shields.io/github/issues/Peter-Vegvari/NETCONF-manager.svg?style=for-the-badge
-[issues-url]: https://github.com/Peter-Vegvari/NETCONF-manager/issues
 [license-shield]: https://img.shields.io/github/license/Peter-Vegvari/NETCONF-manager.svg?style=for-the-badge
 [license-url]: https://github.com/Peter-Vegvari/NETCONF-manager/blob/main/LICENSE
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
@@ -94,3 +90,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 [Vite-url]: https://vite.dev/
 [AntDesign]: https://img.shields.io/badge/Ant%20Design-0170FE?style=for-the-badge&logo=antdesign&logoColor=white
 [AntDesign-url]: https://ant.design/
+[Orval]: https://img.shields.io/badge/Orval-5A29E4?style=for-the-badge&logo=openapi-initiative&logoColor=white
+[Orval-url]: https://orval.dev/

@@ -12,8 +12,8 @@ import {
 	theme,
 } from "antd";
 import { useState } from "react";
-import { ConnectionForm } from "./components/connection/ConnectionForm";
-import { DatastoresPanel } from "./components/datastore/DatastoresPanel";
+import { ConnectionForm } from "@/components/connection/ConnectionForm";
+import { DatastoresPanel } from "@/components/datastore/panels/DatastoresPanel";
 
 const queryClient = new QueryClient({
 	defaultOptions: { queries: { staleTime: 30_000 } },

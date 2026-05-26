@@ -1,9 +1,9 @@
 import { Collapse } from "antd";
 import type { ReactNode } from "react";
 import type { DataStore, SchemaNode } from "@/api/model";
+import { SchemaLeafDetail } from "@/components/schema/SchemaLeafDetail";
+import { SchemaNodeLabel } from "@/components/schema/SchemaNodeLabel";
 import { getNestedValue } from "@/utils/schema";
-import { SchemaLeafDetail } from "./SchemaLeafDetail";
-import { SchemaNodeLabel } from "./SchemaNodeLabel";
 
 function localName(name: string): string {
 	return name.includes(":") ? name.split(":")[1] : name;

@@ -1,7 +1,7 @@
 import { Descriptions } from "antd";
 import type { DataStore, SchemaNode } from "@/api/model";
-import { EditableValue } from "./EditableValue";
-import { LeafMetadata } from "./LeafMetadata";
+import { EditableValue } from "@/components/schema/EditableValue";
+import { LeafMetadata } from "@/components/schema/LeafMetadata";
 
 interface Props {
 	node: SchemaNode;
