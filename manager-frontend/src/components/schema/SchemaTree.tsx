@@ -12,13 +12,14 @@ function localName(name: string): string {
 function Description({ text }: { text?: string | null }) {
 	if (!text) return null;
 	return (
-		<Typography.Text
+		<Typography.Paragraph
 			type="secondary"
 			italic
-			style={{ display: "block", marginBottom: 8 }}
+			ellipsis={{ rows: 1, expandable: "collapsible" }}
+			style={{ marginBottom: 8 }}
 		>
 			{text}
-		</Typography.Text>
+		</Typography.Paragraph>
 	);
 }
 

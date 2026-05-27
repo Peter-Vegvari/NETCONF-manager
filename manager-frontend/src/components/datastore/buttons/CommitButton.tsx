@@ -18,9 +18,8 @@ export function CommitButton() {
 				onClick={() => commitMutation.mutate()}
 				disabled={disabled}
 				loading={commitMutation.isPending}
-			>
-				Commit
-			</Button>
+				title="Commit staged"
+			/>
 		</>
 	);
 }

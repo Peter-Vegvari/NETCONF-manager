@@ -84,9 +84,7 @@ export function ModulesToolbar({ moduleCount, onChange }: Props) {
 						loading={downloadAll.isPending}
 						onClick={() => downloadAll.mutate()}
 						disabled={disabled}
-					>
-						Download All
-					</Button>
+					/>
 				</DisabledTooltip>
 				<DisabledTooltip>
 					<Popconfirm
@@ -98,9 +96,7 @@ export function ModulesToolbar({ moduleCount, onChange }: Props) {
 							icon={<DeleteOutlined />}
 							loading={deleteAll.isPending}
 							disabled={disabled}
-						>
-							Delete All
-						</Button>
+						/>
 					</Popconfirm>
 				</DisabledTooltip>
 			</Space>
