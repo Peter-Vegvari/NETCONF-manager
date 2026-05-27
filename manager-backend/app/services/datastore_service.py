@@ -12,7 +12,7 @@ _LOCK_INFO_FILTER = """
 _MON_NS = "urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring"
 
 
-def edit_config(data_store: DataStore, module_name: str, path: str, value: str) -> str:
+def edit_config(data_store: DataStore, module_name: str, path: str, value: str) -> None:
     ns = module_service.get_namespace(module_name)
     if not ns:
         ns = f"urn:ietf:params:xml:ns:yang:{module_name}"
@@ -26,47 +26,27 @@ def edit_config(data_store: DataStore, module_name: str, path: str, value: str) 
         f'<{root_tag} xmlns="{ns}">{inner_content}</{root_tag}>'
         f"</config>"
     )
-    reply = cast(
-        Any,
-        app.dependencies.connection_manager.session.edit_config(
-            target=data_store.value, config=config_xml
-        ),
+    app.dependencies.connection_manager.session.edit_config(
+        target=data_store.value, config=config_xml
     )
-    return cast(str, reply.xml)
 
 
-def copy_config(source: DataStore, target: DataStore) -> str:
-    reply = cast(
-        Any,
-        app.dependencies.connection_manager.session.copy_config(
-            source=source.value, target=target.value
-        ),
+def copy_config(source: DataStore, target: DataStore) -> None:
+    app.dependencies.connection_manager.session.copy_config(
+        source=source.value, target=target.value
     )
-    return cast(str, reply.xml)
 
 
-def delete_config(data_store: DataStore) -> str:
-    reply = cast(
-        Any,
-        app.dependencies.connection_manager.session.delete_config(
-            target=data_store.value
-        ),
-    )
-    return cast(str, reply.xml)
+def delete_config(data_store: DataStore) -> None:
+    app.dependencies.connection_manager.session.delete_config(target=data_store.value)
 
 
-def lock(data_store: DataStore) -> str:
-    reply = cast(
-        Any, app.dependencies.connection_manager.session.lock(target=data_store.value)
-    )
-    return cast(str, reply.xml)
+def lock(data_store: DataStore) -> None:
+    app.dependencies.connection_manager.session.lock(target=data_store.value)
 
 
-def unlock(data_store: DataStore) -> str:
-    reply = cast(
-        Any, app.dependencies.connection_manager.session.unlock(target=data_store.value)
-    )
-    return cast(str, reply.xml)
+def unlock(data_store: DataStore) -> None:
+    app.dependencies.connection_manager.session.unlock(target=data_store.value)
 
 
 def is_locked(data_store: DataStore) -> bool:
@@ -82,8 +62,5 @@ def is_locked(data_store: DataStore) -> bool:
     return False
 
 
-def commit():
-    cast(
-        Any,
-        app.dependencies.connection_manager.session.commit(),
-    )
+def commit() -> None:
+    app.dependencies.connection_manager.session.commit()

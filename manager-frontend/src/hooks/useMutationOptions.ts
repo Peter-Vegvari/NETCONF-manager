@@ -7,10 +7,12 @@ export function useMutationOptions(
 	const queryClient = useQueryClient();
 	return (text: string) => ({
 		mutation: {
-			onSuccess: (response: { status: number }) => {
-				if (response.status >= 400) return msg.error(`Failed: ${text}`);
+			onSuccess: () => {
 				queryClient.invalidateQueries({ queryKey: ["/api/v1/modules/"] });
 				return msg.success(text);
+			},
+			onError: (error: unknown) => {
+				return msg.error(`Failed: ${error}`);
 			},
 		},
 	});

@@ -1,7 +1,7 @@
 from typing import Any, cast
 
 import jsondiff
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Response, status
 
 import app.dependencies
 from app.models import DataStore, EditConfigRequest
@@ -14,40 +14,60 @@ def _strip_namespace(key: str) -> str:
     return key.rpartition(":")[2] or key
 
 
-@datastore_router.post("/{source}/copy-config/{target}", operation_id="copyConfigTo")
-async def copy_config(source: DataStore, target: DataStore) -> str:
+@datastore_router.post(
+    "/{source}/copy-config/{target}",
+    operation_id="copyConfigTo",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def copy_config(source: DataStore, target: DataStore) -> Response:
     app.dependencies.connection_manager.check_connected()
     try:
-        return datastore_service.copy_config(source, target)
+        datastore_service.copy_config(source, target)
     except Exception as e:
         raise HTTPException(400, str(e))
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@datastore_router.delete("/{data_store}", operation_id="deleteConfig")
-async def delete_config(data_store: DataStore) -> str:
+@datastore_router.delete(
+    "/{data_store}",
+    operation_id="deleteConfig",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_config(data_store: DataStore) -> Response:
     app.dependencies.connection_manager.check_connected()
     try:
-        return datastore_service.delete_config(data_store)
+        datastore_service.delete_config(data_store)
     except Exception as e:
         raise HTTPException(400, str(e))
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@datastore_router.post("/{data_store}/lock", operation_id="lockDatastore")
-async def lock(data_store: DataStore) -> str:
+@datastore_router.post(
+    "/{data_store}/lock",
+    operation_id="lockDatastore",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def lock(data_store: DataStore) -> Response:
     app.dependencies.connection_manager.check_connected()
     try:
-        return datastore_service.lock(data_store)
+        datastore_service.lock(data_store)
     except Exception as e:
         raise HTTPException(400, str(e))
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@datastore_router.delete("/{data_store}/lock", operation_id="unlockDatastore")
-async def unlock(data_store: DataStore) -> str:
+@datastore_router.delete(
+    "/{data_store}/lock",
+    operation_id="unlockDatastore",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def unlock(data_store: DataStore) -> Response:
     app.dependencies.connection_manager.check_connected()
     try:
-        return datastore_service.unlock(data_store)
+        datastore_service.unlock(data_store)
     except Exception as e:
         raise HTTPException(400, str(e))
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @datastore_router.get("/{data_store}/lock", operation_id="getLock")
@@ -76,15 +96,20 @@ async def get_data(
     return module_service.get_data(module_name, data_store, path)
 
 
-@datastore_router.patch("/{data_store}", operation_id="editConfig")
-async def edit_config(data_store: DataStore, body: EditConfigRequest) -> str:
+@datastore_router.patch(
+    "/{data_store}",
+    operation_id="editConfig",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def edit_config(data_store: DataStore, body: EditConfigRequest) -> Response:
     app.dependencies.connection_manager.check_connected()
     try:
-        return datastore_service.edit_config(
+        datastore_service.edit_config(
             data_store, body.module_name, body.path, body.value
         )
     except Exception as e:
         raise HTTPException(400, str(e))
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @datastore_router.get(
@@ -105,11 +130,15 @@ async def get_staged(module_name: str) -> dict[str, Any]:
     return cast(dict[str, Any], jsondiff.diff(source, destination, marshal=True))
 
 
-@datastore_router.post("/commit", operation_id="commit")
-async def commit():
+@datastore_router.post(
+    "/commit",
+    operation_id="commit",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def commit() -> Response:
     app.dependencies.connection_manager.check_connected()
     try:
         datastore_service.commit()
-        return {"ok": True}
     except Exception as e:
         raise HTTPException(400, str(e))
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

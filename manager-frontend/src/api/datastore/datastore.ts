@@ -30,9 +30,9 @@ import type {
 	HTTPValidationError,
 } from "../model";
 
-export type copyConfigToResponse200 = {
-	data: string;
-	status: 200;
+export type copyConfigToResponse204 = {
+	data: void;
+	status: 204;
 };
 
 export type copyConfigToResponse422 = {
@@ -40,7 +40,7 @@ export type copyConfigToResponse422 = {
 	status: 422;
 };
 
-export type copyConfigToResponseSuccess = copyConfigToResponse200 & {
+export type copyConfigToResponseSuccess = copyConfigToResponse204 & {
 	headers: Headers;
 };
 export type copyConfigToResponseError = copyConfigToResponse422 & {
@@ -70,7 +70,9 @@ export const copyConfigTo = async (
 
 	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: copyConfigToResponse["data"] = body ? JSON.parse(body) : {};
+	const data: copyConfigToResponse["data"] = body
+		? JSON.parse(body)
+		: undefined;
 	return {
 		data,
 		status: res.status,
@@ -147,9 +149,9 @@ export const useCopyConfigTo = <
 > => {
 	return useMutation(getCopyConfigToMutationOptions(options), queryClient);
 };
-export type deleteConfigResponse200 = {
-	data: string;
-	status: 200;
+export type deleteConfigResponse204 = {
+	data: void;
+	status: 204;
 };
 
 export type deleteConfigResponse422 = {
@@ -157,7 +159,7 @@ export type deleteConfigResponse422 = {
 	status: 422;
 };
 
-export type deleteConfigResponseSuccess = deleteConfigResponse200 & {
+export type deleteConfigResponseSuccess = deleteConfigResponse204 & {
 	headers: Headers;
 };
 export type deleteConfigResponseError = deleteConfigResponse422 & {
@@ -186,7 +188,9 @@ export const deleteConfig = async (
 
 	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: deleteConfigResponse["data"] = body ? JSON.parse(body) : {};
+	const data: deleteConfigResponse["data"] = body
+		? JSON.parse(body)
+		: undefined;
 	return {
 		data,
 		status: res.status,
@@ -263,9 +267,9 @@ export const useDeleteConfig = <
 > => {
 	return useMutation(getDeleteConfigMutationOptions(options), queryClient);
 };
-export type editConfigResponse200 = {
-	data: string;
-	status: 200;
+export type editConfigResponse204 = {
+	data: void;
+	status: 204;
 };
 
 export type editConfigResponse422 = {
@@ -273,7 +277,7 @@ export type editConfigResponse422 = {
 	status: 422;
 };
 
-export type editConfigResponseSuccess = editConfigResponse200 & {
+export type editConfigResponseSuccess = editConfigResponse204 & {
 	headers: Headers;
 };
 export type editConfigResponseError = editConfigResponse422 & {
@@ -305,7 +309,7 @@ export const editConfig = async (
 
 	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: editConfigResponse["data"] = body ? JSON.parse(body) : {};
+	const data: editConfigResponse["data"] = body ? JSON.parse(body) : undefined;
 	return {
 		data,
 		status: res.status,
@@ -379,9 +383,9 @@ export const useEditConfig = <TError = HTTPValidationError, TContext = unknown>(
 > => {
 	return useMutation(getEditConfigMutationOptions(options), queryClient);
 };
-export type lockDatastoreResponse200 = {
-	data: string;
-	status: 200;
+export type lockDatastoreResponse204 = {
+	data: void;
+	status: 204;
 };
 
 export type lockDatastoreResponse422 = {
@@ -389,7 +393,7 @@ export type lockDatastoreResponse422 = {
 	status: 422;
 };
 
-export type lockDatastoreResponseSuccess = lockDatastoreResponse200 & {
+export type lockDatastoreResponseSuccess = lockDatastoreResponse204 & {
 	headers: Headers;
 };
 export type lockDatastoreResponseError = lockDatastoreResponse422 & {
@@ -418,7 +422,9 @@ export const lockDatastore = async (
 
 	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: lockDatastoreResponse["data"] = body ? JSON.parse(body) : {};
+	const data: lockDatastoreResponse["data"] = body
+		? JSON.parse(body)
+		: undefined;
 	return {
 		data,
 		status: res.status,
@@ -495,9 +501,9 @@ export const useLockDatastore = <
 > => {
 	return useMutation(getLockDatastoreMutationOptions(options), queryClient);
 };
-export type unlockDatastoreResponse200 = {
-	data: string;
-	status: 200;
+export type unlockDatastoreResponse204 = {
+	data: void;
+	status: 204;
 };
 
 export type unlockDatastoreResponse422 = {
@@ -505,7 +511,7 @@ export type unlockDatastoreResponse422 = {
 	status: 422;
 };
 
-export type unlockDatastoreResponseSuccess = unlockDatastoreResponse200 & {
+export type unlockDatastoreResponseSuccess = unlockDatastoreResponse204 & {
 	headers: Headers;
 };
 export type unlockDatastoreResponseError = unlockDatastoreResponse422 & {
@@ -534,7 +540,9 @@ export const unlockDatastore = async (
 
 	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: unlockDatastoreResponse["data"] = body ? JSON.parse(body) : {};
+	const data: unlockDatastoreResponse["data"] = body
+		? JSON.parse(body)
+		: undefined;
 	return {
 		data,
 		status: res.status,
@@ -1358,12 +1366,12 @@ export function useGetStaged<
 	return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export type commitResponse200 = {
-	data: unknown;
-	status: 200;
+export type commitResponse204 = {
+	data: void;
+	status: 204;
 };
 
-export type commitResponseSuccess = commitResponse200 & {
+export type commitResponseSuccess = commitResponse204 & {
 	headers: Headers;
 };
 
@@ -1386,7 +1394,7 @@ export const commit = async (
 
 	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: commitResponse["data"] = body ? JSON.parse(body) : {};
+	const data: commitResponse["data"] = body ? JSON.parse(body) : undefined;
 	return { data, status: res.status, headers: res.headers } as commitResponse;
 };
 

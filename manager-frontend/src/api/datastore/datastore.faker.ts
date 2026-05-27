@@ -8,16 +8,6 @@ import { faker } from "@faker-js/faker";
 
 import type { GetData200, GetModuleData200, GetStaged200 } from "../model";
 
-export const getCopyConfigToResponseMock = (): string => faker.word.sample();
-
-export const getDeleteConfigResponseMock = (): string => faker.word.sample();
-
-export const getEditConfigResponseMock = (): string => faker.word.sample();
-
-export const getLockDatastoreResponseMock = (): string => faker.word.sample();
-
-export const getUnlockDatastoreResponseMock = (): string => faker.word.sample();
-
 export const getGetLockResponseMock = (): boolean => faker.datatype.boolean();
 
 export const getGetModuleDataResponseMock = (): GetModuleData200 => ({});

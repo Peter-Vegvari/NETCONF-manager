@@ -10,16 +10,6 @@ import { HttpResponse, http } from "msw";
 
 import type { GetData200, GetModuleData200, GetStaged200 } from "../model";
 
-export const getCopyConfigToResponseMock = (): string => faker.word.sample();
-
-export const getDeleteConfigResponseMock = (): string => faker.word.sample();
-
-export const getEditConfigResponseMock = (): string => faker.word.sample();
-
-export const getLockDatastoreResponseMock = (): string => faker.word.sample();
-
-export const getUnlockDatastoreResponseMock = (): string => faker.word.sample();
-
 export const getGetLockResponseMock = (): boolean => faker.datatype.boolean();
 
 export const getGetModuleDataResponseMock = (): GetModuleData200 => ({});
@@ -30,23 +20,20 @@ export const getGetStagedResponseMock = (): GetStaged200 => ({});
 
 export const getCopyConfigToMockHandler = (
 	overrideResponse?:
-		| string
+		| void
 		| ((
 				info: Parameters<Parameters<typeof http.post>[1]>[0],
-		  ) => Promise<string> | string),
+		  ) => Promise<void> | void),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post(
 		"*/api/v1/datastore/:source/copy-config/:target",
 		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-			return HttpResponse.json(
-				overrideResponse !== undefined
-					? typeof overrideResponse === "function"
-						? await overrideResponse(info)
-						: overrideResponse
-					: getCopyConfigToResponseMock(),
-				{ status: 200 },
-			);
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
@@ -54,23 +41,20 @@ export const getCopyConfigToMockHandler = (
 
 export const getDeleteConfigMockHandler = (
 	overrideResponse?:
-		| string
+		| void
 		| ((
 				info: Parameters<Parameters<typeof http.delete>[1]>[0],
-		  ) => Promise<string> | string),
+		  ) => Promise<void> | void),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete(
 		"*/api/v1/datastore/:dataStore",
 		async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
-			return HttpResponse.json(
-				overrideResponse !== undefined
-					? typeof overrideResponse === "function"
-						? await overrideResponse(info)
-						: overrideResponse
-					: getDeleteConfigResponseMock(),
-				{ status: 200 },
-			);
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
@@ -78,23 +62,20 @@ export const getDeleteConfigMockHandler = (
 
 export const getEditConfigMockHandler = (
 	overrideResponse?:
-		| string
+		| void
 		| ((
 				info: Parameters<Parameters<typeof http.patch>[1]>[0],
-		  ) => Promise<string> | string),
+		  ) => Promise<void> | void),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch(
 		"*/api/v1/datastore/:dataStore",
 		async (info: Parameters<Parameters<typeof http.patch>[1]>[0]) => {
-			return HttpResponse.json(
-				overrideResponse !== undefined
-					? typeof overrideResponse === "function"
-						? await overrideResponse(info)
-						: overrideResponse
-					: getEditConfigResponseMock(),
-				{ status: 200 },
-			);
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
@@ -102,23 +83,20 @@ export const getEditConfigMockHandler = (
 
 export const getLockDatastoreMockHandler = (
 	overrideResponse?:
-		| string
+		| void
 		| ((
 				info: Parameters<Parameters<typeof http.post>[1]>[0],
-		  ) => Promise<string> | string),
+		  ) => Promise<void> | void),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post(
 		"*/api/v1/datastore/:dataStore/lock",
 		async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-			return HttpResponse.json(
-				overrideResponse !== undefined
-					? typeof overrideResponse === "function"
-						? await overrideResponse(info)
-						: overrideResponse
-					: getLockDatastoreResponseMock(),
-				{ status: 200 },
-			);
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
@@ -126,23 +104,20 @@ export const getLockDatastoreMockHandler = (
 
 export const getUnlockDatastoreMockHandler = (
 	overrideResponse?:
-		| string
+		| void
 		| ((
 				info: Parameters<Parameters<typeof http.delete>[1]>[0],
-		  ) => Promise<string> | string),
+		  ) => Promise<void> | void),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete(
 		"*/api/v1/datastore/:dataStore/lock",
 		async (info: Parameters<Parameters<typeof http.delete>[1]>[0]) => {
-			return HttpResponse.json(
-				overrideResponse !== undefined
-					? typeof overrideResponse === "function"
-						? await overrideResponse(info)
-						: overrideResponse
-					: getUnlockDatastoreResponseMock(),
-				{ status: 200 },
-			);
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
@@ -246,10 +221,10 @@ export const getGetStagedMockHandler = (
 
 export const getCommitMockHandler = (
 	overrideResponse?:
-		| unknown
+		| void
 		| ((
 				info: Parameters<Parameters<typeof http.post>[1]>[0],
-		  ) => Promise<unknown> | unknown),
+		  ) => Promise<void> | void),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post(
@@ -259,7 +234,7 @@ export const getCommitMockHandler = (
 				await overrideResponse(info);
 			}
 
-			return new HttpResponse(null, { status: 200 });
+			return new HttpResponse(null, { status: 204 });
 		},
 		options,
 	);
