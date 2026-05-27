@@ -1,10 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { App, Button, Input, Space, Typography } from "antd";
 import { useState } from "react";
 import {
-	editConfig,
 	getGetDataQueryKey,
 	getGetModuleDataQueryKey,
+	useEditConfig,
 } from "@/api/datastore/datastore";
 import type { DataStore } from "@/api/model";
 
@@ -21,25 +21,21 @@ export function EditableValue({ value, dataStore, moduleName, path }: Props) {
 	const queryClient = useQueryClient();
 	const { message } = App.useApp();
 
-	const mutation = useMutation({
-		mutationFn: () =>
-			editConfig(dataStore, {
-				module_name: moduleName,
-				path,
-				value: inputValue,
-			}),
-		onSuccess: () => {
-			message.success("Configuration updated");
-			setEditing(false);
-			queryClient.invalidateQueries({
-				queryKey: getGetModuleDataQueryKey(dataStore, moduleName),
-			});
-			queryClient.invalidateQueries({
-				queryKey: getGetDataQueryKey(dataStore, moduleName, path),
-			});
-		},
-		onError: (err) => {
-			message.error(`Edit failed: ${err}`);
+	const mutation = useEditConfig({
+		mutation: {
+			onSuccess: () => {
+				message.success("Configuration updated");
+				setEditing(false);
+				queryClient.invalidateQueries({
+					queryKey: getGetModuleDataQueryKey(dataStore, moduleName),
+				});
+				queryClient.invalidateQueries({
+					queryKey: getGetDataQueryKey(dataStore, moduleName, path),
+				});
+			},
+			onError: (err) => {
+				message.error(`Edit failed: ${err}`);
+			},
 		},
 	});
 
@@ -64,7 +60,12 @@ export function EditableValue({ value, dataStore, moduleName, path }: Props) {
 				size="small"
 				value={inputValue}
 				onChange={(e) => setInputValue(e.target.value)}
-				onPressEnter={() => mutation.mutate()}
+				onPressEnter={() =>
+					mutation.mutate({
+						dataStore,
+						data: { module_name: moduleName, path, value: inputValue },
+					})
+				}
 				autoFocus
 				style={{ width: 200 }}
 			/>
@@ -72,7 +73,12 @@ export function EditableValue({ value, dataStore, moduleName, path }: Props) {
 				size="small"
 				type="primary"
 				loading={mutation.isPending}
-				onClick={() => mutation.mutate()}
+				onClick={() =>
+					mutation.mutate({
+						dataStore,
+						data: { module_name: moduleName, path, value: inputValue },
+					})
+				}
 			>
 				Save
 			</Button>
