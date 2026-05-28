@@ -8,7 +8,7 @@ class TestLock:
         response = connected_client.post(
             f"{settings.API_V1_STR}/datastore/running/lock"
         )
-        assert response.status_code == 200
+        assert response.status_code == 204
         # Cleanup
         connected_client.delete(f"{settings.API_V1_STR}/datastore/running/lock")
 
@@ -16,7 +16,7 @@ class TestLock:
         response = connected_client.post(
             f"{settings.API_V1_STR}/datastore/candidate/lock"
         )
-        assert response.status_code == 200
+        assert response.status_code == 204
         connected_client.delete(f"{settings.API_V1_STR}/datastore/candidate/lock")
 
     def test_lock_not_connected(self, client: TestClient):
@@ -45,7 +45,7 @@ class TestUnlock:
         response = connected_client.delete(
             f"{settings.API_V1_STR}/datastore/running/lock"
         )
-        assert response.status_code == 200
+        assert response.status_code == 204
 
     def test_unlock_not_locked(self, connected_client: TestClient):
         response = connected_client.delete(
@@ -82,13 +82,13 @@ class TestCopyConfig:
         response = connected_client.post(
             f"{settings.API_V1_STR}/datastore/running/copy-config/candidate"
         )
-        assert response.status_code == 200
+        assert response.status_code == 204
 
     def test_copy_running_to_startup(self, connected_client: TestClient):
         response = connected_client.post(
             f"{settings.API_V1_STR}/datastore/running/copy-config/startup"
         )
-        assert response.status_code == 200
+        assert response.status_code == 204
 
     def test_copy_not_connected(self, client: TestClient):
         response = client.post(
@@ -106,7 +106,7 @@ class TestCopyConfig:
 class TestDeleteConfig:
     def test_delete_startup(self, connected_client: TestClient):
         response = connected_client.delete(f"{settings.API_V1_STR}/datastore/startup")
-        assert response.status_code == 200
+        assert response.status_code == 204
 
     def test_delete_running_fails(self, connected_client: TestClient):
         """Deleting running datastore should fail per NETCONF spec."""
@@ -129,8 +129,7 @@ class TestEditConfig:
                 "value": "Test description",
             },
         )
-        assert response.status_code == 200
-        assert "ok" in response.json().lower()
+        assert response.status_code == 204
         # Cleanup
         connected_client.post(
             f"{settings.API_V1_STR}/datastore/running/copy-config/candidate"
