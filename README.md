@@ -122,7 +122,7 @@ The HTTP API has 3 routes, /connection, /module and /datastore
 
 #### Connection
 
-Manages the NETCONF session lifecycle.
+To avoid performance loss, it was necessary that the NETCONF session is reused between requests, making the HTTP API stateful.
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -132,7 +132,46 @@ Manages the NETCONF session lifecycle.
 
 #### Module
 
-Before any Every module's YANG schema must be downloaded to the backend.
+| `SchemaNode` | BaseModel | `kind: str`, `config: bool?`, `description: str?`, `mandatory: bool?`, `default: object?`, `type: dict?`, `children: dict[str, SchemaNode]?` |
+
+```json
+{
+  "children": {
+    "ietf-interfaces:interfaces": {
+      "kind": "container",
+      "config": null,
+      "description": "Interface parameters.",
+      "mandatory": null,
+      "default": null,
+      "type": null,
+      "children": {
+        "interface": {
+          "kind": "list",
+          "config": null,
+          "description": "...",
+          "mandatory": null,
+          "default": null,
+          "type": null,
+          "children": {
+            "name": {
+              "kind": "leaf",
+              "config": null,
+              "description": "description here..."
+              "mandatory": true,
+              "default": null,
+              "type": {
+                "base": "string"
+              },
+              "children": null
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+It is necessary to convert a module's YANG schema to JSON objects, to be properly displayed.
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -145,11 +184,7 @@ Before any Every module's YANG schema must be downloaded to the backend.
 
 #### Datastore
 
-Step to get the configuration for a datastore's module:
-1.
-2.
-3.
-
+Every module's YANG schema should be downloaded first to the backend, before doing module specific requests. Otherwise the data from the network device will not be parsed correctly.
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -160,13 +195,14 @@ Step to get the configuration for a datastore's module:
 | `POST` | `/datastore/{source}/copy-config/{target}` | Copy one datastore config to another |
 | `POST` | `/datastore/commit` | Commit candidate datastore config to running datastore config |
 | `POST` | `/datastore/{ds}/lock` | Lock datastore |
-| `PATCH` | `/datastore/{ds}` | Edit datastore config |
+| `PATCH` | `/datastore/{ds}/{module}/{path}` | Edit datastore config, value as string in body |
 | `DELETE` | `/datastore/{ds}` | Delete datastore config |
 | `DELETE` | `/datastore/{ds}/lock` | Unlock datastore |
 
 
 The compose file for development is available at `manager-backend/docker-compose.override.yml`.
 To rebuild and start the FastAPI server at `localhost:8000` and notconf at `localhost:830`, run these commands from the project rook:
+
 ```bash
 cd manager-backend
 sudo docker compose up --build -V -d

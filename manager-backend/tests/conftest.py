@@ -13,7 +13,6 @@ def client():
 
 @pytest.fixture()
 def connected_client(client: TestClient):
-    """Client connected to a NETCONF device."""
     response = client.post(
         f"{settings.API_V1_STR}/connect",
         json={

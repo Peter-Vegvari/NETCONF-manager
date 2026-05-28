@@ -2,7 +2,8 @@ from enum import StrEnum, auto
 
 from ncclient import manager
 from ncclient.manager import Manager
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+from pydantic.config import ConfigDict
 
 
 class Connection(BaseModel):

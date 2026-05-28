@@ -102,7 +102,7 @@ async def get_data(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def edit_config(
-    data_store: DataStore, module_name: str, path: str, body: dict
+    data_store: DataStore, module_name: str, path: str, body: dict[str, str]
 ) -> Response:
     app.dependencies.connection_manager.check_connected()
     try:

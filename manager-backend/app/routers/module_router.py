@@ -79,7 +79,9 @@ async def delete_all_modules() -> Response:
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@module_router.get("/{module_name}/schema", operation_id="getSchema")
+@module_router.get(
+    "/{module_name}/schema", operation_id="getSchema", response_model_exclude_none=True
+)
 async def get_module_schema(module_name: str) -> SchemaNode:
     if not module_service.is_local(module_name):
         raise HTTPException(404, "Module not downloaded")

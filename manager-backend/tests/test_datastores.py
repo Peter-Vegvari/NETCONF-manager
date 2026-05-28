@@ -9,7 +9,6 @@ class TestLock:
             f"{settings.API_V1_STR}/datastore/running/lock"
         )
         assert response.status_code == 204
-        # Cleanup
         connected_client.delete(f"{settings.API_V1_STR}/datastore/running/lock")
 
     def test_lock_candidate(self, connected_client: TestClient):
@@ -29,7 +28,6 @@ class TestLock:
             f"{settings.API_V1_STR}/datastore/running/lock"
         )
         assert response.status_code == 400
-        # Cleanup
         connected_client.delete(f"{settings.API_V1_STR}/datastore/running/lock")
 
     def test_lock_invalid_datastore(self, connected_client: TestClient):
@@ -109,7 +107,6 @@ class TestDeleteConfig:
         assert response.status_code == 204
 
     def test_delete_running_fails(self, connected_client: TestClient):
-        """Deleting running datastore should fail per NETCONF spec."""
         response = connected_client.delete(f"{settings.API_V1_STR}/datastore/running")
         assert response.status_code == 400
 
