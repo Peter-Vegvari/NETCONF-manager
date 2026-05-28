@@ -1,6 +1,6 @@
 from typing import Any, cast
 
-import app.dependencies
+import app.services.connection_service
 from app.models import DataStore
 from app.services import module_service
 
@@ -26,33 +26,39 @@ def edit_config(data_store: DataStore, module_name: str, path: str, value: str) 
         f'<{root_tag} xmlns="{ns}">{inner_content}</{root_tag}>'
         f"</config>"
     )
-    app.dependencies.connection_manager.session.edit_config(
+    app.services.connection_service.connection_manager.session.edit_config(
         target=data_store.value, config=config_xml
     )
 
 
 def copy_config(source: DataStore, target: DataStore) -> None:
-    app.dependencies.connection_manager.session.copy_config(
+    app.services.connection_service.connection_manager.session.copy_config(
         source=source.value, target=target.value
     )
 
 
 def delete_config(data_store: DataStore) -> None:
-    app.dependencies.connection_manager.session.delete_config(target=data_store.value)
+    app.services.connection_service.connection_manager.session.delete_config(
+        target=data_store.value
+    )
 
 
 def lock(data_store: DataStore) -> None:
-    app.dependencies.connection_manager.session.lock(target=data_store.value)
+    app.services.connection_service.connection_manager.session.lock(
+        target=data_store.value
+    )
 
 
 def unlock(data_store: DataStore) -> None:
-    app.dependencies.connection_manager.session.unlock(target=data_store.value)
+    app.services.connection_service.connection_manager.session.unlock(
+        target=data_store.value
+    )
 
 
 def is_locked(data_store: DataStore) -> bool:
     reply = cast(
         Any,
-        app.dependencies.connection_manager.session.get(
+        app.services.connection_service.connection_manager.session.get(
             filter=("subtree", _LOCK_INFO_FILTER)
         ),
     )
@@ -63,4 +69,4 @@ def is_locked(data_store: DataStore) -> bool:
 
 
 def commit() -> None:
-    app.dependencies.connection_manager.session.commit()
+    app.services.connection_service.connection_manager.session.commit()

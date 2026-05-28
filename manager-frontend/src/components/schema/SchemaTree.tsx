@@ -16,7 +16,7 @@ function Description({ text }: { text?: string | null }) {
 			type="secondary"
 			italic
 			ellipsis={{ rows: 1, expandable: "collapsible" }}
-			style={{ marginBottom: 8 }}
+			style={{ marginBottom: 8, whiteSpace: "pre-line" }}
 		>
 			{text}
 		</Typography.Paragraph>

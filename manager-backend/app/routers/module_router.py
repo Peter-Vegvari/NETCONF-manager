@@ -2,7 +2,7 @@ import asyncio
 
 from fastapi import APIRouter, HTTPException, Response, status
 
-import app.dependencies
+import app.services.connection_service
 from app.models import ModuleStatus, ModuleSummary, SchemaNode
 from app.services import module_service
 
@@ -39,7 +39,7 @@ async def get_modules() -> list[ModuleSummary]:
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def download_all_modules() -> Response:
-    app.dependencies.connection_manager.check_connected()
+    app.services.connection_service.connection_manager.check_connected()
     module_service.download_all()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -50,7 +50,7 @@ async def download_all_modules() -> Response:
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def download_module(module_name: str) -> Response:
-    app.dependencies.connection_manager.check_connected()
+    app.services.connection_service.connection_manager.check_connected()
     try:
         module_service.download_module(module_name)
     except Exception as e:

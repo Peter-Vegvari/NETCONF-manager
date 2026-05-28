@@ -11,7 +11,7 @@ from pyang.context import Context
 from pyang.repository import FileRepository
 from yangson import DataModel
 
-import app.dependencies
+import app.services.connection_service
 from app.core.config import settings
 from app.models import SchemaNode
 
@@ -60,9 +60,9 @@ def get_namespace(name: str) -> str:
 
 
 def get_remote_modules() -> list[str]:
-    if not app.dependencies.connection_manager.is_connected:
+    if not app.services.connection_service.connection_manager.is_connected:
         return []
-    m = app.dependencies.connection_manager.session
+    m = app.services.connection_service.connection_manager.session
     try:
         reply = cast(Any, m.get(filter=("subtree", _NETCONF_SCHEMAS_FILTER)))
         xml = cast(str, reply.xml)
@@ -93,14 +93,14 @@ def get_local_modules() -> list[str]:
 
 
 def download_module(name: str) -> None:
-    m = app.dependencies.connection_manager.session
+    m = app.services.connection_service.connection_manager.session
     content = cast(str, cast(Any, m.get_schema(identifier=name)).data)
     with open(module_path(name), "w", encoding="utf-8") as f:
         _ = f.write(content)
 
 
 def download_all() -> None:
-    m = app.dependencies.connection_manager.session
+    m = app.services.connection_service.connection_manager.session
     for name in get_remote_modules():
         if module_path(name).exists():
             continue
@@ -133,7 +133,7 @@ def get_module_schema(name: str) -> SchemaNode:
 
 
 def get_data(module_name: str, data_store: Any, path: str) -> dict[str, Any]:
-    s = app.dependencies.connection_manager.session
+    s = app.services.connection_service.connection_manager.session
     parts = path.strip("/").split("/")
     root = parts[0]
     inner = "".join(f"<{p}/>" for p in parts[1:]) if len(parts) > 1 else ""
