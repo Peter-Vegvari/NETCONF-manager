@@ -12,13 +12,20 @@
 
 This application was developed as part of my project lab assignment at the Budapest University of Technology and Economics during my internship at Ericsson.
 
-The goal was to create a vendor-agnostic, full-stack web application capable of managing network devices.
+The goal was to create a vendor-agnostic, containerized full-stack web application capable of managing any network device that supports the NETCONF protocol.
 
 ## Technologies
 
 ### YANG
 
-YANG is a data modeling language that provides a standardized way to model the configuration and state data of network elements, enabling network automation It is developed and maintained by the Internet Engineering Task Force (IETF). YANG is a modular language and represents data structures in a hierarchical tree format. It includes numerous built-in data types, with the capability for users to derive additional application-specific types.
+YANG is a data modeling language that provides a standardized way to model the configuration and state data of network elements, enabling network automation. It is developed and maintained by the Internet Engineering Task Force. YANG is a modular language and represents data structures in a hierarchical tree format. It includes numerous built-in data types, with the capability for users to derive additional application-specific types.
+
+YANG instance data are stored in configuration datastores:
+  | Configuration datastore | Description |
+  |---|---|
+  | `startup` | Contains instance data loaded at device start |
+  | `running` | Contains instance data that is currently active on the device |
+  | `candidate` | Contains temporary instance data that can be commited to the running configuration datastore |
 
 Example of a YANG module:
 ```yang
@@ -49,7 +56,6 @@ Example of an instance data:
 </interfaces>
 ```
 
-
 ### NETCONF
 
 The Network Configuration Protocol (NETCONF) is a network management protocol developed and standardized by the IETF. NETCONF provides mechanisms to install, manipulate, and delete the configuration of network devices.
@@ -68,6 +74,7 @@ Possible operations:
   | `<kill-session>` | Force the termination of a NETCONF session |
 
 
+Example of an operation where we request the instance data from the running configuration datastore:
 ```xml
 <get-config>
       <source>
@@ -78,6 +85,28 @@ Possible operations:
       </filter>
 </getconfig>
 ```
+
+The reply is the instance data:
+```xml
+<interfaces xmlns=“urn:example:interfaces">
+    <interface>
+        <name>GigabitEthernet0/0/0</name>
+        <enabled>true</enabled>
+    </interface>
+</interfaces>
+```
+
+## Architecture
+
+The architecture consists of a backend, a frontend and an optional simulated network device.
+
+### Backend
+
+The backend is written in Python and exposes a FastAPI server that the frontend connects to.
+
+
+
+The backend consists of NETCONF client
 
 
 The system consists of the following parts:
