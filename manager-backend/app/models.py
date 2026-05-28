@@ -33,12 +33,6 @@ class DataStore(StrEnum):
     RUNNING = "running"
 
 
-class EditConfigRequest(BaseModel):
-    module_name: str
-    path: str
-    value: str
-
-
 class ModuleStatus(StrEnum):
     REMOTE = auto()
     LOCAL = auto()

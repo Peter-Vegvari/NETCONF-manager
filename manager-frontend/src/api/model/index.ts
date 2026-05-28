@@ -7,7 +7,7 @@
 
 export * from "./connection";
 export * from "./dataStore";
-export * from "./editConfigRequest";
+export * from "./editConfigBody";
 export * from "./getData200";
 export * from "./getModuleData200";
 export * from "./getStaged200";

@@ -60,27 +60,6 @@ export const getDeleteConfigMockHandler = (
 	);
 };
 
-export const getEditConfigMockHandler = (
-	overrideResponse?:
-		| void
-		| ((
-				info: Parameters<Parameters<typeof http.patch>[1]>[0],
-		  ) => Promise<void> | void),
-	options?: RequestHandlerOptions,
-) => {
-	return http.patch(
-		"*/api/v1/datastore/:dataStore",
-		async (info: Parameters<Parameters<typeof http.patch>[1]>[0]) => {
-			if (typeof overrideResponse === "function") {
-				await overrideResponse(info);
-			}
-
-			return new HttpResponse(null, { status: 204 });
-		},
-		options,
-	);
-};
-
 export const getLockDatastoreMockHandler = (
 	overrideResponse?:
 		| void
@@ -195,6 +174,27 @@ export const getGetDataMockHandler = (
 	);
 };
 
+export const getEditConfigMockHandler = (
+	overrideResponse?:
+		| void
+		| ((
+				info: Parameters<Parameters<typeof http.patch>[1]>[0],
+		  ) => Promise<void> | void),
+	options?: RequestHandlerOptions,
+) => {
+	return http.patch(
+		"*/api/v1/datastore/:dataStore/:moduleName/data/:path",
+		async (info: Parameters<Parameters<typeof http.patch>[1]>[0]) => {
+			if (typeof overrideResponse === "function") {
+				await overrideResponse(info);
+			}
+
+			return new HttpResponse(null, { status: 204 });
+		},
+		options,
+	);
+};
+
 export const getGetStagedMockHandler = (
 	overrideResponse?:
 		| GetStaged200
@@ -242,12 +242,12 @@ export const getCommitMockHandler = (
 export const getDatastoreMock = () => [
 	getCopyConfigToMockHandler(),
 	getDeleteConfigMockHandler(),
-	getEditConfigMockHandler(),
 	getLockDatastoreMockHandler(),
 	getUnlockDatastoreMockHandler(),
 	getGetLockMockHandler(),
 	getGetModuleDataMockHandler(),
 	getGetDataMockHandler(),
+	getEditConfigMockHandler(),
 	getGetStagedMockHandler(),
 	getCommitMockHandler(),
 ];

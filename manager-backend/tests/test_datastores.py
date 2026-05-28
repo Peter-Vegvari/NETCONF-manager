@@ -122,12 +122,8 @@ class TestEditConfig:
     def test_edit_config_candidate(self, connected_client: TestClient):
         connected_client.post(f"{settings.API_V1_STR}/modules/download-all")
         response = connected_client.patch(
-            f"{settings.API_V1_STR}/datastore/candidate",
-            json={
-                "module_name": "ietf-interfaces",
-                "path": "interfaces/interface/description",
-                "value": "Test description",
-            },
+            f"{settings.API_V1_STR}/datastore/candidate/ietf-interfaces/data/interfaces/interface/description",
+            json={"value": "Test description"},
         )
         assert response.status_code == 204
         # Cleanup
@@ -138,22 +134,14 @@ class TestEditConfig:
 
     def test_edit_config_not_connected(self, client: TestClient):
         response = client.patch(
-            f"{settings.API_V1_STR}/datastore/candidate",
-            json={
-                "module_name": "ietf-interfaces",
-                "path": "interfaces/interface/name",
-                "value": "eth0",
-            },
+            f"{settings.API_V1_STR}/datastore/candidate/ietf-interfaces/data/interfaces/interface/name",
+            json={"value": "eth0"},
         )
         assert response.status_code == 400
 
     def test_edit_config_invalid_datastore(self, connected_client: TestClient):
         response = connected_client.patch(
-            f"{settings.API_V1_STR}/datastore/nonexistent",
-            json={
-                "module_name": "ietf-interfaces",
-                "path": "interfaces/interface/name",
-                "value": "eth0",
-            },
+            f"{settings.API_V1_STR}/datastore/nonexistent/ietf-interfaces/data/interfaces/interface/name",
+            json={"value": "eth0"},
         )
         assert response.status_code == 422

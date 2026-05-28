@@ -5,8 +5,4 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface EditConfigRequest {
-	module_name: string;
-	path: string;
-	value: string;
-}
+export type EditConfigBody = { [key: string]: unknown };

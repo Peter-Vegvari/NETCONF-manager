@@ -4,7 +4,7 @@ import jsondiff
 from fastapi import APIRouter, HTTPException, Response, status
 
 import app.dependencies
-from app.models import DataStore, EditConfigRequest
+from app.models import DataStore
 from app.services import datastore_service, module_service
 
 datastore_router = APIRouter(prefix="/datastore", tags=["datastore"])
@@ -97,16 +97,16 @@ async def get_data(
 
 
 @datastore_router.patch(
-    "/{data_store}",
+    "/{data_store}/{module_name}/data/{path:path}",
     operation_id="editConfig",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def edit_config(data_store: DataStore, body: EditConfigRequest) -> Response:
+async def edit_config(
+    data_store: DataStore, module_name: str, path: str, body: dict
+) -> Response:
     app.dependencies.connection_manager.check_connected()
     try:
-        datastore_service.edit_config(
-            data_store, body.module_name, body.path, body.value
-        )
+        datastore_service.edit_config(data_store, module_name, path, body["value"])
     except Exception as e:
         raise HTTPException(400, str(e))
     return Response(status_code=status.HTTP_204_NO_CONTENT)

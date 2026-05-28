@@ -98,207 +98,86 @@ The reply is the instance data:
 
 ## Architecture
 
-The architecture consists of a backend, a frontend and an optional simulated network device.
+The architecture consists of these 3 main parts:
+1. A simulated NETCONF-capable device
+2. A HTTP API written in FastAPI, wired to a NETCONF client
+3. A React TypeScript GUI
+
+### Simulated device
+
+For the device simulation notconf, a NETCONF device simulator, is used. It is run in a container from a pre-built image published by notconf.
+
+The device's startup configurations are to be placed at `manager-backend/tests/resources/yang-modules/startup`.
 
 ### Backend
 
-The backend is written in Python and exposes a FastAPI server that the frontend connects to.
+The choice of language for the backend is Python, because of the preexisting tooling available for network development:
+1. pyang: library for validating, transforming YANG and code generator
+2. yangson: library for working with configuration and state data modelled using YANG
+3. ncclient: library for NETCONF client, that is used to establishes and maintain a persistent NETCONF session with a device
 
 
+The HTTP API is written in FastAPI, it couldn't be truly RESTful, because NETCONF uses stateful RPC sessions.
+The HTTP API has 3 routes, /connection, /module and /datastore
 
-The backend consists of NETCONF client
+#### Connection
 
-
-The system consists of the following parts:
-
-network device: simulated or real hardware, exposes a NETCONF server
-Backend: provides a restful fastapi server, around a NETCONF client
-frontend: provides ui
-
-
-The system provides:
-1. **Reading** YANG datastores from a NETCONF server
-2. **Displaying** the datastore schema in an easily navigable, tree-based format
-3. **Editing** writable datastore elements with real-time candidate/running datastore management
-
-### Built With
-
-
-## Technologies
-
-### Backend Technologies
-
-| Technology | Purpose |
-|---|---|
-| **Python 3.14** | Server-side programming language |
-| **FastAPI** | Async REST API framework with automatic OpenAPI schema generation |
-| **ncclient** | NETCONF client library for communicating with network devices |
-| **pyang** | YANG module parsing and schema extraction |
-| **uv** | Fast Python package manager and project tool |
-
-### Frontend Technologies
-
-| Technology | Purpose |
-|---|---|
-| **TypeScript** | Type-safe client-side language |
-| **React** | Component-based UI library |
-| **Ant Design** | UI component framework |
-| **TanStack Query** | Server state management (caching, mutations, invalidation) |
-| **Orval** | Generates type-safe API hooks from OpenAPI schema |
-| **Vite** | Development server and build tool |
-
-### Development Tools
-
-| Tool | Purpose |
-|---|---|
-| **Docker & Docker Compose** | Containerization for backend, frontend, and simulated device |
-| **GitHub Actions** | CI pipeline for static analysis and integration tests |
-| **Ruff** | Python linter and formatter |
-| **Basedpyright** | Python type checker |
-| **Biome** | TypeScript/React linter and formatter |
-| **pre-commit** | Git hooks for code quality enforcement |
-
-## Architecture
-
-### Backend Architecture
-
-```
-manager-backend/
-├── app/
-│   ├── main.py              # FastAPI application entry point
-│   ├── models.py            # Pydantic models and enums
-│   ├── dependencies.py      # Dependency injection (connection manager)
-│   ├── core/
-│   │   └── config.py        # Application configuration
-│   ├── auth/                # Authentication middleware
-│   ├── routers/             # API endpoint definitions
-│   │   ├── connection_router.py
-│   │   ├── datastore_router.py
-│   │   └── module_router.py
-│   ├── services/            # Business logic layer
-│   │   ├── datastore_service.py   # NETCONF datastore operations
-│   │   └── module_service.py      # YANG module management
-│   └── resources/           # Downloaded YANG modules storage
-└── tests/                   # Integration tests (run against simulated device)
-```
-
-The backend follows a layered architecture:
-- **Routers** — Thin controllers that handle HTTP concerns and delegate to services
-- **Services** — Business logic: NETCONF operations, YANG parsing, XML↔JSON conversion
-- **Models** — Shared data contracts (Pydantic BaseModel)
-
-Key design decisions:
-- YANG modules are parsed locally using `pyang` to extract schema trees
-- NETCONF XML responses are converted to JSON for the frontend
-- The connection manager maintains a single NETCONF session per server instance
-- OpenAPI schema is auto-generated from FastAPI type annotations
-
-### Frontend Architecture
-
-```
-manager-frontend/src/
-├── api/                     # Generated API hooks (Orval)
-│   ├── connection/
-│   ├── datastore/
-│   ├── modules/
-│   └── model/               # Generated TypeScript types
-├── components/
-│   ├── connection/          # Device connection form
-│   ├── datastore/           # Datastore panels, buttons, staged changes
-│   ├── module/              # Module list, toolbar, content display
-│   └── schema/              # YANG tree rendering, leaf editing
-├── hooks/                   # Custom React hooks
-├── utils/                   # Helper functions
-└── App.tsx                  # Root layout with theme provider
-```
-
-Key design decisions:
-- **End-to-end type safety**: FastAPI → OpenAPI schema → Orval → TypeScript hooks
-- **No manual API calls**: All server communication uses generated TanStack Query hooks
-- **Optimistic UI**: Mutations invalidate relevant queries automatically
-- **Recursive tree rendering**: YANG schema displayed as nested collapsible panels
-
-### API Design
-
-The REST API follows resource-oriented design:
+Manages the NETCONF session lifecycle.
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/connect` | Establish NETCONF session |
-| `DELETE` | `/connect` | Disconnect |
-| `GET` | `/modules/` | List available YANG modules |
-| `POST` | `/modules/{name}/download` | Download module from device |
+| `GET` | `/connect` | Get connection status |
+| `POST` | `/connect` | Establish a new NETCONF session |
+| `DELETE` | `/connect` | Close the active session |
+
+#### Module
+
+Before any Every module's YANG schema must be downloaded to the backend.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/modules/` | List all modules |
 | `GET` | `/modules/{name}/schema` | Get parsed YANG schema tree |
-| `GET` | `/datastore/{ds}/{module}/data` | Get datastore content as JSON |
-| `PATCH` | `/datastore/{ds}` | Edit configuration (edit-config) |
-| `POST` | `/datastore/{source}/copy-config/{target}` | Copy configuration |
+| `POST` | `/modules/download-all` | Download every module's YANG schema to the backend |
+| `POST` | `/modules/{name}/download` | Download a single module's YANG schema |
+| `DELETE` | `/modules/{name}` | Delete a module's YANG schema locally |
+| `DELETE` | `/modules/` | Delete all the modules's YANG schemas |
+
+#### Datastore
+
+Step to get the configuration for a datastore's module:
+1.
+2.
+3.
+
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/datastore/{ds}/{module}/data` | Get module data as JSON |
+| `GET` | `/datastore/{ds}/{module}/data/{path}` | Get data at path |
+| `GET` | `/datastore/{ds}/lock` | Get lock status |
+| `GET` | `/datastore/staged/{module}` | Diff between running and candidate datastore config |
+| `POST` | `/datastore/{source}/copy-config/{target}` | Copy one datastore config to another |
+| `POST` | `/datastore/commit` | Commit candidate datastore config to running datastore config |
 | `POST` | `/datastore/{ds}/lock` | Lock datastore |
-| `POST` | `/datastore/commit` | Commit candidate to running |
+| `PATCH` | `/datastore/{ds}` | Edit datastore config |
+| `DELETE` | `/datastore/{ds}` | Delete datastore config |
+| `DELETE` | `/datastore/{ds}/lock` | Unlock datastore |
 
-Mutations return `204 No Content` on success, `400` with error detail on failure.
 
-## Getting Started
-
-### Prerequisites
-
-* Docker and Docker Compose
-* Node.js 22+, Python 3.14+ and [uv](https://docs.astral.sh/uv/) for local development
-
-### Installation
-
-1. Clone the repo
-   ```sh
-   git clone https://github.com/Peter-Vegvari/NETCONF-manager.git
-   ```
-2. Start both services (backend on :8000, frontend on :3000)
-   ```sh
-   cd manager-backend && docker compose up -d
-   cd ../manager-frontend && docker compose up -d
-   ```
-
-### Local Development
-
-**Backend:**
-```sh
+The compose file for development is available at `manager-backend/docker-compose.override.yml`.
+To rebuild and start the FastAPI server at `localhost:8000` and notconf at `localhost:830`, run these commands from the project rook:
+```bash
 cd manager-backend
-uv sync
-uv run fastapi dev app/main.py
+sudo docker compose up --build -V -d
 ```
 
-**Frontend:**
-```sh
-cd manager-frontend
-npm install
-npm run dev
-```
 
-**Regenerate API hooks** (after backend changes):
-```sh
-cd manager-frontend
-npx orval
-```
 
-## Testing
+### Frontend
 
-The project uses a CI pipeline with GitHub Actions that runs on every push/PR to `main`:
+React
 
-**Backend:**
-1. **Static analysis** — `ruff check`, `ruff format --check`, `basedpyright`
-2. **Integration tests** — `pytest` running against a simulated NETCONF device ([netopeer2](https://github.com/CESNET/netopeer2)) via Docker Compose
-
-**Frontend:**
-1. **Static analysis** — `biome ci` (linting + formatting)
-
-Run tests locally:
-```sh
-# Backend
-cd manager-backend
-docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --exit-code-from manager-backend
-
-# Frontend
-cd manager-frontend
-npx @biomejs/biome ci .
-```
 
 ## Roadmap
 
@@ -307,13 +186,9 @@ npx @biomejs/biome ci .
 - [x] YANG datastore display with recursive schema tree
 - [x] Editing writable datastore elements
 - [x] Candidate datastore with commit/copy/lock operations
-- [x] Staged changes diff view
 - [x] CI pipeline with integration tests on simulated device
 - [ ] Support multiple users at once
 
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-
-https://en.wikipedia.org/wiki/YANG

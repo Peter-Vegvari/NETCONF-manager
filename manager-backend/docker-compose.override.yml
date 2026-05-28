@@ -16,9 +16,9 @@ services:
     image: ghcr.io/notconf/notconf:latest
     container_name: notconf
     ports:
-      - "810:810"
+      - "830:830"
     volumes:
-      - ./tests/resources/yang-modules/startup:/yang-modules/startup
+      - ./app/resources/yang-modules/startup:/yang-modules/startup
     networks:
       - shared
     healthcheck:

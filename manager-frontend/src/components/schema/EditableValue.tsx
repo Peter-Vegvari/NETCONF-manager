@@ -63,7 +63,9 @@ export function EditableValue({ value, dataStore, moduleName, path }: Props) {
 				onPressEnter={() =>
 					mutation.mutate({
 						dataStore,
-						data: { module_name: moduleName, path, value: inputValue },
+						moduleName,
+						path,
+						data: { value: inputValue },
 					})
 				}
 				autoFocus
@@ -76,7 +78,9 @@ export function EditableValue({ value, dataStore, moduleName, path }: Props) {
 				onClick={() =>
 					mutation.mutate({
 						dataStore,
-						data: { module_name: moduleName, path, value: inputValue },
+						moduleName,
+						path,
+						data: { value: inputValue },
 					})
 				}
 			>
