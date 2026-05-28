@@ -132,46 +132,9 @@ To avoid performance loss, it was necessary that the NETCONF session is reused b
 
 #### Module
 
-| `SchemaNode` | BaseModel | `kind: str`, `config: bool?`, `description: str?`, `mandatory: bool?`, `default: object?`, `type: dict?`, `children: dict[str, SchemaNode]?` |
+Parsed YANG schema
 
-```json
-{
-  "children": {
-    "ietf-interfaces:interfaces": {
-      "kind": "container",
-      "config": null,
-      "description": "Interface parameters.",
-      "mandatory": null,
-      "default": null,
-      "type": null,
-      "children": {
-        "interface": {
-          "kind": "list",
-          "config": null,
-          "description": "...",
-          "mandatory": null,
-          "default": null,
-          "type": null,
-          "children": {
-            "name": {
-              "kind": "leaf",
-              "config": null,
-              "description": "description here..."
-              "mandatory": true,
-              "default": null,
-              "type": {
-                "base": "string"
-              },
-              "children": null
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-It is necessary to convert a module's YANG schema to JSON objects, to be properly displayed.
+The YANG schemas
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -181,6 +144,41 @@ It is necessary to convert a module's YANG schema to JSON objects, to be properl
 | `POST` | `/modules/{name}/download` | Download a single module's YANG schema |
 | `DELETE` | `/modules/{name}` | Delete a module's YANG schema locally |
 | `DELETE` | `/modules/` | Delete all the modules's YANG schemas |
+
+Result of GET for ietf-interfaces
+```json
+{
+  "children": {
+    "ietf-interfaces:interfaces": {
+      "kind": "container",
+      "description": "Interface parameters.",
+      "children": {
+        "interface": {
+          "kind": "list",
+          "description": "The list of interfaces on the device...",
+          "children": {
+            "name": {
+              "kind": "leaf",
+              "description": "The name of the interface....",
+              "mandatory": true,
+              "type": {
+                "base": "string"
+              }
+            },
+            "description": {
+              "kind": "leaf",
+              "description": "A textual description of the interface...",
+              "type": {
+                "base": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
 
 #### Datastore
 

@@ -2,8 +2,7 @@ from enum import StrEnum, auto
 
 from ncclient import manager
 from ncclient.manager import Manager
-from pydantic import BaseModel, ConfigDict
-from pydantic.config import ConfigDict
+from pydantic import BaseModel
 
 
 class Connection(BaseModel):
@@ -46,7 +45,7 @@ class ModuleSummary(BaseModel):
 
 
 class SchemaNode(BaseModel):
-    kind: str = ""
+    kind: str | None = None
     config: bool | None = None
     description: str | None = None
     mandatory: bool | None = None

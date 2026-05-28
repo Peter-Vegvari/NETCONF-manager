@@ -8,7 +8,7 @@ import type { SchemaNodeChildren } from "./schemaNodeChildren";
 import type { SchemaNodeType } from "./schemaNodeType";
 
 export interface SchemaNode {
-	kind?: string;
+	kind?: string | null;
 	config?: boolean | null;
 	description?: string | null;
 	mandatory?: boolean | null;

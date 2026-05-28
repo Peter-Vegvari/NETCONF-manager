@@ -49,7 +49,13 @@ export const getGetSchemaResponseMock = (
 		faker.helpers.arrayElement([
 			{
 				[faker.string.alphanumeric(5)]: {
-					kind: faker.string.alpha({ length: { min: 10, max: 20 } }),
+					kind: faker.helpers.arrayElement([
+						faker.helpers.arrayElement([
+							faker.string.alpha({ length: { min: 10, max: 20 } }),
+							null,
+						]),
+						undefined,
+					]),
 					config: faker.helpers.arrayElement([
 						faker.helpers.arrayElement([faker.datatype.boolean(), null]),
 						undefined,
