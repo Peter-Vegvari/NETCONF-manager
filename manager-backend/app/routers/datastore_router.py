@@ -77,7 +77,7 @@ async def get_lock_info(data_store: DataStore) -> bool:
 
 
 @datastore_router.get("/{data_store}/{module_name}/data", operation_id="getModuleData")
-async def get_module_data(module_name: str, data_store: DataStore) -> dict[str, Any]:
+async def get_module_data(data_store: DataStore, module_name: str) -> dict[str, Any]:
     app.dependencies.connection_manager.check_connected()
     schema = module_service.get_module_schema(module_name)
     if not schema.children:
@@ -90,7 +90,7 @@ async def get_module_data(module_name: str, data_store: DataStore) -> dict[str, 
     "/{data_store}/{module_name}/data/{path:path}", operation_id="getData"
 )
 async def get_data(
-    module_name: str, data_store: DataStore, path: str
+    data_store: DataStore, module_name: str, path: str
 ) -> dict[str, Any]:
     app.dependencies.connection_manager.check_connected()
     return module_service.get_data(module_name, data_store, path)
