@@ -21,7 +21,13 @@ export const getGetModulesResponseMock = (): ModuleSummary[] =>
 export const getGetSchemaResponseMock = (
 	overrideResponse: Partial<Extract<SchemaNode, object>> = {},
 ): SchemaNode => ({
-	kind: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	kind: faker.helpers.arrayElement([
+		faker.helpers.arrayElement([
+			faker.string.alpha({ length: { min: 10, max: 20 } }),
+			null,
+		]),
+		undefined,
+	]),
 	config: faker.helpers.arrayElement([
 		faker.helpers.arrayElement([faker.datatype.boolean(), null]),
 		undefined,

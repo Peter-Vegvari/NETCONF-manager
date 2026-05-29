@@ -20,6 +20,8 @@ The goal was to create a vendor-agnostic, containerized full-stack web applicati
 
 YANG is a data modeling language that provides a standardized way to model the configuration and state data of network elements, enabling network automation. It is developed and maintained by the Internet Engineering Task Force. YANG is a modular language and represents data structures in a hierarchical tree format. It includes numerous built-in data types, with the capability for users to derive additional application-specific types.
 
+On actual network devices, YANG modules are usually augmented with vendor specific fields and functionality.
+
 YANG instance data are stored in configuration datastores:
   | Configuration datastore | Description |
   |---|---|
@@ -58,7 +60,7 @@ Example of an instance data:
 
 ### NETCONF
 
-The Network Configuration Protocol (NETCONF) is a network management protocol developed and standardized by the IETF. NETCONF provides mechanisms to install, manipulate, and delete the configuration of network devices.
+The Network Configuration Protocol (NETCONF) is a network management protocol developed and standardized by the IETF. NETCONF provides mechanisms to install, manipulate, and delete the configuration of network devices. NETCONF uses port 830.
 
 Possible operations:
   | Operation | Description |
@@ -112,13 +114,17 @@ The device's startup configurations are to be placed at `manager-backend/tests/r
 ### Backend
 
 The choice of language for the backend is Python, because of the preexisting tooling available for network development:
-1. pyang: library for validating, transforming YANG and code generator
-2. yangson: library for working with configuration and state data modelled using YANG
-3. ncclient: library for NETCONF client, that is used to establishes and maintain a persistent NETCONF session with a device
+1. **pyang**: library for validating, transforming YANG and code generator
+2. **yangson**: library for working with configuration and state data modelled using YANG
+3. **ncclient**: library for NETCONF client, that is used to establishes and maintain a persistent NETCONF session with a device
+4. **yanglint**: converts XML instance data to JSON using YANG modules.
 
 
 The HTTP API is written in FastAPI, it couldn't be truly RESTful, because NETCONF uses stateful RPC sessions.
-The HTTP API has 3 routes, /connection, /module and /datastore
+
+The application entry point is `app/main.py`, which creates the FastAPI app, registers middleware and routers, and writes the OpenAPI schema to the shared volume on startup.
+
+Configuration is managed through `app/core/config.py` using pydantic-settings, reading environment variables for CORS origins, paths, and environment mode.
 
 #### Connection
 
@@ -132,9 +138,10 @@ To avoid performance loss, it was necessary that the NETCONF session is reused b
 
 #### Module
 
-Parsed YANG schema
-
-The YANG schemas
+The schemas for the YANG modules are downloaded from the device to the backend filesystem. They are need for:
+- Generating the schema tree via yangson
+- Converting XML instance data to JSON viat yanglint
+- Extracting namespace and revision metadata via pyang
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -145,7 +152,16 @@ The YANG schemas
 | `DELETE` | `/modules/{name}` | Delete a module's YANG schema locally |
 | `DELETE` | `/modules/` | Delete all the modules's YANG schemas |
 
-Result of GET for ietf-interfaces
+
+The schema output is a recursive tree of `SchemaNode` objects. Each node contains:
+- `kind`: container, list, leaf, leaf-list
+- `description`: from the YANG module
+- `mandatory`: whether a value is required
+- `config`: whether the node is read-only
+- `type`: type for leaf nodes
+- `children`: child nodes
+
+The truncated result of GET for ietf-interfaces
 ```json
 {
   "children": {
@@ -183,6 +199,16 @@ Result of GET for ietf-interfaces
 #### Datastore
 
 Every module's YANG schema should be downloaded first to the backend, before doing module specific requests. Otherwise the data from the network device will not be parsed correctly.
+
+The data retrieval flow is:
+1. Backend sends a `<get-config>` RPC with a subtree filter to the device
+2. The device returns XML instance data
+3. Backend writes the XML to a temp file and calls `yanglint` with the relevant YANG modules
+4. `yanglint` outputs JSON, which is returned
+
+For edit operations, the backend constructs an XML `<config>` element from the path and value, then sends it via `<edit-config>` RPC.
+
+The staged diff endpoint compares the running and candidate datastores using `jsondiff` and returns the differences as a JSON patch.
 
 | Method | Endpoint | Description |
 |---|---|---|

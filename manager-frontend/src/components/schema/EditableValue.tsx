@@ -24,14 +24,11 @@ export function EditableValue({ value, dataStore, moduleName, path }: Props) {
 	const mutation = useEditConfig({
 		mutation: {
 			onSuccess: () => {
-				message.success("Configuration updated");
-				setEditing(false);
 				queryClient.invalidateQueries({
 					queryKey: getGetModuleDataQueryKey(dataStore, moduleName),
 				});
-				queryClient.invalidateQueries({
-					queryKey: getGetDataQueryKey(dataStore, moduleName, path),
-				});
+				message.success("Configuration updated");
+				setEditing(false);
 			},
 			onError: (err) => {
 				message.error(`Edit failed: ${err}`);
