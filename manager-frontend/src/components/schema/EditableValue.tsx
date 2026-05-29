@@ -2,7 +2,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { App, Button, Input, Space, Typography } from "antd";
 import { useState } from "react";
 import {
-	getGetDataQueryKey,
 	getGetModuleDataQueryKey,
 	useEditConfig,
 } from "@/api/datastore/datastore";
